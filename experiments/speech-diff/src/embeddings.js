@@ -15,6 +15,8 @@ export async function loadLocalEnvironment(path) {
 export async function loadOrCreateEmbeddingCache({ texts, cachePath, model, apiKey, baseUrl }) {
   const cache = existsSync(cachePath) ? JSON.parse(await readFile(cachePath, "utf8")) : { model, vectors: {}, api_calls: 0, usage: { prompt_tokens: 0, total_tokens: 0 } };
   if (cache.model !== model) throw new Error(`embedding cache model mismatch: ${cache.model}`);
+  const initialApiCalls = cache.api_calls;
+  const initialUsage = { ...cache.usage };
   const unique = [...new Set(texts)];
   const missing = unique.filter((text) => !cache.vectors[hashText(text)]);
   for (let start = 0; start < missing.length; start += 100) {
@@ -29,5 +31,5 @@ export async function loadOrCreateEmbeddingCache({ texts, cachePath, model, apiK
     await mkdir(new URL(".", `file://${cachePath}`).pathname, { recursive: true });
     await writeFile(cachePath, JSON.stringify(cache));
   }
-  return { vectors: Object.fromEntries(unique.map((text) => [text, cache.vectors[hashText(text)]])), cache: { api_calls: cache.api_calls, usage: cache.usage, newly_embedded_texts: missing.length } };
+  return { vectors: Object.fromEntries(unique.map((text) => [text, cache.vectors[hashText(text)]])), cache: { api_calls: cache.api_calls, api_calls_this_run: cache.api_calls - initialApiCalls, usage: cache.usage, usage_this_run: { prompt_tokens: cache.usage.prompt_tokens - initialUsage.prompt_tokens, total_tokens: cache.usage.total_tokens - initialUsage.total_tokens }, newly_embedded_texts: missing.length } };
 }

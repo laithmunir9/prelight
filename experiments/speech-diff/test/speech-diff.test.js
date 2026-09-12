@@ -5,6 +5,7 @@ import { validateDataset } from "../src/validate.js";
 import { evaluatePair, evaluateDataset } from "../src/evaluate.js";
 import { cosineSimilarity, runNaiveBaseline } from "../src/baseline.js";
 import { chooseWinner, createThresholdGrid } from "../src/sweep.js";
+import { selectResidualCandidates, speechDiffV1 } from "../src/speech-diff-v1.js";
 
 const dataset = JSON.parse(await readFile(new URL("../data/fixtures.json", import.meta.url)));
 const clone = (x) => structuredClone(x);
@@ -101,4 +102,60 @@ test("threshold sweep grid is fixed and winner follows declared tie breakers", (
   assert.equal(grid.at(-1).unchanged_threshold, 0.98);
   const candidate = (match, unchanged, macro, difficult, overall) => ({ match_threshold: match, unchanged_threshold: unchanged, overall: { macro_f1_supported: macro, relationship: { f1: overall } }, difficult_development: { relationship: { f1: difficult } } });
   assert.deepEqual(chooseWinner([candidate(0.5, 0.8, 0.4, 0.5, 0.5), candidate(0.6, 0.9, 0.4, 0.6, 0.1)]), candidate(0.6, 0.9, 0.4, 0.6, 0.1));
+});
+
+const v1Config = { match_min: 0.8, structural_min: 0.8, move_min: 0.8, lexical_unchanged_min: 0.5, semantic_unchanged_min: 0.85, group_penalty: 0.05, gap_penalty: 0.2 };
+const groupTexts = (segments) => {
+  const texts = [];
+  for (let start = 0; start < segments.length; start++) for (const size of [1, 2, 3]) {
+    const group = segments.slice(start, start + size);
+    if (group.length === size) texts.push(group.map((segment) => segment.text).join(" "));
+  }
+  return texts;
+};
+const vectorsFor = (pair, overrides) => Object.fromEntries([...groupTexts(pair.take_a.segments), ...groupTexts(pair.take_b.segments)].map((text) => [text, overrides[text] ?? [0, 0]]));
+const relation = (operation, a, b, weight) => ({ operation, take_a_segment_ids: a, take_b_segment_ids: b, weight, priority: 0 });
+
+test("V1 DP recovers a 1:1 alignment", () => {
+  const pair = { take_a: { segments: [{ segment_id: "a1", text: "source" }] }, take_b: { segments: [{ segment_id: "b1", text: "target" }] } };
+  const vectors = vectorsFor(pair, { source: [1, 0], target: [1, 0] });
+  const result = speechDiffV1(pair, vectors, v1Config);
+  assert.deepEqual(result, [{ operation: "modified", take_a_segment_ids: ["a1"], take_b_segment_ids: ["b1"] }]);
+  assert.deepEqual(speechDiffV1(pair, vectors, v1Config), result);
+});
+
+test("V1 DP emits additions and deletions for unrelated segments", () => {
+  const pair = { take_a: { segments: [{ segment_id: "a1", text: "left" }] }, take_b: { segments: [{ segment_id: "b1", text: "right" }] } };
+  const result = speechDiffV1(pair, vectorsFor(pair, { left: [1, 0], right: [0, 1] }), v1Config);
+  assert.deepEqual(result, [{ operation: "deleted", take_a_segment_ids: ["a1"], take_b_segment_ids: [] }, { operation: "added", take_a_segment_ids: [], take_b_segment_ids: ["b1"] }]);
+});
+
+test("V1 DP supports a split and a merge", () => {
+  const split = { take_a: { segments: [{ segment_id: "a1", text: "combined" }] }, take_b: { segments: [{ segment_id: "b1", text: "first" }, { segment_id: "b2", text: "second" }] } };
+  const splitResult = speechDiffV1(split, vectorsFor(split, { combined: [1, 0], "first second": [1, 0] }), v1Config);
+  assert.deepEqual(splitResult, [{ operation: "split", take_a_segment_ids: ["a1"], take_b_segment_ids: ["b1", "b2"] }]);
+  const merge = { take_a: { segments: [{ segment_id: "a1", text: "first" }, { segment_id: "a2", text: "second" }] }, take_b: { segments: [{ segment_id: "b1", text: "combined" }] } };
+  const mergeResult = speechDiffV1(merge, vectorsFor(merge, { "first second": [1, 0], combined: [1, 0] }), v1Config);
+  assert.deepEqual(mergeResult, [{ operation: "merged", take_a_segment_ids: ["a1", "a2"], take_b_segment_ids: ["b1"] }]);
+});
+
+test("V1 recovers reordered residual material as moved without double consumption", () => {
+  const pair = { take_a: { segments: [{ segment_id: "a1", text: "one" }, { segment_id: "a2", text: "two" }] }, take_b: { segments: [{ segment_id: "b1", text: "two-prime" }, { segment_id: "b2", text: "one-prime" }] } };
+  const result = speechDiffV1(pair, vectorsFor(pair, { one: [1, 0], "one-prime": [1, 0], two: [0, 1], "two-prime": [0, 1] }), v1Config);
+  assert.ok(result.some((item) => item.operation === "moved"));
+  assert.equal(new Set(result.flatMap((item) => item.take_a_segment_ids)).size, 2);
+  assert.equal(new Set(result.flatMap((item) => item.take_b_segment_ids)).size, 2);
+});
+
+test("V1 can recover a moved split from residual candidates", () => {
+  const pair = { take_a: { segments: [{ segment_id: "a1", text: "anchor" }, { segment_id: "a2", text: "combined" }] }, take_b: { segments: [{ segment_id: "b1", text: "first" }, { segment_id: "b2", text: "second" }, { segment_id: "b3", text: "anchor-prime" }] } };
+  const result = speechDiffV1(pair, vectorsFor(pair, { anchor: [1, 0], "anchor-prime": [1, 0], combined: [0, 1], "first second": [0, 1] }), v1Config);
+  assert.ok(result.some((item) => item.operation === "split" && item.take_a_segment_ids.includes("a2")));
+});
+
+test("residual optimization selects the highest-weight non-overlapping set deterministically", () => {
+  const candidates = [relation("moved", ["a1"], ["b1"], 0.8), relation("split", ["a1"], ["b1", "b2"], 0.9), relation("moved", ["a2"], ["b2"], 0.8)];
+  const selected = selectResidualCandidates(candidates);
+  assert.deepEqual(selected.map((item) => item.operation), ["moved", "moved"]);
+  assert.deepEqual(selectResidualCandidates(candidates), selected);
 });

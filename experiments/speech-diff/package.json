@@ -5,7 +5,8 @@
   "scripts": {
     "test": "node --test test/*.test.js",
     "validate": "node src/validate-cli.js data/fixtures.json",
-    "run:baseline-dev": "node src/run-baseline-dev.js"
+    "run:baseline-dev": "node src/run-baseline-dev.js",
+    "run:speech-diff-v1-dev": "node src/run-speech-diff-v1-dev.js"
   },
   "engines": { "node": ">=18" }
 }
