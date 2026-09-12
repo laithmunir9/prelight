@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { validateDataset } from "../src/validate.js";
 import { evaluatePair, evaluateDataset } from "../src/evaluate.js";
 import { cosineSimilarity, runNaiveBaseline } from "../src/baseline.js";
+import { chooseWinner, createThresholdGrid } from "../src/sweep.js";
 
 const dataset = JSON.parse(await readFile(new URL("../data/fixtures.json", import.meta.url)));
 const clone = (x) => structuredClone(x);
@@ -68,8 +69,8 @@ test("cosine similarity is normalized", () => { assert.equal(cosineSimilarity([1
 
 test("naive baseline embeds, chooses independently, thresholds, and emits add/delete", async () => {
   const pair = { take_a: { segments: [{ segment_id: "a1", text: "alpha" }, { segment_id: "a2", text: "unknown" }] }, take_b: { segments: [{ segment_id: "b1", text: "alpha revised" }, { segment_id: "b2", text: "extra" }] } };
-  const embeddings = { alpha: [1, 0, 0], "alpha revised": [0.99, 0.01, 0], unknown: [0, 1, 0], extra: [0, 0, 1] };
-  const result = await runNaiveBaseline(pair, { embedder: (text) => embeddings[text], minSimilarity: 0.9 });
+  const embeddings = { alpha: [1, 0, 0], "alpha revised": [0.9, 0.1, 0], unknown: [0, 1, 0], extra: [0, 0, 1] };
+  const result = await runNaiveBaseline(pair, { embedder: (text) => embeddings[text], matchThreshold: 0.9, unchangedThreshold: 0.995 });
   assert.deepEqual(result, [
     { operation: "modified", take_a_segment_ids: ["a1"], take_b_segment_ids: ["b1"] },
     { operation: "deleted", take_a_segment_ids: ["a2"], take_b_segment_ids: [] },
@@ -79,10 +80,25 @@ test("naive baseline embeds, chooses independently, thresholds, and emits add/de
 
 test("naive baseline keeps duplicate B choices as separate 1:1 matches and never infers structural operations", async () => {
   const pair = { take_a: { segments: [{ segment_id: "a1", text: "first" }, { segment_id: "a2", text: "second" }] }, take_b: { segments: [{ segment_id: "b1", text: "shared" }] } };
-  const result = await runNaiveBaseline(pair, { embedder: () => [1, 0], minSimilarity: 0.5 });
+  const result = await runNaiveBaseline(pair, { embedder: () => [1, 0], matchThreshold: 0.5, unchangedThreshold: 1.01 });
   assert.deepEqual(result, [
     { operation: "modified", take_a_segment_ids: ["a1"], take_b_segment_ids: ["b1"] },
     { operation: "modified", take_a_segment_ids: ["a2"], take_b_segment_ids: ["b1"] }
   ]);
   assert.equal(result.some((r) => ["moved", "split", "merged"].includes(r.operation)), false);
+});
+
+test("naive baseline uses the second similarity threshold for unchanged labels", async () => {
+  const pair = { take_a: { segments: [{ segment_id: "a1", text: "one" }] }, take_b: { segments: [{ segment_id: "b1", text: "two" }] } };
+  const relationships = await runNaiveBaseline(pair, { embedder: () => [1, 0], matchThreshold: 0.5, unchangedThreshold: 0.9 });
+  assert.equal(relationships[0].operation, "unchanged");
+  await assert.rejects(() => runNaiveBaseline(pair, { embedder: () => [1, 0], matchThreshold: 0.8, unchangedThreshold: 0.7 }), RangeError);
+});
+
+test("threshold sweep grid is fixed and winner follows declared tie breakers", () => {
+  const grid = createThresholdGrid();
+  assert.equal(grid[0].match_threshold, 0.4);
+  assert.equal(grid.at(-1).unchanged_threshold, 0.98);
+  const candidate = (match, unchanged, macro, difficult, overall) => ({ match_threshold: match, unchanged_threshold: unchanged, overall: { macro_f1_supported: macro, relationship: { f1: overall } }, difficult_development: { relationship: { f1: difficult } } });
+  assert.deepEqual(chooseWinner([candidate(0.5, 0.8, 0.4, 0.5, 0.5), candidate(0.6, 0.9, 0.4, 0.6, 0.1)]), candidate(0.6, 0.9, 0.4, 0.6, 0.1));
 });
