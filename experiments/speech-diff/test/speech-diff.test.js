@@ -6,6 +6,7 @@ import { evaluatePair, evaluateDataset } from "../src/evaluate.js";
 import { cosineSimilarity, runNaiveBaseline } from "../src/baseline.js";
 import { chooseWinner, createThresholdGrid } from "../src/sweep.js";
 import { selectResidualCandidates, speechDiffV1 } from "../src/speech-diff-v1.js";
+import { maximumWeightAssignment, speechDiffV11, weightedIncreasingSubsequence } from "../src/speech-diff-v1.1.js";
 
 const dataset = JSON.parse(await readFile(new URL("../data/fixtures.json", import.meta.url)));
 const clone = (x) => structuredClone(x);
@@ -158,4 +159,83 @@ test("residual optimization selects the highest-weight non-overlapping set deter
   const selected = selectResidualCandidates(candidates);
   assert.deepEqual(selected.map((item) => item.operation), ["moved", "moved"]);
   assert.deepEqual(selectResidualCandidates(candidates), selected);
+});
+
+const v11Config = { global_match_min: 0.7, match_margin_min: 0.03, structural_min: 0.8, lexical_unchanged_min: 0.5, semantic_unchanged_min: 0.85, group_penalty: 0.05, gap_penalty: 0.2 };
+const idsByOperation = (relationships, operation) => relationships.filter((item) => item.operation === operation).map((item) => [item.take_a_segment_ids, item.take_b_segment_ids]);
+
+test("V1.1 identifies one inversion in a pure three-segment reorder", () => {
+  const pair = { take_a: { segments: [{ segment_id: "a1", text: "alpha" }, { segment_id: "a2", text: "bravo" }, { segment_id: "a3", text: "charlie" }] }, take_b: { segments: [{ segment_id: "b1", text: "charlie next" }, { segment_id: "b2", text: "alpha next" }, { segment_id: "b3", text: "bravo next" }] } };
+  const vectors = vectorsFor(pair, { alpha: [1, 0, 0], "alpha next": [1, 0, 0], bravo: [0, 1, 0], "bravo next": [0, 1, 0], charlie: [0, 0, 1], "charlie next": [0, 0, 1] });
+  const result = speechDiffV11(pair, vectors, v11Config);
+  assert.deepEqual(idsByOperation(result, "moved"), [[ ["a3"], ["b1"] ]]);
+  assert.equal(result.filter((item) => item.operation === "deleted" || item.operation === "added").length, 0);
+});
+
+test("V1.1 does not call an insertion a move", () => {
+  const pair = { take_a: { segments: [{ segment_id: "a1", text: "alpha" }, { segment_id: "a2", text: "bravo" }, { segment_id: "a3", text: "charlie" }] }, take_b: { segments: [{ segment_id: "b1", text: "alpha next" }, { segment_id: "bx", text: "inserted" }, { segment_id: "b2", text: "bravo next" }, { segment_id: "b3", text: "charlie next" }] } };
+  const vectors = vectorsFor(pair, { alpha: [1, 0, 0, 0], "alpha next": [1, 0, 0, 0], bravo: [0, 1, 0, 0], "bravo next": [0, 1, 0, 0], charlie: [0, 0, 1, 0], "charlie next": [0, 0, 1, 0], inserted: [0, 0, 0, 1] });
+  const result = speechDiffV11(pair, vectors, v11Config);
+  assert.equal(idsByOperation(result, "moved").length, 0);
+  assert.deepEqual(idsByOperation(result, "added"), [[[], ["bx"]]]);
+});
+
+test("V1.1 does not call a deletion a move", () => {
+  const pair = { take_a: { segments: [{ segment_id: "a1", text: "alpha" }, { segment_id: "ax", text: "removed" }, { segment_id: "a2", text: "bravo" }] }, take_b: { segments: [{ segment_id: "b1", text: "alpha next" }, { segment_id: "b2", text: "bravo next" }] } };
+  const vectors = vectorsFor(pair, { alpha: [1, 0, 0], "alpha next": [1, 0, 0], removed: [0, 0, 1], bravo: [0, 1, 0], "bravo next": [0, 1, 0] });
+  const result = speechDiffV11(pair, vectors, v11Config);
+  assert.equal(idsByOperation(result, "moved").length, 0);
+  assert.deepEqual(idsByOperation(result, "deleted"), [[ ["ax"], [] ]]);
+});
+
+test("V1.1 keeps moves distinct from simultaneous deletion and insertion", () => {
+  const pair = { take_a: { segments: [{ segment_id: "a1", text: "alpha" }, { segment_id: "ax", text: "removed" }, { segment_id: "a2", text: "bravo" }] }, take_b: { segments: [{ segment_id: "b2", text: "bravo next" }, { segment_id: "by", text: "inserted" }, { segment_id: "b1", text: "alpha next" }] } };
+  const vectors = vectorsFor(pair, { alpha: [1, 0, 0, 0], "alpha next": [1, 0, 0, 0], removed: [0, 0, 1, 0], bravo: [0, 1, 0, 0], "bravo next": [0, 1, 0, 0], inserted: [0, 0, 0, 1] });
+  const result = speechDiffV11(pair, vectors, v11Config);
+  assert.equal(idsByOperation(result, "moved").length, 1);
+  assert.deepEqual(idsByOperation(result, "deleted"), [[ ["ax"], [] ]]);
+  assert.deepEqual(idsByOperation(result, "added"), [[[], ["by"]]]);
+});
+
+test("V1.1 gives split and merge precedence when they coexist with a move", () => {
+  const pair = { take_a: { segments: [{ segment_id: "a1", text: "anchor" }, { segment_id: "a2", text: "combined" }, { segment_id: "a3", text: "first" }, { segment_id: "a4", text: "second" }, { segment_id: "a5", text: "tail" }] }, take_b: { segments: [{ segment_id: "b1", text: "first second" }, { segment_id: "b2", text: "split one" }, { segment_id: "b3", text: "split two" }, { segment_id: "b4", text: "tail next" }, { segment_id: "b5", text: "anchor next" }] } };
+  const vectors = vectorsFor(pair, { anchor: [1, 0, 0, 0], "anchor next": [1, 0, 0, 0], combined: [0, 1, 0, 0], "split one split two": [0, 1, 0, 0], first: [0, 0, 1, 0], second: [0, 0, 1, 0], "first second": [0, 0, 1, 0], tail: [0, 0, 0, 1], "tail next": [0, 0, 0, 1] });
+  const result = speechDiffV11(pair, vectors, v11Config);
+  assert.ok(result.some((item) => item.operation === "split" && item.take_a_segment_ids[0] === "a2"));
+  assert.ok(result.some((item) => item.operation === "merged" && item.take_b_segment_ids[0] === "b1"));
+  assert.ok(result.some((item) => item.operation === "moved" && item.take_a_segment_ids[0] === "a1"));
+});
+
+test("V1.1 rejects a structural group weaker than its strongest singleton evidence", () => {
+  const pair = { take_a: { segments: [{ segment_id: "a1", text: "one idea" }] }, take_b: { segments: [{ segment_id: "b1", text: "same idea" }, { segment_id: "b2", text: "unrelated add-on" }] } };
+  const vectors = vectorsFor(pair, { "one idea": [1, 0], "same idea": [1, 0], "unrelated add-on": [0, 1], "same idea unrelated add-on": [0.8, 0.6] });
+  const result = speechDiffV11(pair, vectors, v11Config);
+  assert.equal(result.some((item) => item.operation === "split"), false);
+  assert.ok(result.some((item) => ["unchanged", "modified"].includes(item.operation) && item.take_b_segment_ids[0] === "b1"));
+});
+
+test("weighted LIS maximizes semantic weight before length", () => {
+  const result = weightedIncreasingSubsequence([
+    { a_position: 0, b_position: 2, semantic_similarity: 0.9 },
+    { a_position: 1, b_position: 0, semantic_similarity: 0.8 },
+    { a_position: 2, b_position: 1, semantic_similarity: 0.8 },
+  ]);
+  assert.deepEqual(result.map((item) => item.a_position), [1, 2]);
+});
+
+test("global assignment preserves B-side uniqueness", () => {
+  const selected = maximumWeightAssignment([
+    { a_position: 0, b_position: 0, semantic_similarity: 0.9 },
+    { a_position: 1, b_position: 0, semantic_similarity: 0.8 },
+    { a_position: 1, b_position: 1, semantic_similarity: 0.7 },
+  ]);
+  assert.deepEqual(selected.map((item) => [item.a_position, item.b_position]), [[0, 0], [1, 1]]);
+});
+
+test("low Take-A match margin leaves ambiguous material unmatched", () => {
+  const pair = { take_a: { segments: [{ segment_id: "a1", text: "ambiguous" }] }, take_b: { segments: [{ segment_id: "b1", text: "first choice" }, { segment_id: "b2", text: "second choice" }] } };
+  const vectors = vectorsFor(pair, { ambiguous: [1, 0], "first choice": [1, 0], "second choice": [1, 0] });
+  const result = speechDiffV11(pair, vectors, v11Config);
+  assert.deepEqual(idsByOperation(result, "deleted"), [[ ["a1"], [] ]]);
+  assert.deepEqual(idsByOperation(result, "added"), [[[], ["b1"]], [[], ["b2"]]]);
 });
