@@ -1,0 +1,10 @@
+{
+  "name": "prelight-speech-diff-evaluation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "validate": "node src/validate-cli.js data/fixtures.json"
+  },
+  "engines": { "node": ">=18" }
+}

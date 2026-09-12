@@ -1,0 +1,356 @@
+{
+  "schema_version": "speech-diff/v1",
+  "pairs": [
+    {
+      "pair_id": "pair-1",
+      "domain": "startup/product pitch",
+      "intended_difficulty": "mostly unchanged",
+      "take_a": { "segments": [
+        {"segment_id":"a1","text":"Small teams lose a surprising amount of time turning customer feedback into a clear product decision."},
+        {"segment_id":"a2","text":"Prelight gives them one place to collect the conversation, find the recurring need, and decide what to build next."},
+        {"segment_id":"a3","text":"The founder still makes the call, but the evidence is visible instead of scattered across messages and notebooks."},
+        {"segment_id":"a4","text":"We start with teams that already interview customers every week and charge per active researcher."},
+        {"segment_id":"a5","text":"The long-term opportunity is to become the memory layer for how a company learns."}
+      ] },
+      "take_b": { "segments": [
+        {"segment_id":"b1","text":"Small teams lose a surprising amount of time turning customer feedback into clear product decisions."},
+        {"segment_id":"b2","text":"Prelight gives them one place to collect the conversation, spot the recurring need, and decide what to build next."},
+        {"segment_id":"b3","text":"The founder still makes the call, but the evidence is visible rather than scattered across messages and notebooks."},
+        {"segment_id":"b4","text":"We begin with teams that already interview customers each week and charge per active researcher."},
+        {"segment_id":"b5","text":"The long-term opportunity is to become the memory layer for how a company learns."}
+      ] },
+      "relationships": [
+        {"operation":"unchanged","take_a_segment_ids":["a1"],"take_b_segment_ids":["b1"]},
+        {"operation":"unchanged","take_a_segment_ids":["a2"],"take_b_segment_ids":["b2"]},
+        {"operation":"unchanged","take_a_segment_ids":["a3"],"take_b_segment_ids":["b3"]},
+        {"operation":"unchanged","take_a_segment_ids":["a4"],"take_b_segment_ids":["b4"]},
+        {"operation":"unchanged","take_a_segment_ids":["a5"],"take_b_segment_ids":["b5"]}
+      ]
+    },
+    {
+      "pair_id": "pair-2",
+      "domain": "interview answer",
+      "intended_difficulty": "mostly unchanged",
+      "take_a": { "segments": [
+        {"segment_id":"a1","text":"I became interested in public health after watching my grandmother struggle to navigate three different clinics."},
+        {"segment_id":"a2","text":"The technical problem was only part of it; the harder problem was that each service had a different process and vocabulary."},
+        {"segment_id":"a3","text":"At university I volunteered with a community clinic, where I learned to ask people what blocked them before proposing a solution."},
+        {"segment_id":"a4","text":"That experience shaped the way I work now: listen first, make a small intervention, and measure whether it helped."},
+        {"segment_id":"a5","text":"I am applying here because your team combines rigorous analysis with direct contact with the people affected."}
+      ] },
+      "take_b": { "segments": [
+        {"segment_id":"b1","text":"I became interested in public health after seeing my grandmother struggle to navigate three separate clinics."},
+        {"segment_id":"b2","text":"The technical problem was only one part; the harder issue was that every service used a different process and vocabulary."},
+        {"segment_id":"b3","text":"At university I volunteered at a community clinic, where I learned to ask what was blocking people before suggesting a solution."},
+        {"segment_id":"b4","text":"That experience shaped how I work now: listen first, make a small intervention, and measure whether it helped."},
+        {"segment_id":"b5","text":"I am applying because your team combines rigorous analysis with direct contact with the people affected."}
+      ] },
+      "relationships": [
+        {"operation":"unchanged","take_a_segment_ids":["a1"],"take_b_segment_ids":["b1"]},
+        {"operation":"unchanged","take_a_segment_ids":["a2"],"take_b_segment_ids":["b2"]},
+        {"operation":"unchanged","take_a_segment_ids":["a3"],"take_b_segment_ids":["b3"]},
+        {"operation":"unchanged","take_a_segment_ids":["a4"],"take_b_segment_ids":["b4"]},
+        {"operation":"unchanged","take_a_segment_ids":["a5"],"take_b_segment_ids":["b5"]}
+      ]
+    },
+    {
+      "pair_id": "pair-3",
+      "domain": "technical explanation",
+      "intended_difficulty": "substantial paraphrase",
+      "take_a": { "segments": [
+        {"segment_id":"a1","text":"A cache is a faster layer that remembers the result of work we have already done."},
+        {"segment_id":"a2","text":"When a request arrives, the service first checks that layer instead of immediately asking the database."},
+        {"segment_id":"a3","text":"That saves latency and database capacity, but cached information can become stale."},
+        {"segment_id":"a4","text":"We control the tradeoff with an expiration time and invalidate entries early when important data changes."},
+        {"segment_id":"a5","text":"Caching is therefore an optimization, not a replacement for a reliable source of truth."}
+      ] },
+      "take_b": { "segments": [
+        {"segment_id":"b1","text":"Think of a cache as a nearby shelf holding answers whose computation has already been paid for."},
+        {"segment_id":"b2","text":"The application looks there on each request, so ordinary traffic does not repeatedly travel to the database."},
+        {"segment_id":"b3","text":"The benefit is quicker responses and less pressure on storage, with the cost that the shelf may no longer reflect reality."},
+        {"segment_id":"b4","text":"An expiry policy limits that risk, and a write can also remove a cached answer before its timer ends."},
+        {"segment_id":"b5","text":"So caching improves performance around the authoritative data store; it cannot serve as that authority itself."}
+      ] },
+      "relationships": [
+        {"operation":"modified","take_a_segment_ids":["a1"],"take_b_segment_ids":["b1"]},
+        {"operation":"modified","take_a_segment_ids":["a2"],"take_b_segment_ids":["b2"]},
+        {"operation":"modified","take_a_segment_ids":["a3"],"take_b_segment_ids":["b3"]},
+        {"operation":"modified","take_a_segment_ids":["a4"],"take_b_segment_ids":["b4"]},
+        {"operation":"modified","take_a_segment_ids":["a5"],"take_b_segment_ids":["b5"]}
+      ]
+    },
+    {
+      "pair_id": "pair-4",
+      "domain": "oral exam / academic explanation",
+      "intended_difficulty": "substantial paraphrase",
+      "take_a": { "segments": [
+        {"segment_id":"a1","text":"Natural selection does not plan useful traits in advance; it changes a population because some inherited differences affect survival or reproduction."},
+        {"segment_id":"a2","text":"Individuals vary, and part of that variation can be passed to their offspring."},
+        {"segment_id":"a3","text":"If a drought favors plants with deeper roots, those plants leave more descendants in that environment."},
+        {"segment_id":"a4","text":"Across generations the trait becomes more common, although the process acts on individuals while the measurable change appears in the population."},
+        {"segment_id":"a5","text":"The result depends on local conditions, so a trait that helps in one setting can be neutral or harmful in another."}
+      ] },
+      "take_b": { "segments": [
+        {"segment_id":"b1","text":"Selection has no blueprint for a desired adaptation. Frequencies shift when an inherited difference changes how successfully organisms reproduce."},
+        {"segment_id":"b2","text":"A population contains variation, and some of that variation is transmitted from parents to offspring."},
+        {"segment_id":"b3","text":"For example, during a dry season, plants with extensive roots may produce more seeds than their neighbors."},
+        {"segment_id":"b4","text":"Their descendants then make the root trait more frequent over time; the competition is individual, but the evolutionary pattern belongs to the population."},
+        {"segment_id":"b5","text":"Because advantages are ecological, the same characteristic can help under one set of conditions and provide no benefit, or even a cost, elsewhere."}
+      ] },
+      "relationships": [
+        {"operation":"modified","take_a_segment_ids":["a1"],"take_b_segment_ids":["b1"]},
+        {"operation":"modified","take_a_segment_ids":["a2"],"take_b_segment_ids":["b2"]},
+        {"operation":"modified","take_a_segment_ids":["a3"],"take_b_segment_ids":["b3"]},
+        {"operation":"modified","take_a_segment_ids":["a4"],"take_b_segment_ids":["b4"]},
+        {"operation":"modified","take_a_segment_ids":["a5"],"take_b_segment_ids":["b5"]}
+      ]
+    },
+    {
+      "pair_id": "pair-5",
+      "domain": "persuasive speech",
+      "intended_difficulty": "additions and deletions",
+      "take_a": { "segments": [
+        {"segment_id":"a1","text":"Our town should make buses free at the point of use."},
+        {"segment_id":"a2","text":"Removing the fare makes boarding faster and gives low-income residents a more reliable way to reach work."},
+        {"segment_id":"a3","text":"It also treats mobility as shared infrastructure rather than a private privilege."},
+        {"segment_id":"a4","text":"We can begin with a one-year pilot on the busiest routes and publish the results."},
+        {"segment_id":"a5","text":"The first question is not whether the policy is fashionable; it is whether people can get where they need to go."}
+      ] },
+      "take_b": { "segments": [
+        {"segment_id":"b1","text":"Our town should make buses free at the point of use."},
+        {"segment_id":"b2","text":"Without a fare, boarding moves faster and residents with the least money gain a dependable route to work."},
+        {"segment_id":"b3","text":"We can start with a one-year trial on the busiest routes and publish the results."},
+        {"segment_id":"b4","text":"The policy should be judged by whether people can reach jobs, schools, and appointments, not by whether it is fashionable."},
+        {"segment_id":"b5","text":"We should also ask drivers and riders to help us design the pilot before launch."}
+      ] },
+      "relationships": [
+        {"operation":"unchanged","take_a_segment_ids":["a1"],"take_b_segment_ids":["b1"]},
+        {"operation":"modified","take_a_segment_ids":["a2"],"take_b_segment_ids":["b2"]},
+        {"operation":"deleted","take_a_segment_ids":["a3"],"take_b_segment_ids":[]},
+        {"operation":"unchanged","take_a_segment_ids":["a4"],"take_b_segment_ids":["b3"]},
+        {"operation":"modified","take_a_segment_ids":["a5"],"take_b_segment_ids":["b4"]},
+        {"operation":"added","take_a_segment_ids":[],"take_b_segment_ids":["b5"]}
+      ]
+    },
+    {
+      "pair_id": "pair-6",
+      "domain": "startup/product pitch",
+      "intended_difficulty": "additions and deletions",
+      "take_a": { "segments": [
+        {"segment_id":"a1","text":"Independent restaurants have plenty of sales data but rarely have the staff to interpret it."},
+        {"segment_id":"a2","text":"Our product turns yesterday's orders into a short morning brief with trends, anomalies, and one suggested action."},
+        {"segment_id":"a3","text":"The owner can see the reasoning and ignore the recommendation, so the system supports judgment rather than replacing it."},
+        {"segment_id":"a4","text":"We reach customers through point-of-sale partners and monetize with a modest monthly subscription."},
+        {"segment_id":"a5","text":"Success means fewer stockouts and better decisions without asking an owner to learn analytics."}
+      ] },
+      "take_b": { "segments": [
+        {"segment_id":"b1","text":"Independent restaurants collect sales data but almost never have spare staff to interpret it."},
+        {"segment_id":"b2","text":"Our service turns yesterday's orders into a brief morning report covering trends, anomalies, and a recommended action."},
+        {"segment_id":"b3","text":"The owner can inspect the reasoning and reject the suggestion, which keeps human judgment in charge."},
+        {"segment_id":"b4","text":"Point-of-sale partnerships give us distribution, while a modest monthly subscription gives us revenue."},
+        {"segment_id":"b5","text":"We will measure success through fewer stockouts and better decisions."},
+        {"segment_id":"b6","text":"The first version will also flag unusual cancellations before they distort the daily picture."}
+      ] },
+      "relationships": [
+        {"operation":"modified","take_a_segment_ids":["a1"],"take_b_segment_ids":["b1"]},
+        {"operation":"unchanged","take_a_segment_ids":["a2"],"take_b_segment_ids":["b2"]},
+        {"operation":"unchanged","take_a_segment_ids":["a3"],"take_b_segment_ids":["b3"]},
+        {"operation":"modified","take_a_segment_ids":["a4"],"take_b_segment_ids":["b4"]},
+        {"operation":"modified","take_a_segment_ids":["a5"],"take_b_segment_ids":["b5"]},
+        {"operation":"added","take_a_segment_ids":[],"take_b_segment_ids":["b6"]}
+      ]
+    },
+    {
+      "pair_id": "pair-7",
+      "domain": "interview answer",
+      "intended_difficulty": "one major move",
+      "take_a": { "segments": [
+        {"segment_id":"a1","text":"My first responsibility on the project was to understand why customers abandoned setup."},
+        {"segment_id":"a2","text":"I mapped the journey and found that the permission screen used language our users did not recognize."},
+        {"segment_id":"a3","text":"We rewrote that screen and added a small example beside the request."},
+        {"segment_id":"a4","text":"Within a month, completion improved enough that support tickets fell noticeably."},
+        {"segment_id":"a5","text":"That taught me to treat confusing wording as a product defect, not merely a documentation issue."}
+      ] },
+      "take_b": { "segments": [
+        {"segment_id":"b1","text":"My first responsibility on the project was to understand why customers abandoned setup."},
+        {"segment_id":"b2","text":"We rewrote the permission screen and placed a small example beside the request."},
+        {"segment_id":"b3","text":"Within a month, completion improved enough that support tickets fell noticeably."},
+        {"segment_id":"b4","text":"That taught me to treat confusing wording as a product defect, not merely a documentation issue."},
+        {"segment_id":"b5","text":"I reached that conclusion after mapping the journey and finding that users did not recognize the original permission language."}
+      ] },
+      "relationships": [
+        {"operation":"unchanged","take_a_segment_ids":["a1"],"take_b_segment_ids":["b1"]},
+        {"operation":"moved","take_a_segment_ids":["a2"],"take_b_segment_ids":["b5"]},
+        {"operation":"moved","take_a_segment_ids":["a3"],"take_b_segment_ids":["b2"]},
+        {"operation":"moved","take_a_segment_ids":["a4"],"take_b_segment_ids":["b3"]},
+        {"operation":"moved","take_a_segment_ids":["a5"],"take_b_segment_ids":["b4"]}
+      ]
+    },
+    {
+      "pair_id": "pair-8",
+      "domain": "technical explanation",
+      "intended_difficulty": "one major move",
+      "take_a": { "segments": [
+        {"segment_id":"a1","text":"A database index is an additional structure that helps the engine locate rows without scanning the whole table."},
+        {"segment_id":"a2","text":"The engine pays a little extra storage and write cost to maintain that structure."},
+        {"segment_id":"a3","text":"For a frequently filtered column, the read savings can be substantial."},
+        {"segment_id":"a4","text":"We should still inspect the query plan, because an index that is never useful only adds maintenance work."},
+        {"segment_id":"a5","text":"The practical rule is to index measured access patterns rather than every column."}
+      ] },
+      "take_b": { "segments": [
+        {"segment_id":"b1","text":"A database index is an extra structure that lets the engine find rows without reading the entire table."},
+        {"segment_id":"b2","text":"For a column used often in filters, that shortcut can make reads much cheaper."},
+        {"segment_id":"b3","text":"The price is additional storage and work whenever the table changes."},
+        {"segment_id":"b4","text":"The practical rule is to index measured access patterns rather than every column."},
+        {"segment_id":"b5","text":"We should inspect the query plan, because an index that never helps only contributes maintenance work."}
+      ] },
+      "relationships": [
+        {"operation":"unchanged","take_a_segment_ids":["a1"],"take_b_segment_ids":["b1"]},
+        {"operation":"moved","take_a_segment_ids":["a2"],"take_b_segment_ids":["b3"]},
+        {"operation":"moved","take_a_segment_ids":["a3"],"take_b_segment_ids":["b2"]},
+        {"operation":"moved","take_a_segment_ids":["a4"],"take_b_segment_ids":["b5"]},
+        {"operation":"moved","take_a_segment_ids":["a5"],"take_b_segment_ids":["b4"]}
+      ]
+    },
+    {
+      "pair_id": "pair-9",
+      "domain": "persuasive speech",
+      "intended_difficulty": "multiple moves",
+      "take_a": { "segments": [
+        {"segment_id":"a1","text":"We should protect the river corridor before the next flood makes the decision for us."},
+        {"segment_id":"a2","text":"The corridor absorbs water that would otherwise reach homes downstream."},
+        {"segment_id":"a3","text":"It also gives children a safe route to the park and connects two neighborhoods."},
+        {"segment_id":"a4","text":"Restoration costs less than rebuilding roads after repeated damage."},
+        {"segment_id":"a5","text":"I am asking the council to fund the survey now and reserve the land this year."}
+      ] },
+      "take_b": { "segments": [
+        {"segment_id":"b1","text":"We should protect the river corridor before the next flood makes the decision for us."},
+        {"segment_id":"b2","text":"Restoration costs less than rebuilding roads after repeated damage."},
+        {"segment_id":"b3","text":"The corridor absorbs water that would otherwise reach homes downstream."},
+        {"segment_id":"b4","text":"I am asking the council to fund the survey now and reserve the land this year."},
+        {"segment_id":"b5","text":"It also gives children a safe route to the park and connects two neighborhoods."}
+      ] },
+      "relationships": [
+        {"operation":"unchanged","take_a_segment_ids":["a1"],"take_b_segment_ids":["b1"]},
+        {"operation":"moved","take_a_segment_ids":["a2"],"take_b_segment_ids":["b3"]},
+        {"operation":"moved","take_a_segment_ids":["a3"],"take_b_segment_ids":["b5"]},
+        {"operation":"moved","take_a_segment_ids":["a4"],"take_b_segment_ids":["b2"]},
+        {"operation":"moved","take_a_segment_ids":["a5"],"take_b_segment_ids":["b4"]}
+      ]
+    },
+    {
+      "pair_id": "pair-10",
+      "domain": "oral exam / academic explanation",
+      "intended_difficulty": "multiple moves",
+      "take_a": { "segments": [
+        {"segment_id":"a1","text":"The central claim of the study is that sleep helps consolidate a newly learned motor skill."},
+        {"segment_id":"a2","text":"Participants practiced a sequence and were tested again after either a night of sleep or an equivalent waking interval."},
+        {"segment_id":"a3","text":"The sleep group made fewer errors at the second test."},
+        {"segment_id":"a4","text":"Because the groups were assigned under the same conditions, the authors argue that sleep contributed to the improvement."},
+        {"segment_id":"a5","text":"The result does not prove that every kind of memory needs sleep in the same way."}
+      ] },
+      "take_b": { "segments": [
+        {"segment_id":"b1","text":"The study argues that sleep consolidates a motor skill after it has been learned."},
+        {"segment_id":"b2","text":"The result does not establish that all forms of memory depend on sleep identically."},
+        {"segment_id":"b3","text":"One group practiced a sequence and returned after a night, while another returned after the same amount of waking time."},
+        {"segment_id":"b4","text":"At the second test, the participants who slept made fewer mistakes."},
+        {"segment_id":"b5","text":"With the conditions assigned in parallel, the authors interpret the difference as evidence that sleep played a role."}
+      ] },
+      "relationships": [
+        {"operation":"moved","take_a_segment_ids":["a1"],"take_b_segment_ids":["b1"]},
+        {"operation":"moved","take_a_segment_ids":["a2"],"take_b_segment_ids":["b3"]},
+        {"operation":"moved","take_a_segment_ids":["a3"],"take_b_segment_ids":["b4"]},
+        {"operation":"moved","take_a_segment_ids":["a4"],"take_b_segment_ids":["b5"]},
+        {"operation":"moved","take_a_segment_ids":["a5"],"take_b_segment_ids":["b2"]}
+      ]
+    },
+    {
+      "pair_id": "pair-11",
+      "domain": "startup/product pitch",
+      "intended_difficulty": "one-to-many split",
+      "take_a": { "segments": [
+        {"segment_id":"a1","text":"Our platform makes the weekly planning meeting useful by turning scattered updates into a shared view of commitments and risks."},
+        {"segment_id":"a2","text":"Each person sees what they own and where another team's work could block them."},
+        {"segment_id":"a3","text":"Managers get an honest signal without asking for another status document."},
+        {"segment_id":"a4","text":"We sell to growing companies that have outgrown chat but are not ready for heavyweight portfolio software."}
+      ] },
+      "take_b": { "segments": [
+        {"segment_id":"b1","text":"Our platform turns scattered updates into a shared view before the weekly planning meeting."},
+        {"segment_id":"b2","text":"That shared view makes commitments explicit and surfaces risks early."},
+        {"segment_id":"b3","text":"Every person can see the work they own."},
+        {"segment_id":"b4","text":"They can also see another team's dependency before it blocks delivery."},
+        {"segment_id":"b5","text":"Managers receive an honest signal without requesting another status document."},
+        {"segment_id":"b6","text":"We sell to growing companies that have outgrown chat but are not ready for heavyweight portfolio software."}
+      ] },
+      "relationships": [
+        {"operation":"split","take_a_segment_ids":["a1"],"take_b_segment_ids":["b1","b2"]},
+        {"operation":"split","take_a_segment_ids":["a2"],"take_b_segment_ids":["b3","b4"]},
+        {"operation":"unchanged","take_a_segment_ids":["a3"],"take_b_segment_ids":["b5"]},
+        {"operation":"unchanged","take_a_segment_ids":["a4"],"take_b_segment_ids":["b6"]}
+      ]
+    },
+    {
+      "pair_id": "pair-12",
+      "domain": "technical explanation",
+      "intended_difficulty": "one-to-many split",
+      "take_a": { "segments": [
+        {"segment_id":"a1","text":"A transaction gives several database operations one all-or-nothing boundary, so partial updates do not become visible."},
+        {"segment_id":"a2","text":"The system records the change and then commits it only after every operation succeeds."},
+        {"segment_id":"a3","text":"If one operation fails, it rolls the earlier work back to the previous consistent state."},
+        {"segment_id":"a4","text":"This matters most when a business action touches more than one table or service."}
+      ] },
+      "take_b": { "segments": [
+        {"segment_id":"b1","text":"A transaction groups several database operations behind one all-or-nothing boundary."},
+        {"segment_id":"b2","text":"Other readers therefore never see the intermediate, partially updated state."},
+        {"segment_id":"b3","text":"The system commits only after every operation succeeds."},
+        {"segment_id":"b4","text":"When one operation fails, earlier work is rolled back."},
+        {"segment_id":"b5","text":"The database returns to its previous consistent state."},
+        {"segment_id":"b6","text":"That protection matters when one business action changes multiple tables or services."}
+      ] },
+      "relationships": [
+        {"operation":"split","take_a_segment_ids":["a1"],"take_b_segment_ids":["b1","b2"]},
+        {"operation":"unchanged","take_a_segment_ids":["a2"],"take_b_segment_ids":["b3"]},
+        {"operation":"split","take_a_segment_ids":["a3"],"take_b_segment_ids":["b4","b5"]},
+        {"operation":"unchanged","take_a_segment_ids":["a4"],"take_b_segment_ids":["b6"]}
+      ]
+    },
+    {
+      "pair_id": "pair-13",
+      "domain": "interview answer",
+      "intended_difficulty": "many-to-one merge",
+      "take_a": { "segments": [
+        {"segment_id":"a1","text":"The launch slipped because the payment integration depended on a vendor change."},
+        {"segment_id":"a2","text":"We could not safely test the full checkout until that dependency was available."},
+        {"segment_id":"a3","text":"I reset expectations with sales, gave engineering a narrower milestone, and kept the customer pilot informed."},
+        {"segment_id":"a4","text":"The experience made me more careful about external dependencies in future plans."}
+      ] },
+      "take_b": { "segments": [
+        {"segment_id":"b1","text":"The launch slipped because a vendor change blocked safe end-to-end testing of the payment integration."},
+        {"segment_id":"b2","text":"I reset sales expectations, gave engineering a narrower milestone, kept the pilot customer informed, and thereafter planned external dependencies more explicitly."}
+      ] },
+      "relationships": [
+        {"operation":"merged","take_a_segment_ids":["a1","a2"],"take_b_segment_ids":["b1"]},
+        {"operation":"merged","take_a_segment_ids":["a3","a4"],"take_b_segment_ids":["b2"]}
+      ]
+    },
+    {
+      "pair_id": "pair-14",
+      "domain": "persuasive speech",
+      "intended_difficulty": "many-to-one merge",
+      "take_a": { "segments": [
+        {"segment_id":"a1","text":"A shaded sidewalk would make the square safer for older residents walking to the market."},
+        {"segment_id":"a2","text":"It would also make the route more comfortable for families with children."},
+        {"segment_id":"a3","text":"Trees and benches could turn the empty edge of the square into a place where neighbors linger."},
+        {"segment_id":"a4","text":"The improvements are modest, but they would make the center belong to people on foot."}
+      ] },
+      "take_b": { "segments": [
+        {"segment_id":"b1","text":"A shaded sidewalk would make the square safer and more comfortable for older residents and families with children walking to the market."},
+        {"segment_id":"b2","text":"Trees and benches could turn the empty edge into a place where neighbors linger, making the center belong to people on foot."}
+      ] },
+      "relationships": [
+        {"operation":"merged","take_a_segment_ids":["a1","a2"],"take_b_segment_ids":["b1"]},
+        {"operation":"merged","take_a_segment_ids":["a3","a4"],"take_b_segment_ids":["b2"]}
+      ]
+    }
+  ]
+}
