@@ -1,0 +1,1566 @@
+{
+  "generated_at": "2026-09-13T11:19:51.371Z",
+  "corpus": {
+    "tasks": 12,
+    "takes": 36,
+    "development_tasks": 8,
+    "held_out_tasks": 4,
+    "suites_frozen": true,
+    "thresholds_tuned": false
+  },
+  "model": "text-embedding-3-large",
+  "cache": {
+    "api_calls": 49,
+    "usage": {
+      "prompt_tokens": 1048,
+      "total_tokens": 1048
+    }
+  },
+  "metrics": {
+    "semantic_presence": {
+      "total": 12,
+      "tp": 8,
+      "tn": 2,
+      "fp": 0,
+      "fn": 2,
+      "accuracy": 0.8333333333333334,
+      "precision": 1,
+      "recall": 0.8,
+      "f1": 0.8888888888888888
+    },
+    "numeric_evidence": {
+      "total": 12,
+      "tp": 1,
+      "tn": 5,
+      "fp": 0,
+      "fn": 6,
+      "accuracy": 0.5,
+      "precision": 1,
+      "recall": 0.14285714285714285,
+      "f1": 0.25
+    },
+    "semantic_absence": {
+      "total": 9,
+      "tp": 6,
+      "tn": 2,
+      "fp": 1,
+      "fn": 0,
+      "accuracy": 0.8888888888888888,
+      "precision": 0.8571428571428571,
+      "recall": 1,
+      "f1": 0.9230769230769231
+    },
+    "semantic_order": {
+      "total": 12,
+      "tp": 4,
+      "tn": 4,
+      "fp": 0,
+      "fn": 4,
+      "accuracy": 0.6666666666666666,
+      "precision": 1,
+      "recall": 0.5,
+      "f1": 0.6666666666666666
+    },
+    "filler_count_max": {
+      "total": 6,
+      "tp": 4,
+      "tn": 2,
+      "fp": 0,
+      "fn": 0,
+      "accuracy": 1,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    },
+    "concept_coverage": {
+      "total": 9,
+      "tp": 1,
+      "tn": 2,
+      "fp": 1,
+      "fn": 5,
+      "accuracy": 0.3333333333333333,
+      "precision": 0.5,
+      "recall": 0.16666666666666666,
+      "f1": 0.25
+    },
+    "phrase_count_max": {
+      "total": 6,
+      "tp": 4,
+      "tn": 2,
+      "fp": 0,
+      "fn": 0,
+      "accuracy": 1,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    },
+    "duration_max": {
+      "total": 6,
+      "tp": 4,
+      "tn": 2,
+      "fp": 0,
+      "fn": 0,
+      "accuracy": 1,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    }
+  },
+  "development": {
+    "metrics": {
+      "semantic_presence": {
+        "total": 9,
+        "tp": 5,
+        "tn": 2,
+        "fp": 0,
+        "fn": 2,
+        "accuracy": 0.7777777777777778,
+        "precision": 1,
+        "recall": 0.7142857142857143,
+        "f1": 0.8333333333333334
+      },
+      "numeric_evidence": {
+        "total": 9,
+        "tp": 1,
+        "tn": 3,
+        "fp": 0,
+        "fn": 5,
+        "accuracy": 0.4444444444444444,
+        "precision": 1,
+        "recall": 0.16666666666666666,
+        "f1": 0.2857142857142857
+      },
+      "semantic_absence": {
+        "total": 6,
+        "tp": 4,
+        "tn": 1,
+        "fp": 1,
+        "fn": 0,
+        "accuracy": 0.8333333333333334,
+        "precision": 0.8,
+        "recall": 1,
+        "f1": 0.8888888888888888
+      },
+      "semantic_order": {
+        "total": 9,
+        "tp": 3,
+        "tn": 3,
+        "fp": 0,
+        "fn": 3,
+        "accuracy": 0.6666666666666666,
+        "precision": 1,
+        "recall": 0.5,
+        "f1": 0.6666666666666666
+      },
+      "filler_count_max": {
+        "total": 3,
+        "tp": 2,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "accuracy": 1,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "concept_coverage": {
+        "total": 6,
+        "tp": 1,
+        "tn": 1,
+        "fp": 1,
+        "fn": 3,
+        "accuracy": 0.3333333333333333,
+        "precision": 0.5,
+        "recall": 0.25,
+        "f1": 0.3333333333333333
+      },
+      "phrase_count_max": {
+        "total": 3,
+        "tp": 2,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "accuracy": 1,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "duration_max": {
+        "total": 3,
+        "tp": 2,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "accuracy": 1,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      }
+    },
+    "overall": {
+      "total": 48,
+      "tp": 20,
+      "tn": 13,
+      "fp": 2,
+      "fn": 13,
+      "accuracy": 0.6875,
+      "precision": 0.9090909090909091,
+      "recall": 0.6060606060606061,
+      "f1": 0.7272727272727273
+    }
+  },
+  "held_out": {
+    "metrics": {
+      "semantic_presence": {
+        "total": 3,
+        "tp": 3,
+        "tn": 0,
+        "fp": 0,
+        "fn": 0,
+        "accuracy": 1,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "numeric_evidence": {
+        "total": 3,
+        "tp": 0,
+        "tn": 2,
+        "fp": 0,
+        "fn": 1,
+        "accuracy": 0.6666666666666666,
+        "precision": 1,
+        "recall": 0,
+        "f1": 0
+      },
+      "semantic_absence": {
+        "total": 3,
+        "tp": 2,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "accuracy": 1,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "filler_count_max": {
+        "total": 3,
+        "tp": 2,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "accuracy": 1,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "concept_coverage": {
+        "total": 3,
+        "tp": 0,
+        "tn": 1,
+        "fp": 0,
+        "fn": 2,
+        "accuracy": 0.3333333333333333,
+        "precision": 1,
+        "recall": 0,
+        "f1": 0
+      },
+      "duration_max": {
+        "total": 3,
+        "tp": 2,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "accuracy": 1,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "semantic_order": {
+        "total": 3,
+        "tp": 1,
+        "tn": 1,
+        "fp": 0,
+        "fn": 1,
+        "accuracy": 0.6666666666666666,
+        "precision": 1,
+        "recall": 0.5,
+        "f1": 0.6666666666666666
+      },
+      "phrase_count_max": {
+        "total": 3,
+        "tp": 2,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "accuracy": 1,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      }
+    },
+    "overall": {
+      "total": 24,
+      "tp": 12,
+      "tn": 8,
+      "fp": 0,
+      "fn": 4,
+      "accuracy": 0.8333333333333334,
+      "precision": 1,
+      "recall": 0.75,
+      "f1": 0.8571428571428571
+    }
+  },
+  "overall": {
+    "total": 72,
+    "tp": 32,
+    "tn": 21,
+    "fp": 2,
+    "fn": 17,
+    "accuracy": 0.7361111111111112,
+    "precision": 0.9411764705882353,
+    "recall": 0.6530612244897959,
+    "f1": 0.7710843373493976
+  },
+  "regression": {
+    "total": 48,
+    "accuracy": 0.5833333333333334,
+    "precision": 1,
+    "recall": 0.5909090909090909,
+    "f1": 0.7428571428571429,
+    "tp": 13,
+    "fp": 0,
+    "fn": 9
+  },
+  "errors": [
+    {
+      "task": "task-03",
+      "take": "t3-1",
+      "test": "Ownership example",
+      "kind": "false_negative",
+      "evidence": {
+        "match": {
+          "index": 1,
+          "text": "I owned the missed dependency.",
+          "similarity": 0.37851038562966993
+        },
+        "threshold": 0.5
+      }
+    },
+    {
+      "task": "task-03",
+      "take": "t3-3",
+      "test": "Ownership example",
+      "kind": "false_negative",
+      "evidence": {
+        "match": {
+          "index": 1,
+          "text": "so I rewrote the rollout plan and coached a teammate through the fix.",
+          "similarity": 0.4803121122898401
+        },
+        "threshold": 0.5
+      }
+    },
+    {
+      "task": "task-01",
+      "take": "t1-1",
+      "test": "Evidence that the product saves time",
+      "kind": "false_negative",
+      "evidence": {
+        "target": {
+          "index": 3,
+          "text": "teams reclaimed 6 hours each week.",
+          "similarity": 0.42882497806608655
+        },
+        "quantitative_evidence": "6 hours",
+        "window_chunks": 1,
+        "threshold": 0.5
+      }
+    },
+    {
+      "task": "task-01",
+      "take": "t1-3",
+      "test": "Evidence that the product saves time",
+      "kind": "false_negative",
+      "evidence": {
+        "target": {
+          "index": 1,
+          "text": "The workspace gives teams their time back,",
+          "similarity": 0.6062343786632812
+        },
+        "quantitative_evidence": null,
+        "window_chunks": 1,
+        "threshold": 0.5
+      }
+    },
+    {
+      "task": "task-05",
+      "take": "t5-3",
+      "test": "Evidence for impact",
+      "kind": "false_negative",
+      "evidence": {
+        "target": {
+          "index": 0,
+          "text": "Changing the lamps would lower the building's power demand by roughly thirty percent.",
+          "similarity": 0.5246049393512839
+        },
+        "quantitative_evidence": null,
+        "window_chunks": 1,
+        "threshold": 0.5
+      }
+    },
+    {
+      "task": "task-08",
+      "take": "t8-1",
+      "test": "Traction with customers",
+      "kind": "false_negative",
+      "evidence": {
+        "target": {
+          "index": 0,
+          "text": "Teams cannot see why conversations fail until after the meeting.",
+          "similarity": 0.17619071843665732
+        },
+        "quantitative_evidence": null,
+        "window_chunks": 1,
+        "threshold": 0.5
+      }
+    },
+    {
+      "task": "task-08",
+      "take": "t8-3",
+      "test": "Traction with customers",
+      "kind": "false_negative",
+      "evidence": {
+        "target": {
+          "index": 3,
+          "text": "and forty-two coaches use it weekly.",
+          "similarity": 0.2915355947706765
+        },
+        "quantitative_evidence": null,
+        "window_chunks": 1,
+        "threshold": 0.5
+      }
+    },
+    {
+      "task": "task-09",
+      "take": "t9-1",
+      "test": "Evidence for isolation",
+      "kind": "false_negative",
+      "evidence": {
+        "target": {
+          "index": 1,
+          "text": "Dropping two unnecessary privileges reduces its attack surface.",
+          "similarity": 0.5525088013427001
+        },
+        "quantitative_evidence": null,
+        "window_chunks": 1,
+        "threshold": 0.5
+      }
+    },
+    {
+      "task": "task-02",
+      "take": "t2-2",
+      "test": "No unsupported hype",
+      "kind": "false_positive",
+      "evidence": {
+        "match": {
+          "index": 0,
+          "text": "Our assistant gathers evidence into one brief and guarantees perfect results.",
+          "similarity": 0.35684219336228296
+        },
+        "threshold": 0.5
+      }
+    },
+    {
+      "task": "task-02",
+      "take": "t2-1",
+      "test": "Problem before solution",
+      "kind": "false_negative",
+      "evidence": {
+        "before": {
+          "index": 0,
+          "text": "Research teams still copy notes between five tools.",
+          "similarity": 0.36940622049074634
+        },
+        "after": {
+          "index": 0,
+          "text": "Research teams still copy notes between five tools.",
+          "similarity": 0.2701502648621295
+        },
+        "threshold": 0.5
+      }
+    },
+    {
+      "task": "task-02",
+      "take": "t2-3",
+      "test": "Problem before solution",
+      "kind": "false_negative",
+      "evidence": {
+        "before": {
+          "index": 1,
+          "text": "so research is slow.",
+          "similarity": 0.6645054280504885
+        },
+        "after": {
+          "index": 1,
+          "text": "so research is slow.",
+          "similarity": 0.28778014855255496
+        },
+        "threshold": 0.5
+      }
+    },
+    {
+      "task": "task-08",
+      "take": "t8-3",
+      "test": "Problem before product",
+      "kind": "false_negative",
+      "evidence": {
+        "before": {
+          "index": 1,
+          "text": "teams lack a reliable way to spot a weak explanation.",
+          "similarity": 0.4834591451229967
+        },
+        "after": {
+          "index": 2,
+          "text": "The product reruns the same checks,",
+          "similarity": 0.34375975838844286
+        },
+        "threshold": 0.5
+      }
+    },
+    {
+      "task": "task-12",
+      "take": "t12-3",
+      "test": "Pain before differentiation",
+      "kind": "false_negative",
+      "evidence": {
+        "before": {
+          "index": 0,
+          "text": "Speech-specific requirements are often missed by general assistants;",
+          "similarity": 0.7647915990017731
+        },
+        "after": {
+          "index": 1,
+          "text": "our test runner stores them and checks each revision.",
+          "similarity": 0.3741079019890972
+        },
+        "threshold": 0.5
+      }
+    },
+    {
+      "task": "task-04",
+      "take": "t4-1",
+      "test": "All mechanisms covered",
+      "kind": "false_negative",
+      "evidence": {
+        "mode": "ALL",
+        "required_count": 2,
+        "matched_count": 1,
+        "matches": [
+          {
+            "concept": "cache avoids repeated database work",
+            "index": 0,
+            "text": "The cache keeps a prior query result,",
+            "similarity": 0.6374922963409967
+          },
+          {
+            "concept": "expiration keeps cached data fresh",
+            "index": 2,
+            "text": "After five minutes the entry expires and the next request refreshes it.",
+            "similarity": 0.4997536593799644
+          }
+        ]
+      }
+    },
+    {
+      "task": "task-04",
+      "take": "t4-2",
+      "test": "All mechanisms covered",
+      "kind": "false_positive",
+      "evidence": {
+        "mode": "ALL",
+        "required_count": 2,
+        "matched_count": 2,
+        "matches": [
+          {
+            "concept": "cache avoids repeated database work",
+            "index": 0,
+            "text": "A cache makes requests faster by storing responses.",
+            "similarity": 0.5616662541768848
+          },
+          {
+            "concept": "expiration keeps cached data fresh",
+            "index": 2,
+            "text": "but this example does not discuss when that data expires.",
+            "similarity": 0.5314731401174406
+          }
+        ]
+      }
+    },
+    {
+      "task": "task-07",
+      "take": "t7-1",
+      "test": "Answer has action and result",
+      "kind": "false_negative",
+      "evidence": {
+        "mode": "ALL",
+        "required_count": 2,
+        "matched_count": 1,
+        "matches": [
+          {
+            "concept": "I changed my approach",
+            "index": 2,
+            "text": "I changed my review process,",
+            "similarity": 0.6191365596700744
+          },
+          {
+            "concept": "the outcome improved",
+            "index": 2,
+            "text": "I changed my review process,",
+            "similarity": 0.3086581173308011
+          }
+        ]
+      }
+    },
+    {
+      "task": "task-07",
+      "take": "t7-3",
+      "test": "Answer has action and result",
+      "kind": "false_negative",
+      "evidence": {
+        "mode": "ALL",
+        "required_count": 2,
+        "matched_count": 0,
+        "matches": [
+          {
+            "concept": "I changed my approach",
+            "index": 0,
+            "text": "I owned the miss,",
+            "similarity": 0.23695239331824244
+          },
+          {
+            "concept": "the outcome improved",
+            "index": 2,
+            "text": "and our subsequent release cleared review without rework.",
+            "similarity": 0.34584991444022944
+          }
+        ]
+      }
+    },
+    {
+      "task": "task-11",
+      "take": "t11-1",
+      "test": "Thesis and limitation",
+      "kind": "false_negative",
+      "evidence": {
+        "mode": "ALL",
+        "required_count": 2,
+        "matched_count": 0,
+        "matches": [
+          {
+            "concept": "the evidence supports the thesis",
+            "index": 0,
+            "text": "The survey supports the thesis that access improved outcomes.",
+            "similarity": 0.49574835598860506
+          },
+          {
+            "concept": "the evidence has a limitation",
+            "index": 1,
+            "text": "Its limitation is that the sample came from one district.",
+            "similarity": 0.48252682919154216
+          }
+        ]
+      }
+    },
+    {
+      "task": "task-11",
+      "take": "t11-3",
+      "test": "Thesis and limitation",
+      "kind": "false_negative",
+      "evidence": {
+        "mode": "ALL",
+        "required_count": 2,
+        "matched_count": 1,
+        "matches": [
+          {
+            "concept": "the evidence supports the thesis",
+            "index": 0,
+            "text": "Results align with the claim,",
+            "similarity": 0.4780540595922018
+          },
+          {
+            "concept": "the evidence has a limitation",
+            "index": 2,
+            "text": "That caveat matters when interpreting the evidence.",
+            "similarity": 0.5711318538259644
+          }
+        ]
+      }
+    }
+  ],
+  "evidence_sample": [
+    {
+      "task_id": "task-09",
+      "runs": [
+        {
+          "take_id": "t9-1",
+          "passed": 1,
+          "failed": 1,
+          "results": [
+            {
+              "id": "isolation",
+              "type": "semantic_presence",
+              "name": "Isolation explained",
+              "passed": true,
+              "evidence": {
+                "match": {
+                  "index": 0,
+                  "text": "A container packages the process with its dependencies while keeping it separate from the host.",
+                  "similarity": 0.7603966107169581
+                },
+                "threshold": 0.5
+              }
+            },
+            {
+              "id": "security_evidence",
+              "type": "numeric_evidence",
+              "name": "Evidence for isolation",
+              "passed": false,
+              "evidence": {
+                "target": {
+                  "index": 1,
+                  "text": "Dropping two unnecessary privileges reduces its attack surface.",
+                  "similarity": 0.5525088013427001
+                },
+                "quantitative_evidence": null,
+                "window_chunks": 1,
+                "threshold": 0.5
+              }
+            }
+          ]
+        },
+        {
+          "take_id": "t9-2",
+          "passed": 1,
+          "failed": 1,
+          "results": [
+            {
+              "id": "isolation",
+              "type": "semantic_presence",
+              "name": "Isolation explained",
+              "passed": true,
+              "evidence": {
+                "match": {
+                  "index": 0,
+                  "text": "A container packages dependencies separately from the host.",
+                  "similarity": 0.7208617645088455
+                },
+                "threshold": 0.5
+              }
+            },
+            {
+              "id": "security_evidence",
+              "type": "numeric_evidence",
+              "name": "Evidence for isolation",
+              "passed": false,
+              "evidence": {
+                "target": {
+                  "index": 0,
+                  "text": "A container packages dependencies separately from the host.",
+                  "similarity": 0.47389468078377706
+                },
+                "quantitative_evidence": "64 ",
+                "window_chunks": 1,
+                "threshold": 0.5
+              }
+            }
+          ]
+        },
+        {
+          "take_id": "t9-3",
+          "passed": 1,
+          "failed": 1,
+          "results": [
+            {
+              "id": "isolation",
+              "type": "semantic_presence",
+              "name": "Isolation explained",
+              "passed": true,
+              "evidence": {
+                "match": {
+                  "index": 0,
+                  "text": "The application runs in a compartment with its own filesystem view,",
+                  "similarity": 0.5276590596923558
+                },
+                "threshold": 0.5
+              }
+            },
+            {
+              "id": "security_evidence",
+              "type": "numeric_evidence",
+              "name": "Evidence for isolation",
+              "passed": false,
+              "evidence": {
+                "target": {
+                  "index": 2,
+                  "text": "This narrows the exposed surface.",
+                  "similarity": 0.4323846754057047
+                },
+                "quantitative_evidence": null,
+                "window_chunks": 1,
+                "threshold": 0.5
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "task-10",
+      "runs": [
+        {
+          "take_id": "t10-1",
+          "passed": 2,
+          "failed": 0,
+          "results": [
+            {
+              "id": "counterexample",
+              "type": "semantic_absence",
+              "name": "Do not claim the policy solves every problem",
+              "passed": true,
+              "evidence": {
+                "match": {
+                  "index": 1,
+                  "text": "not every problem.",
+                  "similarity": 0.4899121529892455
+                },
+                "threshold": 0.5
+              }
+            },
+            {
+              "id": "fillers",
+              "type": "filler_limit",
+              "name": "No verbal clutter",
+              "passed": true,
+              "evidence": {
+                "counts": {
+                  "um": 0,
+                  "uh": 0,
+                  "basically": 1
+                },
+                "total_count": 1,
+                "max_count": 1
+              }
+            }
+          ]
+        },
+        {
+          "take_id": "t10-2",
+          "passed": 0,
+          "failed": 2,
+          "results": [
+            {
+              "id": "counterexample",
+              "type": "semantic_absence",
+              "name": "Do not claim the policy solves every problem",
+              "passed": false,
+              "evidence": {
+                "match": {
+                  "index": 1,
+                  "text": "the policy solves every problem,",
+                  "similarity": 0.9417547273435632
+                },
+                "threshold": 0.5
+              }
+            },
+            {
+              "id": "fillers",
+              "type": "filler_limit",
+              "name": "No verbal clutter",
+              "passed": false,
+              "evidence": {
+                "counts": {
+                  "um": 1,
+                  "uh": 1,
+                  "basically": 1
+                },
+                "total_count": 3,
+                "max_count": 1
+              }
+            }
+          ]
+        },
+        {
+          "take_id": "t10-3",
+          "passed": 2,
+          "failed": 0,
+          "results": [
+            {
+              "id": "counterexample",
+              "type": "semantic_absence",
+              "name": "Do not claim the policy solves every problem",
+              "passed": true,
+              "evidence": {
+                "match": {
+                  "index": 0,
+                  "text": "No single rule can fix the whole system,",
+                  "similarity": 0.3990018407291518
+                },
+                "threshold": 0.5
+              }
+            },
+            {
+              "id": "fillers",
+              "type": "filler_limit",
+              "name": "No verbal clutter",
+              "passed": true,
+              "evidence": {
+                "counts": {
+                  "um": 0,
+                  "uh": 0,
+                  "basically": 0
+                },
+                "total_count": 0,
+                "max_count": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "task-11",
+      "runs": [
+        {
+          "take_id": "t11-1",
+          "passed": 1,
+          "failed": 1,
+          "results": [
+            {
+              "id": "thesis",
+              "type": "concept_coverage",
+              "name": "Thesis and limitation",
+              "passed": false,
+              "evidence": {
+                "mode": "ALL",
+                "required_count": 2,
+                "matched_count": 0,
+                "matches": [
+                  {
+                    "concept": "the evidence supports the thesis",
+                    "index": 0,
+                    "text": "The survey supports the thesis that access improved outcomes.",
+                    "similarity": 0.49574835598860506
+                  },
+                  {
+                    "concept": "the evidence has a limitation",
+                    "index": 1,
+                    "text": "Its limitation is that the sample came from one district.",
+                    "similarity": 0.48252682919154216
+                  }
+                ]
+              }
+            },
+            {
+              "id": "time",
+              "type": "duration_max",
+              "name": "Within ninety seconds",
+              "passed": true,
+              "evidence": {
+                "actual_seconds": 85,
+                "max_seconds": 90
+              }
+            }
+          ]
+        },
+        {
+          "take_id": "t11-2",
+          "passed": 1,
+          "failed": 1,
+          "results": [
+            {
+              "id": "thesis",
+              "type": "concept_coverage",
+              "name": "Thesis and limitation",
+              "passed": false,
+              "evidence": {
+                "mode": "ALL",
+                "required_count": 2,
+                "matched_count": 1,
+                "matches": [
+                  {
+                    "concept": "the evidence supports the thesis",
+                    "index": 2,
+                    "text": "I have not established whether it supports the larger thesis.",
+                    "similarity": 0.46626255248745285
+                  },
+                  {
+                    "concept": "the evidence has a limitation",
+                    "index": 1,
+                    "text": "so the evidence has a limitation.",
+                    "similarity": 0.9140537100010403
+                  }
+                ]
+              }
+            },
+            {
+              "id": "time",
+              "type": "duration_max",
+              "name": "Within ninety seconds",
+              "passed": true,
+              "evidence": {
+                "actual_seconds": 85,
+                "max_seconds": 90
+              }
+            }
+          ]
+        },
+        {
+          "take_id": "t11-3",
+          "passed": 0,
+          "failed": 2,
+          "results": [
+            {
+              "id": "thesis",
+              "type": "concept_coverage",
+              "name": "Thesis and limitation",
+              "passed": false,
+              "evidence": {
+                "mode": "ALL",
+                "required_count": 2,
+                "matched_count": 1,
+                "matches": [
+                  {
+                    "concept": "the evidence supports the thesis",
+                    "index": 0,
+                    "text": "Results align with the claim,",
+                    "similarity": 0.4780540595922018
+                  },
+                  {
+                    "concept": "the evidence has a limitation",
+                    "index": 2,
+                    "text": "That caveat matters when interpreting the evidence.",
+                    "similarity": 0.5711318538259644
+                  }
+                ]
+              }
+            },
+            {
+              "id": "time",
+              "type": "duration_max",
+              "name": "Within ninety seconds",
+              "passed": false,
+              "evidence": {
+                "actual_seconds": 95,
+                "max_seconds": 90
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "task-12",
+      "runs": [
+        {
+          "take_id": "t12-1",
+          "passed": 2,
+          "failed": 0,
+          "results": [
+            {
+              "id": "sequence",
+              "type": "semantic_order",
+              "name": "Pain before differentiation",
+              "passed": true,
+              "evidence": {
+                "before": {
+                  "index": 0,
+                  "text": "General-purpose assistants miss speech-specific requirements.",
+                  "similarity": 0.9027115432330607
+                },
+                "after": {
+                  "index": 1,
+                  "text": "Prelight stores the tests and reruns them on every take.",
+                  "similarity": 0.7334376524168793
+                },
+                "threshold": 0.5
+              }
+            },
+            {
+              "id": "phrase",
+              "type": "phrase_count_max",
+              "name": "Say the product name once",
+              "passed": true,
+              "evidence": {
+                "phrase": "Prelight",
+                "actual_count": 1,
+                "max_count": 1
+              }
+            }
+          ]
+        },
+        {
+          "take_id": "t12-2",
+          "passed": 0,
+          "failed": 2,
+          "results": [
+            {
+              "id": "sequence",
+              "type": "semantic_order",
+              "name": "Pain before differentiation",
+              "passed": false,
+              "evidence": {
+                "before": {
+                  "index": 2,
+                  "text": "but general-purpose assistants miss speech-specific requirements.",
+                  "similarity": 0.8919828339367135
+                },
+                "after": {
+                  "index": 0,
+                  "text": "Prelight stores the tests.",
+                  "similarity": 0.7158934500146201
+                },
+                "threshold": 0.5
+              }
+            },
+            {
+              "id": "phrase",
+              "type": "phrase_count_max",
+              "name": "Say the product name once",
+              "passed": false,
+              "evidence": {
+                "phrase": "Prelight",
+                "actual_count": 2,
+                "max_count": 1
+              }
+            }
+          ]
+        },
+        {
+          "take_id": "t12-3",
+          "passed": 1,
+          "failed": 1,
+          "results": [
+            {
+              "id": "sequence",
+              "type": "semantic_order",
+              "name": "Pain before differentiation",
+              "passed": false,
+              "evidence": {
+                "before": {
+                  "index": 0,
+                  "text": "Speech-specific requirements are often missed by general assistants;",
+                  "similarity": 0.7647915990017731
+                },
+                "after": {
+                  "index": 1,
+                  "text": "our test runner stores them and checks each revision.",
+                  "similarity": 0.3741079019890972
+                },
+                "threshold": 0.5
+              }
+            },
+            {
+              "id": "phrase",
+              "type": "phrase_count_max",
+              "name": "Say the product name once",
+              "passed": true,
+              "evidence": {
+                "phrase": "Prelight",
+                "actual_count": 0,
+                "max_count": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "task": "task-01",
+      "from": "t1-1",
+      "to": "t1-2",
+      "id": "problem",
+      "expected": "regression",
+      "actual": "regression"
+    },
+    {
+      "task": "task-01",
+      "from": "t1-1",
+      "to": "t1-2",
+      "id": "evidence",
+      "expected": "regression",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-01",
+      "from": "t1-2",
+      "to": "t1-3",
+      "id": "problem",
+      "expected": "fixed",
+      "actual": "fixed"
+    },
+    {
+      "task": "task-01",
+      "from": "t1-2",
+      "to": "t1-3",
+      "id": "evidence",
+      "expected": "fixed",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-02",
+      "from": "t2-1",
+      "to": "t2-2",
+      "id": "no_hype",
+      "expected": "regression",
+      "actual": "still_passing"
+    },
+    {
+      "task": "task-02",
+      "from": "t2-1",
+      "to": "t2-2",
+      "id": "story_order",
+      "expected": "regression",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-02",
+      "from": "t2-2",
+      "to": "t2-3",
+      "id": "no_hype",
+      "expected": "fixed",
+      "actual": "still_passing"
+    },
+    {
+      "task": "task-02",
+      "from": "t2-2",
+      "to": "t2-3",
+      "id": "story_order",
+      "expected": "fixed",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-03",
+      "from": "t3-1",
+      "to": "t3-2",
+      "id": "ownership",
+      "expected": "regression",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-03",
+      "from": "t3-1",
+      "to": "t3-2",
+      "id": "fillers",
+      "expected": "regression",
+      "actual": "regression"
+    },
+    {
+      "task": "task-03",
+      "from": "t3-2",
+      "to": "t3-3",
+      "id": "ownership",
+      "expected": "fixed",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-03",
+      "from": "t3-2",
+      "to": "t3-3",
+      "id": "fillers",
+      "expected": "fixed",
+      "actual": "fixed"
+    },
+    {
+      "task": "task-04",
+      "from": "t4-1",
+      "to": "t4-2",
+      "id": "mechanism",
+      "expected": "still_passing",
+      "actual": "still_passing"
+    },
+    {
+      "task": "task-04",
+      "from": "t4-1",
+      "to": "t4-2",
+      "id": "coverage",
+      "expected": "regression",
+      "actual": "fixed"
+    },
+    {
+      "task": "task-04",
+      "from": "t4-2",
+      "to": "t4-3",
+      "id": "mechanism",
+      "expected": "still_passing",
+      "actual": "still_passing"
+    },
+    {
+      "task": "task-04",
+      "from": "t4-2",
+      "to": "t4-3",
+      "id": "coverage",
+      "expected": "fixed",
+      "actual": "still_passing"
+    },
+    {
+      "task": "task-05",
+      "from": "t5-1",
+      "to": "t5-2",
+      "id": "impact_evidence",
+      "expected": "regression",
+      "actual": "regression"
+    },
+    {
+      "task": "task-05",
+      "from": "t5-1",
+      "to": "t5-2",
+      "id": "no_repetition",
+      "expected": "regression",
+      "actual": "regression"
+    },
+    {
+      "task": "task-05",
+      "from": "t5-2",
+      "to": "t5-3",
+      "id": "impact_evidence",
+      "expected": "fixed",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-05",
+      "from": "t5-2",
+      "to": "t5-3",
+      "id": "no_repetition",
+      "expected": "fixed",
+      "actual": "fixed"
+    },
+    {
+      "task": "task-06",
+      "from": "t6-1",
+      "to": "t6-2",
+      "id": "sequence",
+      "expected": "regression",
+      "actual": "regression"
+    },
+    {
+      "task": "task-06",
+      "from": "t6-1",
+      "to": "t6-2",
+      "id": "time",
+      "expected": "still_passing",
+      "actual": "still_passing"
+    },
+    {
+      "task": "task-06",
+      "from": "t6-2",
+      "to": "t6-3",
+      "id": "sequence",
+      "expected": "fixed",
+      "actual": "fixed"
+    },
+    {
+      "task": "task-06",
+      "from": "t6-2",
+      "to": "t6-3",
+      "id": "time",
+      "expected": "regression",
+      "actual": "regression"
+    },
+    {
+      "task": "task-07",
+      "from": "t7-1",
+      "to": "t7-2",
+      "id": "blame",
+      "expected": "regression",
+      "actual": "regression"
+    },
+    {
+      "task": "task-07",
+      "from": "t7-1",
+      "to": "t7-2",
+      "id": "coverage",
+      "expected": "regression",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-07",
+      "from": "t7-2",
+      "to": "t7-3",
+      "id": "blame",
+      "expected": "fixed",
+      "actual": "fixed"
+    },
+    {
+      "task": "task-07",
+      "from": "t7-2",
+      "to": "t7-3",
+      "id": "coverage",
+      "expected": "fixed",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-08",
+      "from": "t8-1",
+      "to": "t8-2",
+      "id": "traction",
+      "expected": "regression",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-08",
+      "from": "t8-1",
+      "to": "t8-2",
+      "id": "order",
+      "expected": "regression",
+      "actual": "regression"
+    },
+    {
+      "task": "task-08",
+      "from": "t8-2",
+      "to": "t8-3",
+      "id": "traction",
+      "expected": "fixed",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-08",
+      "from": "t8-2",
+      "to": "t8-3",
+      "id": "order",
+      "expected": "fixed",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-09",
+      "from": "t9-1",
+      "to": "t9-2",
+      "id": "isolation",
+      "expected": "still_passing",
+      "actual": "still_passing"
+    },
+    {
+      "task": "task-09",
+      "from": "t9-1",
+      "to": "t9-2",
+      "id": "security_evidence",
+      "expected": "regression",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-09",
+      "from": "t9-2",
+      "to": "t9-3",
+      "id": "isolation",
+      "expected": "still_passing",
+      "actual": "still_passing"
+    },
+    {
+      "task": "task-09",
+      "from": "t9-2",
+      "to": "t9-3",
+      "id": "security_evidence",
+      "expected": "still_failing",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-10",
+      "from": "t10-1",
+      "to": "t10-2",
+      "id": "counterexample",
+      "expected": "regression",
+      "actual": "regression"
+    },
+    {
+      "task": "task-10",
+      "from": "t10-1",
+      "to": "t10-2",
+      "id": "fillers",
+      "expected": "regression",
+      "actual": "regression"
+    },
+    {
+      "task": "task-10",
+      "from": "t10-2",
+      "to": "t10-3",
+      "id": "counterexample",
+      "expected": "fixed",
+      "actual": "fixed"
+    },
+    {
+      "task": "task-10",
+      "from": "t10-2",
+      "to": "t10-3",
+      "id": "fillers",
+      "expected": "fixed",
+      "actual": "fixed"
+    },
+    {
+      "task": "task-11",
+      "from": "t11-1",
+      "to": "t11-2",
+      "id": "thesis",
+      "expected": "regression",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-11",
+      "from": "t11-1",
+      "to": "t11-2",
+      "id": "time",
+      "expected": "still_passing",
+      "actual": "still_passing"
+    },
+    {
+      "task": "task-11",
+      "from": "t11-2",
+      "to": "t11-3",
+      "id": "thesis",
+      "expected": "fixed",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-11",
+      "from": "t11-2",
+      "to": "t11-3",
+      "id": "time",
+      "expected": "regression",
+      "actual": "regression"
+    },
+    {
+      "task": "task-12",
+      "from": "t12-1",
+      "to": "t12-2",
+      "id": "sequence",
+      "expected": "regression",
+      "actual": "regression"
+    },
+    {
+      "task": "task-12",
+      "from": "t12-1",
+      "to": "t12-2",
+      "id": "phrase",
+      "expected": "regression",
+      "actual": "regression"
+    },
+    {
+      "task": "task-12",
+      "from": "t12-2",
+      "to": "t12-3",
+      "id": "sequence",
+      "expected": "fixed",
+      "actual": "still_failing"
+    },
+    {
+      "task": "task-12",
+      "from": "t12-2",
+      "to": "t12-3",
+      "id": "phrase",
+      "expected": "fixed",
+      "actual": "fixed"
+    }
+  ]
+}

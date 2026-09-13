@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "prelight://speech-test-ir/v0",
+  "title": "Prelight Speech Test IR v0",
+  "type": "object",
+  "required": ["id", "type", "name", "config"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$" },
+    "type": { "enum": ["duration_max", "semantic_presence", "semantic_absence", "semantic_order", "numeric_evidence", "phrase_count_max", "filler_limit", "concept_coverage"] },
+    "name": { "type": "string", "minLength": 1 },
+    "config": { "type": "object", "minProperties": 1 }
+  }
+}

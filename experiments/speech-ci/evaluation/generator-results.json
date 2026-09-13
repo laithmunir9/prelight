@@ -1,0 +1,69 @@
+{
+  "model": "gpt-5.5",
+  "tasks": 12,
+  "valid_tasks": 0,
+  "validity_rate": 0,
+  "results": [
+    {
+      "task_id": "task-01",
+      "valid": false,
+      "error": "Invalid Speech Test IR at config.concept: must be a non-empty string"
+    },
+    {
+      "task_id": "task-02",
+      "valid": false,
+      "error": "Invalid Speech Test IR at id: must match the stable ID pattern"
+    },
+    {
+      "task_id": "task-03",
+      "valid": false,
+      "error": "Invalid Speech Test IR at config.concept: must be a non-empty string"
+    },
+    {
+      "task_id": "task-04",
+      "valid": false,
+      "error": "Invalid Speech Test IR at id: must match the stable ID pattern"
+    },
+    {
+      "task_id": "task-05",
+      "valid": false,
+      "error": "Invalid Speech Test IR at config.concept: must be a non-empty string"
+    },
+    {
+      "task_id": "task-06",
+      "valid": false,
+      "error": "Invalid Speech Test IR at id: must match the stable ID pattern"
+    },
+    {
+      "task_id": "task-07",
+      "valid": false,
+      "error": "Invalid Speech Test IR at id: must match the stable ID pattern"
+    },
+    {
+      "task_id": "task-08",
+      "valid": false,
+      "error": "Invalid Speech Test IR at id: must match the stable ID pattern"
+    },
+    {
+      "task_id": "task-09",
+      "valid": false,
+      "error": "Invalid Speech Test IR at id: must match the stable ID pattern"
+    },
+    {
+      "task_id": "task-10",
+      "valid": false,
+      "error": "Invalid Speech Test IR at config.concept: must be a non-empty string"
+    },
+    {
+      "task_id": "task-11",
+      "valid": false,
+      "error": "Invalid Speech Test IR at config.max_seconds: must be a finite number"
+    },
+    {
+      "task_id": "task-12",
+      "valid": false,
+      "error": "Invalid Speech Test IR at config.before: must be a non-empty string"
+    }
+  ],
+  "note": "Validity is schema/executability validation. Requirement coverage and redundancy were inspected separately from runner metrics."
+}

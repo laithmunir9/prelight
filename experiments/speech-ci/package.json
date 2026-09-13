@@ -1,0 +1,7 @@
+{
+  "name": "prelight-speech-ci",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test test/*.test.js", "demo": "node src/cli.js" },
+  "engines": { "node": ">=18" }
+}
