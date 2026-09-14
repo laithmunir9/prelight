@@ -13,13 +13,37 @@ jobs:
       - name: Run a harmless Supabase query
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+          # Support both the current key name and the legacy Supabase name.
+          # The key is only used as the public Data API credential here.
+          SUPABASE_API_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY || secrets.SUPABASE_ANON_KEY }}
         run: |
           set -euo pipefail
-          test -n "$SUPABASE_URL"
-          test -n "$SUPABASE_PUBLISHABLE_KEY"
-          curl --fail-with-body --silent --show-error \
+          if [ -z "$SUPABASE_URL" ]; then
+            echo "Missing GitHub Actions secret: SUPABASE_URL" >&2
+            exit 1
+          fi
+          if [ -z "$SUPABASE_API_KEY" ]; then
+            echo "Missing GitHub Actions secret: SUPABASE_PUBLISHABLE_KEY (or SUPABASE_ANON_KEY)" >&2
+            exit 1
+          fi
+
+          response_file="$(mktemp)"
+          http_status="$(curl --silent --show-error --output "$response_file" --write-out '%{http_code}' \
             -X POST "$SUPABASE_URL/rest/v1/rpc/keepalive" \
-            -H "apikey: $SUPABASE_PUBLISHABLE_KEY" \
+            -H "apikey: $SUPABASE_API_KEY" \
+            -H "Accept: application/json" \
             -H "Content-Type: application/json" \
-            -d '{}'
+            -d '{}')"
+
+          if [ "$http_status" -lt 200 ] || [ "$http_status" -ge 300 ]; then
+            echo "Supabase keepalive failed with HTTP $http_status." >&2
+            cat "$response_file" >&2
+            echo "Ensure the keepalive migration has been applied to this Supabase project." >&2
+            exit 1
+          fi
+
+          if ! grep -Eq '^true$|^true[[:space:]]*$' "$response_file"; then
+            echo "Supabase keepalive returned an unexpected response:" >&2
+            cat "$response_file" >&2
+            exit 1
+          fi
