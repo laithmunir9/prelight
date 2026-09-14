@@ -20,6 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/studio.css" />
   <style>
     :root {
       --bad: #c0453a;
@@ -696,11 +697,13 @@
 <script src="/sessionHistory.js"></script>
 <script src="/sessionReplay.js"></script>
 <script src="/speakingProfile.js"></script>
+<script src="/speechProfiler.js"></script>
+<script src="/studio.js"></script>
 <script>
 const S = {
   token: localStorage.getItem("greenRoomToken") || "",
   student: null,
-  screen: "gate",
+  screen: "studio",
   authMode: "register",
   practiceTemplate: null,
   practiceSessionId: null,
@@ -947,6 +950,7 @@ function status(msg) {
 }
 
 function render() {
+  if (S.screen === "studio") { renderStudio(); return; }
   document.body.classList.toggle("landing-page", S.screen === "gate");
   if (S.screen === "picker") renderPicker();
   else if (S.screen === "soundcheck") renderSoundcheck();
@@ -1036,7 +1040,7 @@ function renderAuthDialog() {
       S.token = j.token;
       localStorage.setItem("greenRoomToken", j.token);
       S.student = j.student;
-      S.screen = "picker";
+      S.screen = "studio";
       S.authOpen = false;
       render();
       renderHeaderUser();

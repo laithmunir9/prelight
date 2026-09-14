@@ -341,6 +341,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.static(join(__dirname, "public")));
+app.get("/studio", (_req, res) => res.sendFile(join(__dirname, "public", "index.html")));
 app.get("/sessionHistory.js", (_req, res) => res.sendFile(join(__dirname, "sessionHistory.js")));
 app.get("/sessionReplay.js", (_req, res) => res.sendFile(join(__dirname, "sessionReplay.js")));
 
