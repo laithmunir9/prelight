@@ -1,19 +1,162 @@
 (function () {
-  const KEY = "prelightStudioTakes";
-  const demoFeatures = (seed) => { const n = 180; const energy = Array.from({ length:n }, (_,i) => Math.max(.015, .16 + .08*Math.sin(i/7+seed) + .045*Math.sin(i/2.8) + ((i>47+seed*3&&i<59+seed*3)||(i>121-seed*2&&i<132-seed*2)?-.13:0))); const pitch = energy.map((v,i) => v < .05 ? 0 : 142 + seed*4 + 18*Math.sin(i/13+seed) + 8*Math.sin(i/4)); const voiced = pitch.map(Boolean); return { frameDuration:.1, energy, pitch, voiced, duration:n*.1, pauses: window.SpeechProfiler.detectPauses(energy,.1).pauses, silenceRatio: window.SpeechProfiler.detectPauses(energy,.1).silenceRatio, longPauseCount: window.SpeechProfiler.detectPauses(energy,.1).longPauseCount, energyMean:window.SpeechProfiler.mean(energy), energyVariance:window.SpeechProfiler.variance(energy), medianPitch:window.SpeechProfiler.median(pitch.filter(Boolean)), pitchVariability:Math.sqrt(window.SpeechProfiler.variance(pitch.filter(Boolean))), voicedPercentage:voiced.filter(Boolean).length/n }; };
-  const demoTakes = () => [1,2,3].map((n) => ({ id:`take-${n}`, label:`Take ${n}`, createdAt:new Date(Date.now()-(3-n)*86400000).toISOString(), features:demoFeatures(n) }));
-  function readTakes() { try { const stored = JSON.parse(localStorage.getItem(KEY) || "null"); return Array.isArray(stored) && stored.length ? stored : demoTakes(); } catch { return demoTakes(); } }
-  let takes = readTakes();
-  let selected = takes[takes.length-1]?.id; let compare = takes.length > 1 ? takes[takes.length-2].id : null; let modal = false; let recorder = null; let chunks = []; let startedAt = 0;
-  const fmt = (n, d=1) => Number.isFinite(n) ? n.toFixed(d) : "—"; const time = (s) => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,"0")}`;
-  const dateLabel = (value) => { const date = new Date(value); const today = new Date(); const sameDay = date.toDateString() === today.toDateString(); return `${sameDay ? "Today" : date.toLocaleDateString(undefined, { month:"short", day:"numeric" })}, ${date.toLocaleTimeString(undefined, { hour:"numeric", minute:"2-digit" })}`; };
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(takes)); } catch { /* Local-only history remains available for this session. */ } }
-  function svgTrace(features, kind) { const vals = kind === "pitch" ? features.pitch : features.energy; const max = Math.max(...vals, .01), min = Math.min(...vals); const points = vals.map((v,i)=>`${(i/(vals.length-1))*100},${56-((v-min)/Math.max(max-min,.01))*48}`).join(" "); const pauses = features.pauses.map(p=>`<rect class="pause-block" x="${p.start/features.duration*100}" y="0" width="${p.duration/features.duration*100}" height="58"/>`).join(""); return `<svg class="trace-svg" viewBox="0 0 100 58" preserveAspectRatio="none">${pauses}<polyline class="${kind}-line" points="${points}"/></svg>`; }
-  function diffTraceHtml(a, b, alignment) { const points = (trace, side) => alignment.path.map(([ai, bi], i) => { const index = side === "a" ? ai : bi; const values = trace.energy; const min = Math.min(...values), max = Math.max(...values); return `${(i / Math.max(1, alignment.path.length - 1)) * 100},${70 - ((values[index] - min) / Math.max(max - min, .001)) * 48}`; }).join(" "); return `<svg class="diff-trace" viewBox="0 0 100 80" preserveAspectRatio="none" aria-label="DTW aligned energy traces"><polyline class="diff-a" points="${points(a, "a")}"/><polyline class="diff-b" points="${points(b, "b")}"/><text x="3" y="12">${a.id || "Previous"}</text><text x="82" y="12">${b.id || "Selected"}</text></svg>`; }
-  function render() { document.body.classList.add("studio-page"); const active=takes.find(t=>t.id===selected)||takes[0]; const previous=takes.find(t=>t.id===compare); const diff=active&&previous?window.SpeechProfiler.compareTakes(previous,active):null; const f=active?.features; document.getElementById("main").innerHTML=`<div class="studio-shell"><aside class="studio-rail"><div class="studio-brand"><img src="/prelight-mark.svg" alt=""/>Prelight</div><div><div class="studio-kicker">Workspace</div><div class="studio-workspace"><span>NeutralEye Pitch</span><strong>Studio</strong></div></div><div><div class="studio-label">Takes</div><div class="studio-takes">${takes.slice().reverse().map(t=>`<button class="studio-take ${t.id===selected?"active":""}" data-take="${t.id}"><span><b>${t.label}</b><small>${dateLabel(t.createdAt)}</small></span><small>${t.id===takes[takes.length-1]?.id?"Latest":""}</small></button>`).join("")}</div><button class="studio-new" id="newTake">+ Record new take</button></div><a class="studio-legacy" href="#" id="legacyPractice">Open Practice room →</a></aside><section class="studio-main"><div class="studio-topbar"><div><h1>NeutralEye Pitch <span class="demo-tag">Demo workspace</span></h1><p>Record a take. Inspect the performance. Diff the next one.</p></div><div class="studio-actions"><button class="studio-btn" id="compareBtn">${previous?`${previous.label} ↔ ${active.label}`:"Compare with…"}</button><button class="studio-btn primary" id="topNew">Record new take</button></div></div><div class="studio-canvas">${f?`<div class="trace-heading"><h2>Performance trace · ${active.label}</h2><span>Local analysis · ${time(f.duration)}</span></div><div class="trace-panel"><div class="trace-row"><label>Energy / RMS</label>${svgTrace(f,"energy")}</div><div class="trace-row"><label>Pitch · voiced F0</label>${svgTrace(f,"pitch")}</div><div class="trace-row"><label>Pause regions</label><svg class="trace-svg" viewBox="0 0 100 58" preserveAspectRatio="none">${f.pauses.map(p=>`<rect class="pause-block" x="${p.start/f.duration*100}" y="10" width="${p.duration/f.duration*100}" height="38"/>`).join("")}</svg></div><div class="trace-ticks"><span>00:00</span><span>00:${Math.round(f.duration/2).toString().padStart(2,"0")}</span><span>${time(f.duration)}</span></div><div class="trace-legend"><span><i></i>Energy</span><span><i class="pitch-key"></i>Pitch</span><span><i class="pause-key"></i>Pause</span></div></div>`:`<div class="studio-empty"><strong>An IDE for speaking</strong><p>Record a take. Inspect your delivery. Diff the next one.</p><button class="studio-btn primary" id="firstTake">Record your first take</button></div>`}</div></section><aside class="studio-inspector"><div><div class="studio-label">Inspector</div><h2>${active?.label||"Take"}</h2><div class="metric-grid">${[["Duration",`${fmt(f?.duration,1)}s`],["Silence",`${fmt((f?.silenceRatio||0)*100,1)}%`],["Median pitch",`${fmt(f?.medianPitch,0)}Hz`],["Pitch σ",`${fmt(f?.pitchVariability,0)}Hz`],["Energy variance",fmt(f?.energyVariance,4)],["Long pauses",f?.longPauseCount||0]].map(([a,b])=>`<div class="metric"><span>${a}</span><strong>${b}</strong></div>`).join("")}</div><p class="inspector-note">Measurements are extracted locally from acoustic signal. No transcript, model, or opinion is used.</p></div>${diff?`<div class="diff-card"><h3>${previous.label} ↔ ${active.label}</h3>${diffTraceHtml(previous.features, active.features, diff)}${diffRows(previous.features,active.features)}</div>`:`<div class="diff-card"><h3>Compare takes</h3><p class="inspector-note">Choose another take to align traces and inspect measurable change.</p></div>`}</aside></div>${modalHtml()}`; bind(); }
-  function diffRows(a,b) { const delta=(x,y)=>y-x; const rows=[["Duration",`${fmt(a.duration,1)}s → ${fmt(b.duration,1)}s`,`${delta(a.duration,b.duration)>=0?"+":""}${fmt(delta(a.duration,b.duration),1)}s`],["Silence ratio",`${fmt(a.silenceRatio*100,1)}% → ${fmt(b.silenceRatio*100,1)}%`,`${delta(a.silenceRatio,b.silenceRatio)>=0?"+":""}${fmt(delta(a.silenceRatio,b.silenceRatio)*100,1)}pp`],["Long pauses",`${a.longPauseCount} → ${b.longPauseCount}`,`${delta(a.longPauseCount,b.longPauseCount)>=0?"+":""}${delta(a.longPauseCount,b.longPauseCount)}`],["Median pitch",`${fmt(a.medianPitch,0)}Hz → ${fmt(b.medianPitch,0)}Hz`,`${delta(a.medianPitch,b.medianPitch)>=0?"+":""}${fmt(delta(a.medianPitch,b.medianPitch),0)}Hz`],["Pitch variation",`${fmt(a.pitchVariability,0)}Hz → ${fmt(b.pitchVariability,0)}Hz`,`${delta(a.pitchVariability,b.pitchVariability)>=0?"Higher":"Lower"}`]]; return rows.map(r=>`<div class="diff-row"><span>${r[0]}</span><b>${r[1]} <em>${r[2]}</em></b></div>`).join(""); }
-  function modalHtml(){return modal?`<div class="studio-modal"><form class="studio-dialog" id="takeDialog"><h2>Record a new take</h2><p>Your take will be analyzed locally in the browser. It will be saved as a new immutable version.</p><input id="takeName" value="Take ${takes.length+1}" aria-label="Take name"/><div class="studio-actions"><button type="button" class="studio-btn" id="cancelTake">Cancel</button><button class="studio-btn primary" id="recordTake">Start recording</button></div><p id="recordStatus"></p></form></div>`:"";}
-  async function startRecording(){ const status=document.getElementById("recordStatus"); try { const stream=await navigator.mediaDevices.getUserMedia({audio:true}); recorder=new MediaRecorder(stream); chunks=[]; recorder.ondataavailable=e=>chunks.push(e.data); recorder.onstop=async()=>{stream.getTracks().forEach(t=>t.stop()); const blob=new Blob(chunks,{type:recorder.mimeType||"audio/webm"}); const buffer=await new AudioContext().decodeAudioData(await blob.arrayBuffer()); const samples=buffer.getChannelData(0); const features=window.SpeechProfiler.extractFeatures(samples,buffer.sampleRate); const take={id:`take-${Date.now()}`,label:document.getElementById("takeName").value.trim()||`Take ${takes.length+1}`,createdAt:new Date().toISOString(),features}; takes.push(take); selected=take.id; compare=takes.length>1?takes[takes.length-2].id:null; save(); modal=false; render();}; recorder.start(); startedAt=Date.now(); status.textContent="Recording in progress. Click Stop when you’re done."; status.className="recording-state"; const button=document.getElementById("recordTake"); button.textContent="Stop recording"; button.classList.add("recording"); button.onclick=(e)=>{e.preventDefault();if(recorder?.state==="recording") recorder.stop();}; } catch(e){ status.textContent="Microphone unavailable. You can still inspect the sample takes."; } }
-  function bind(){ document.querySelectorAll("[data-take]").forEach(b=>b.onclick=()=>{selected=b.dataset.take; compare=takes.find(t=>t.id!==selected)?.id||null;render();}); ["newTake","topNew","firstTake"].forEach(id=>document.getElementById(id)?.addEventListener("click",()=>{modal=true;render();})); document.getElementById("cancelTake")?.addEventListener("click",()=>{modal=false;render();}); document.getElementById("recordTake")?.addEventListener("click",e=>{e.preventDefault();if(!recorder || recorder.state!=="recording") startRecording();}); document.getElementById("compareBtn")?.addEventListener("click",()=>{const other=takes.find(t=>t.id!==selected);if(other){compare=other.id;render();}}); document.getElementById("legacyPractice")?.addEventListener("click",e=>{e.preventDefault();window.S=S;S.screen="picker";document.body.classList.remove("studio-page");render();}); }
-  window.renderStudio=render; render();
+  const KEY = 'prelightStudioTakes';
+  const WORKSPACE_KEY = 'prelightStudioWorkspace';
+  const params = new URLSearchParams(location.search);
+  const demo = params.get('demo') === '1';
+  const state = window.StudioState;
+  state.migrate(localStorage);
+  const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
+  const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let workspaceName = state.cleanName(params.get('workspace')?.trim().slice(0, 100) || read(WORKSPACE_KEY, '') || '');
+  const stored = read(KEY, []);
+  let allTakes = Array.isArray(stored) ? stored.filter(t => t && t.features && Array.isArray(t.features.energy) && t.features.energy.length && Array.isArray(t.features.pitch)) : [];
+  if (demo) workspaceName = 'Product Pitch';
+  if (!workspaceName && allTakes.some(t => !state.isDemo(t))) workspaceName = 'Product Pitch';
+  if (workspaceName && !demo) { try { localStorage.setItem(WORKSPACE_KEY, JSON.stringify(workspaceName)); } catch {} }
+  function demoTakes() {
+    return Array.from({length:4}, (_, n) => {
+      const duration = [82, 78, 75, 72][n];
+      const pauses = [[9,1.2],[23,0.6],[39,1.6],[55,0.5],[64,0.4]].map(([start, length]) => ({start,end:start+length,duration:length,long:length>=.75}));
+      const energy = Array.from({length:420}, (_,i) => {
+        const t = i / 419 * duration;
+        return pauses.some(p => t >= p.start && t <= p.end) ? .005 : .12 + .16 * Math.abs(Math.sin(i*.12+n*.24)) * (.55+.45*Math.sin(i*.035)**2) + .035*Math.sin(i*1.7)**2;
+      });
+      const pitch = energy.map((v,i) => v < .01 ? 0 : 142 + 27*Math.sin(i*.045+n*.3) + 12*Math.sin(i*.19));
+      return {id:`demo-${n+1}`, label:`Take ${n+1}`, demo:true, createdAt:new Date(2026,8,14,10,n*7).toISOString(), features:{duration,energy,pitch,voiced:energy.map(v=>v>.01),energyMean:.2,energyVariance:.004,pauses,silenceRatio:pauses.reduce((s,p)=>s+p.duration,0)/duration,medianPitch:142,pitchVariability:24,longPauseCount:2}};
+    });
+  }
+  let takes = demo ? demoTakes() : allTakes.filter(t => !state.isDemo(t) && (!t.workspace || t.workspace === workspaceName));
+  let selected = takes.at(-1)?.id;
+  let compare = takes.at(-2)?.id;
+  let mode = 'trace';
+  let modal = false;
+  let recorder = null;
+  let recordingState = 'idle';
+  let returnFocus = 'topNew';
+  const fmt = (n, d=1) => Number.isFinite(n) ? n.toFixed(d) : '—';
+  const time = s => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+  const brand = '<a class="pl-brand" href="/" aria-label="Prelight home"><img src="/prelight-mark.svg" alt=""/>Prelight</a>';
+  function save() {
+    allTakes = [...allTakes.filter(t => state.isDemo(t) || (t.workspace && t.workspace !== workspaceName)), ...takes];
+    try { localStorage.setItem(KEY, JSON.stringify(allTakes)); } catch {}
+  }
+  function renderLanding() {
+    document.body.classList.add('prelight-page');
+    document.title = 'Prelight · An IDE for speaking';
+    document.getElementById('main').innerHTML = `<div class="prelight-landing"><nav class="pl-landing-nav">${brand}<span class="pl-nav-note">A little practice. A clearer voice.</span></nav><section class="pl-landing-content"><img class="pl-hero-mark" src="/prelight-mark.svg" alt="Prelight signal mark"/><h1>An IDE for speaking.</h1><p class="pl-landing-copy">Record a take. Inspect your delivery. Diff the next one.</p><form id="practiceForm" class="pl-practice-form"><label for="practiceType">What are you practicing?</label><div class="pl-input-wrap"><span aria-hidden="true">↗</span><input id="practiceType" placeholder="Startup pitch" maxlength="100" autocomplete="off" list="practiceExamples"/><datalist id="practiceExamples"><option value="Startup pitch"><option value="Interview answer"><option value="Presentation"><option value="Speech"></datalist><button class="pl-btn pl-primary" type="submit">Start speaking <span aria-hidden="true">→</span></button></div></form><button class="pl-text-btn" id="studioSignIn">Sign in</button></section><footer class="pl-landing-footer"><span>Your next take starts here.</span><a href="/studio?demo=1">Explore the demo <span aria-hidden="true">↗</span></a></footer><div id="authRoot"></div></div>`;
+    document.getElementById('practiceForm').onsubmit = e => {e.preventDefault();location.assign(`/studio?workspace=${encodeURIComponent(document.getElementById('practiceType').value.trim() || 'Product Pitch')}`);};
+    document.getElementById('studioSignIn').onclick = () => { if (typeof openAuth === 'function') openAuth('login'); };
+    if (typeof S !== 'undefined' && S.authOpen) renderAuthDialog();
+  }
+  function points(values, width=1000, height=110) {
+    const valid = values.filter(Number.isFinite);
+    const max = Math.max(...valid, .01), min = Math.min(...valid, 0);
+    return values.map((v,i)=>`${i / Math.max(1,values.length-1)*width},${height-10-(v-min)/Math.max(max-min,.01)*(height-22)}`).join(' ');
+  }
+  function timeline(f) {
+    const pauseBlocks = f.pauses.map(p=>`<rect x="${p.start/f.duration*1000}" y="0" width="${p.duration/f.duration*1000}" height="110" class="pl-pause"/>`).join('');
+    return `<div class="pl-timeline pl-selectable" tabindex="0" aria-label="Synchronized energy, pitch and pause timeline. Drag to select a range. Escape clears selection." data-duration="${f.duration}"><div class="pl-selection" hidden></div><div class="pl-track"><div class="pl-track-label">Energy <span>RMS</span></div><svg viewBox="0 0 1000 110" preserveAspectRatio="none" role="img" aria-label="Energy over time">${pauseBlocks}<polyline class="pl-energy" points="${points(f.energy)}"/></svg></div><div class="pl-track"><div class="pl-track-label">Pitch <span>Voiced F0</span></div><svg viewBox="0 0 1000 110" preserveAspectRatio="none" role="img" aria-label="Pitch over time">${pauseBlocks}<polyline class="pl-pitch" points="${points(f.pitch)}"/></svg></div><div class="pl-track pl-pause-track"><div class="pl-track-label">Pauses <span>Silence</span></div><svg viewBox="0 0 1000 110" preserveAspectRatio="none" role="img" aria-label="Silent regions">${pauseBlocks}</svg></div><div class="pl-ticks">${Array.from({length:5},(_,i)=>`<span>${time(f.duration*i/4)}</span>`).join('')}</div></div>`;
+  }
+  function diffCanvas(previous, active) {
+    const a = previous.features, b = active.features;
+    const alignment = window.SpeechProfiler.compareTakes(previous,active);
+    const aligned = (feature, side, kind) => alignment.path.map(pair => feature[kind][pair[side]]);
+    return `<div class="pl-canvas-heading"><div><div class="pl-eyebrow">Compare takes</div><h2>${escape(previous.label)} <span class="pl-muted">↔</span> ${escape(active.label)}</h2></div><label class="pl-compare-picker">Compare with<select id="compareTake">${takes.filter(t=>t.id!==active.id).map(t=>`<option value="${escape(t.id)}" ${t.id===previous.id?'selected':''}>${escape(t.label)}</option>`).join('')}</select></label></div><div class="pl-diff-metrics">${[['Duration',time(a.duration),time(b.duration)],['Silence',`${fmt(a.silenceRatio*100)}%`,`${fmt(b.silenceRatio*100)}%`],['Long pauses',a.longPauseCount,b.longPauseCount],['Pitch variation',`${fmt(a.pitchVariability,0)} Hz`,`${fmt(b.pitchVariability,0)} Hz`]].map(([label,from,to])=>`<div><span>${label}</span><strong>${from} <i>→</i> ${to}</strong></div>`).join('')}</div><div class="pl-alignment-title"><h3>Aligned acoustic traces</h3><span>DTW alignment</span></div><div class="pl-timeline pl-aligned">${['energy','pitch'].map(kind=>`<div class="pl-track"><div class="pl-track-label">${kind}</div><svg viewBox="0 0 1000 110" preserveAspectRatio="none" role="img" aria-label="Aligned ${kind} traces"><polyline class="pl-previous" points="${points(aligned(a,0,kind))}"/><polyline class="pl-energy" points="${points(aligned(b,1,kind))}"/></svg></div>`).join('')}<div class="pl-ticks"><span>Start</span><span>Aligned progression</span><span>End</span></div></div><div class="pl-legend"><span><i class="pl-key-previous"></i>${escape(previous.label)}</span><span><i></i>${escape(active.label)}</span></div>`;
+  }
+  function render() {
+    if (!/^\/studio\/?$/.test(location.pathname)) { renderLanding(); return; }
+    document.body.classList.add('prelight-page');
+    document.body.classList.remove('landing-page');
+    document.title = `${workspaceName || 'Create workspace'} · Prelight Studio`;
+    if (!workspaceName) {
+      document.getElementById('main').innerHTML = `<div class="prelight-studio pl-onboarding"><nav>${brand}</nav><form id="workspaceForm"><div class="pl-eyebrow">Your speaking workspace</div><h1>What are you practicing?</h1><label for="workspaceName">Workspace name</label><input id="workspaceName" placeholder="Product pitch" maxlength="100" required/><button class="pl-btn pl-primary">Create workspace <span>→</span></button></form></div>`;
+      document.getElementById('workspaceForm').onsubmit = e => {e.preventDefault(); const name = document.getElementById('workspaceName').value.trim(); if(name) location.assign(`/studio?workspace=${encodeURIComponent(name)}`);};
+      return;
+    }
+    const active = takes.find(t=>t.id===selected);
+    const previous = takes.find(t=>t.id===compare && t.id!==selected) || takes.find(t=>t.id!==selected);
+    const f = active?.features;
+    document.getElementById('main').innerHTML = `<div class="prelight-studio"><div class="pl-shell"><div class="pl-topbar">${brand}<div class="pl-workspace-title"><span class="pl-slash">/</span><h1>${escape(workspaceName)}</h1>${demo?'<span class="pl-demo-tag">Demo</span>':''}</div><div class="pl-actions"><button class="pl-btn ${mode==='compare'?'pl-is-active':''}" id="compareBtn" ${takes.length<2?'disabled':''}>${mode==='compare'?'Back to trace':'Compare'}</button><button class="pl-btn pl-primary" id="topNew">${demo?'Start your workspace':'Record new take'} <span aria-hidden="true">＋</span></button></div></div><aside class="pl-rail"><div class="pl-rail-heading"><h2>Takes</h2><span>${String(takes.length).padStart(2,'0')}</span></div><div class="pl-takes">${takes.slice().reverse().map(t=>`<button class="pl-take ${t.id===selected?'pl-active':''}" data-take="${escape(t.id)}" aria-pressed="${t.id===selected}"><span class="pl-take-icon" aria-hidden="true">≋</span><span><strong>${escape(t.label)}</strong><small>${time(t.features.duration)}${t.id===takes.at(-1)?.id?' · Latest':''}</small></span>${t.id===selected?'<span class="pl-active-dot"></span>':''}</button>`).join('')}</div><button class="pl-text-btn pl-new" id="newTake">＋ ${demo?'Your own workspace':'New take'}</button><div class="pl-rail-footer"><span class="pl-status-dot"></span>${demo?'Demo workspace':'Saved on this device'}<p>${demo?'Example takes. Your workspace starts empty.':'A little better, take by take.'}</p></div></aside><section class="pl-canvas">${f?(mode==='compare'&&previous?diffCanvas(previous,active):`<div class="pl-canvas-heading"><div><div class="pl-eyebrow">${escape(active.label)} <span class="pl-heading-dot">/</span> Delivery</div><h2>Performance trace</h2></div><span class="pl-duration">${time(f.duration)} <span>total</span></span></div><div class="pl-trace-caption"><span>Every inflection. Every pause.</span><span>${demo?'Demo recording':'Acoustic analysis'}</span></div>${timeline(f)}<div class="pl-legend"><span><i></i>Energy</span><span><i class="pl-key-pitch"></i>Pitch</span><span><i class="pl-key-pause"></i>Pause region</span></div><div class="pl-canvas-foot"><span>Drag to select a range · Esc to clear</span><span>Time in minutes : seconds</span></div>`):`<div class="pl-empty"><img src="/prelight-mark.svg" alt=""/><div class="pl-eyebrow">${escape(workspaceName)}</div><h2>No takes yet.</h2><p>Give your ideas a first run.</p><button class="pl-btn pl-primary" id="firstTake">Record your first take <span>→</span></button></div>`}</section><aside class="pl-inspector"><div class="pl-eyebrow">Inspector</div><h2>${escape(active?.label || 'Your first take')}</h2><span class="pl-inspector-range">${f?`00:00 <span>—</span> ${time(f.duration)}`:'Ready when you are'}</span>${f?`<div class="pl-metrics-scope">Whole take</div><dl class="pl-metrics">${[['Duration',time(f.duration),''],['Silence',fmt(f.silenceRatio*100),'%'],['Median pitch',fmt(f.medianPitch,0),'Hz'],['Pitch variation',fmt(f.pitchVariability,0),'Hz'],['Long pauses',f.longPauseCount,'']].map(([label,value,unit])=>`<div><dt>${label}</dt><dd>${value}<span>${unit}</span></dd></div>`).join('')}</dl><p class="pl-inspector-note">${demo?'Illustrative demo data.':'Measured from this take.'}<br/>A closer look at your delivery.</p>`:'<p class="pl-inspector-note">Your duration, pitch and pauses will appear here after you record.</p>'}</aside></div>${modalHtml()}</div>`;
+    bind();
+  }
+  function modalHtml() {
+    return modal ? `<div class="pl-modal"><form class="pl-dialog" id="takeDialog" role="dialog" aria-modal="true" aria-labelledby="takeDialogTitle"><div class="pl-eyebrow">A fresh take</div><h2 id="takeDialogTitle">Ready when you are.</h2><p>Start recording when you’re ready to speak.</p><label for="takeName">Take name</label><input id="takeName" value="Take ${takes.length+1}" maxlength="100"/><div class="pl-actions"><button type="button" class="pl-btn" id="cancelTake">Cancel</button><button class="pl-btn pl-primary" id="recordTake" type="submit">Record new take</button></div><p id="recordStatus" role="status" aria-live="polite">Microphone access is requested only when you record.</p></form></div>` : '';
+  }
+  async function startRecording() {
+    if (recordingState !== 'idle') return;
+    recordingState = 'requesting';
+    const status = document.getElementById('recordStatus');
+    const button = document.getElementById('recordTake');
+    const cancel = document.getElementById('cancelTake');
+    const name = document.getElementById('takeName');
+    let stream;
+    button.disabled = cancel.disabled = name.disabled = true;
+    status.textContent = 'Waiting for microphone access…';
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      recorder = new MediaRecorder(stream);
+      const chunks = [];
+      recorder.ondataavailable = e => chunks.push(e.data);
+      recorder.onstop = async () => {
+        stream.getTracks().forEach(t=>t.stop());
+        recordingState = 'analyzing'; button.disabled = true;
+        status.textContent = 'Inspecting your take…';
+        let context;
+        try {
+          const blob = new Blob(chunks,{type:recorder.mimeType || 'audio/webm'});
+          context = new AudioContext();
+          const buffer = await context.decodeAudioData(await blob.arrayBuffer());
+          const features = window.SpeechProfiler.extractFeatures(buffer.getChannelData(0),buffer.sampleRate);
+          const take = {id:`take-${Date.now()}`,label:name.value.trim() || `Take ${takes.length+1}`,workspace:workspaceName,createdAt:new Date().toISOString(),features};
+          takes.push(take); selected = take.id; compare = takes.at(-2)?.id; mode='trace';
+          save(); modal=false; recordingState='idle'; render(); document.getElementById('topNew').focus();
+        } catch { status.textContent='This take could not be analyzed. Please try again.'; reset(); }
+        finally { if(context) await context.close(); }
+      };
+      recorder.start(); recordingState='recording'; button.disabled=false;
+      status.textContent='Recording. Click Stop recording when you’re done.';
+      button.textContent='Stop recording';
+    } catch {
+      stream?.getTracks().forEach(t=>t.stop());
+      status.textContent='Microphone unavailable. You can retry or cancel.'; reset();
+    }
+    function reset() { recordingState='idle'; button.disabled=cancel.disabled=name.disabled=false; button.textContent='Record new take'; }
+  }
+  function closeModal() { if(recordingState!=='idle') return; modal=false;render();document.getElementById(returnFocus)?.focus(); }
+  function bind() {
+    document.querySelectorAll('[data-take]').forEach(b=>b.onclick=()=>{selected=b.dataset.take; if(compare===selected) compare=takes.find(t=>t.id!==selected)?.id; render();});
+    ['newTake','topNew','firstTake'].forEach(id=>document.getElementById(id)?.addEventListener('click',()=>{if(demo){location.assign('/studio?workspace=Product%20Pitch');return;}returnFocus=id;modal=true;render();document.getElementById('takeName').focus();}));
+    const timeline = document.querySelector('.pl-selectable');
+    if (timeline) {
+      const selection = timeline.querySelector('.pl-selection');
+      const range = document.querySelector('.pl-inspector-range');
+      const duration = Number(timeline.dataset.duration);
+      let anchor = null;
+      const fraction = event => Math.max(0, Math.min(1, (event.clientX - timeline.getBoundingClientRect().left) / timeline.clientWidth));
+      function selectRange(start, end) {
+        selection.hidden = false;
+        selection.style.left = `${start*100}%`;
+        selection.style.width = `${Math.max(end-start,.002)*100}%`;
+        range.innerHTML = `${time(start*duration)} <span>—</span> ${time(end*duration)}<small>Selected range</small>`;
+      }
+      timeline.onpointerdown = event => {
+        if(event.button!==0) return;
+        anchor = fraction(event); timeline.setPointerCapture(event.pointerId); timeline.focus();
+        selectRange(anchor,Math.min(1,anchor+1/duration));
+      };
+      timeline.onpointermove = event => { if(anchor!==null) {const end=fraction(event); selectRange(Math.min(anchor,end),Math.max(anchor,end));} };
+      timeline.onpointerup = timeline.onpointercancel = () => {anchor=null;};
+      timeline.onkeydown = event => {
+        if(event.key==='Escape') {selection.hidden=true;range.innerHTML=`00:00 <span>—</span> ${time(duration)}`;}
+        if(event.key==='ArrowRight' || event.key==='ArrowLeft') {event.preventDefault();const start=Math.max(0,Math.min(.9,parseFloat(selection.style.left||'0')/100+(event.key==='ArrowRight'?.05:-.05)));selectRange(start,start+.1);}
+      };
+    }
+    document.getElementById('cancelTake')?.addEventListener('click',closeModal);
+    document.getElementById('takeDialog')?.addEventListener('submit',e=>{e.preventDefault();if(recordingState==='recording'){recorder.stop();}else startRecording();});
+    document.getElementById('takeDialog')?.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal(); if(e.key==='Tab'){const controls=[...e.currentTarget.querySelectorAll('input:not(:disabled),button:not(:disabled)')]; const first=controls[0],last=controls.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
+    document.getElementById('compareBtn')?.addEventListener('click',()=>{mode=mode==='trace'?'compare':'trace';render();});
+    document.getElementById('compareTake')?.addEventListener('change',e=>{compare=e.target.value;render();});
+  }
+  window.renderStudio = render;
+  // The legacy bootstrap owns the initial render, after its auth state is available.
 })();
