@@ -1,0 +1,7 @@
+[
+  { "id": "problem", "type": "semantic_presence", "name": "Problem established", "config": { "concept": "teams waste time on manual speech feedback", "threshold": 0.7 } },
+  { "id": "product", "type": "semantic_presence", "name": "Product explained", "config": { "concept": "Prelight is a speech testing coach", "threshold": 0.7 } },
+  { "id": "traction", "type": "numeric_evidence", "name": "Quantitative traction evidence", "config": { "concept": "traction with customers", "threshold": 0.7, "window_chunks": 1 } },
+  { "id": "differentiation", "type": "semantic_presence", "name": "Differentiation", "config": { "concept": "Prelight differs from general-purpose LLMs like ChatGPT", "threshold": 0.85 } },
+  { "id": "duration", "type": "duration_max", "name": "Under 60 seconds", "config": { "max_seconds": 60 } }
+]

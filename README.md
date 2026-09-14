@@ -55,7 +55,8 @@ For deployed persistence, set `SUPABASE_URL` and `SUPABASE_SECRET_KEY` in Render
 
 Apply `supabase/migrations/20260829000001_create_practice_sessions.sql` manually before enabling deployed session history. The Express server uses the server-only Supabase key and still checks the authenticated student's ownership on every session request.
 
-The public GitHub Actions workflow in `.github/workflows/supabase-keepalive.yml` sends a harmless Supabase query every four days. Add `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` as repository Actions secrets before enabling it.
+The public GitHub Actions workflow in `.github/workflows/supabase-keepalive.yml` sends a harmless Supabase query every four days. Apply the keepalive migration to the hosted project, then add `SUPABASE_URL` and either `SUPABASE_PUBLISHABLE_KEY` (current) or `SUPABASE_ANON_KEY` (legacy) as repository Actions secrets before enabling it. The workflow prints the Supabase response when the RPC is missing or inaccessible.
+
 
 Start the app:
 

@@ -1,0 +1,13 @@
+{
+  "pairs": 20,
+  "development_pairs": "1-14",
+  "heldout_pairs": "15-20",
+  "segment_counts": {
+    "development": {"take_a": 66, "take_b": 67},
+    "heldout": {"take_a": 30, "take_b": 31},
+    "all": {"take_a": 96, "take_b": 98}
+  },
+  "operation_counts_all": {"unchanged": 25, "modified": 23, "added": 3, "deleted": 3, "moved": 25, "split": 8, "merged": 6},
+  "operation_counts_pairs_7_14": {"unchanged": 7, "modified": 0, "added": 0, "deleted": 0, "moved": 17, "split": 4, "merged": 4},
+  "operation_counts_heldout_15_20": {"unchanged": 4, "modified": 8, "added": 1, "deleted": 2, "moved": 8, "split": 4, "merged": 2}
+}

@@ -1,0 +1,14 @@
+{
+  "algorithm_version": "speech-diff-v1",
+  "match_min": [0.4, 0.5, 0.6],
+  "structural_min": [0.55, 0.65, 0.75],
+  "move_min": [0.6, 0.7, 0.8],
+  "lexical_unchanged_min": [0.55, 0.7, 0.85],
+  "group_penalty": [0, 0.05],
+  "gap_penalty": 0.2,
+  "fixed_parameters": {
+    "semantic_unchanged_min": 0.85,
+    "maximum_group_size": 3,
+    "residual_structural_precedence_bonus": 0.001
+  }
+}

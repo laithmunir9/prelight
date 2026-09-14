@@ -1,0 +1,29 @@
+{
+  "experiment_version": "speech-diff-v1.1-final-heldout",
+  "embedding_model": "text-embedding-3-large",
+  "parameters": {
+    "global_match_min": 0.5,
+    "match_margin_min": 0.06,
+    "structural_min": 0.75,
+    "lexical_unchanged_min": 0.55,
+    "group_penalty": 0.05,
+    "gap_penalty": 0.2,
+    "semantic_unchanged_min": 0.85
+  },
+  "baseline_parameters": {
+    "match_threshold": 0.4,
+    "unchanged_threshold": 0.84
+  },
+  "interpretation_bands": {
+    "strong_pass": {
+      "minimum_v1_1_relationship_f1": 0.55,
+      "minimum_relationship_f1_improvement_over_baseline": 0.15,
+      "minimum_v1_1_macro_f1_supported": 0.55,
+      "minimum_macro_f1_supported_improvement_over_baseline": 0.15,
+      "minimum_nonzero_structural_operations": 2
+    },
+    "borderline": "V1.1 clearly beats baseline, but misses one or more absolute strong-pass thresholds.",
+    "fail": "V1.1 improves relationship F1 by less than 0.10, fails to recover meaningful structural operations, or performs materially worse than development behavior suggests."
+  },
+  "selection": "No held-out threshold sweep or parameter search is permitted."
+}

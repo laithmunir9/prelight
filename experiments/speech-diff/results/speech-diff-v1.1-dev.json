@@ -1,0 +1,4157 @@
+{
+  "experiment_version": "speech-diff-v1.1-dev",
+  "timestamp": "2026-09-12T19:21:25.678Z",
+  "benchmark_hashes": {
+    "dev": "9f8155815425032ef26d114ee4a01681ac73b909b37780bfe42f3ff0a339c12a"
+  },
+  "algorithm": {
+    "version": "speech-diff-v1.1",
+    "description": "Structural split/merge selection precedes exact global one-to-one semantic assignment. A structural group must retain singleton evidence within half the existing group penalty. A weighted LIS over assigned B positions defines the relative-order backbone; assigned inversions are moved."
+  },
+  "grid": {
+    "path": "config/speech-diff-v1.1-grid.json",
+    "sha256": "1716fb052c74c8ad63476ca0d09fd94e154fb286a5242f5a8fa6d4cfffb53e87",
+    "configuration_count": 16,
+    "definition": {
+      "algorithm_version": "speech-diff-v1.1",
+      "global_match_min": [
+        0.4,
+        0.5,
+        0.6,
+        0.7
+      ],
+      "match_margin_min": [
+        0,
+        0.03,
+        0.06,
+        0.1
+      ],
+      "fixed_parameters": {
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      }
+    }
+  },
+  "embedding": {
+    "model_id": "text-embedding-3-large",
+    "cache_path": "cache/dev-text-embedding-3-large.json",
+    "api_calls_this_runner_invocation": 0,
+    "usage_this_runner_invocation": {
+      "prompt_tokens": 0,
+      "total_tokens": 0
+    },
+    "api_calls_total_cache": 4,
+    "usage_total_cache": {
+      "prompt_tokens": 9509,
+      "total_tokens": 9509
+    },
+    "pricing": {
+      "input_price_per_million_tokens_usd": 0.13,
+      "estimated_runner_embedding_cost_usd": 0
+    }
+  },
+  "selection": {
+    "primary_objective": "highest difficult-development macro_f1_supported",
+    "tie_breakers": [
+      "higher difficult-development relationship F1",
+      "higher overall macro_f1_supported",
+      "higher overall relationship F1",
+      "higher global_match_min then match_margin_min"
+    ],
+    "winning_parameters": {
+      "global_match_min": 0.5,
+      "match_margin_min": 0.06,
+      "structural_min": 0.75,
+      "lexical_unchanged_min": 0.55,
+      "group_penalty": 0.05,
+      "gap_penalty": 0.2,
+      "semantic_unchanged_min": 0.85,
+      "maximum_group_size": 3,
+      "margin_axis": "take_a",
+      "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+    }
+  },
+  "sweep_results": [
+    {
+      "parameters": {
+        "global_match_min": 0.4,
+        "match_margin_min": 0,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.765625,
+          "recall": 0.765625,
+          "f1": 0.765625
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.6086956521739131,
+            "recall": 0.9333333333333333,
+            "f1": 0.7368421052631579
+          },
+          "added": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "deleted": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.35294117647058826,
+            "f1": 0.5217391304347826
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.8655116050997058,
+        "macro_operation_f1": 0.8655116050997058
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.9375,
+          "recall": 0.9375,
+          "f1": 0.9375
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.9333333333333333,
+            "recall": 0.9333333333333333,
+            "f1": 0.9333333333333333
+          },
+          "added": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "deleted": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.9654761904761905,
+        "macro_operation_f1": 0.5517006802721088
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.59375,
+          "recall": 0.59375,
+          "f1": 0.59375
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.35294117647058826,
+            "f1": 0.5217391304347826
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7774936061381075,
+        "macro_operation_f1": 0.44428206065034714
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.4,
+        "match_margin_min": 0.03,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.765625,
+          "recall": 0.765625,
+          "f1": 0.765625
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.6086956521739131,
+            "recall": 0.9333333333333333,
+            "f1": 0.7368421052631579
+          },
+          "added": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "deleted": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.35294117647058826,
+            "f1": 0.5217391304347826
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.8655116050997058,
+        "macro_operation_f1": 0.8655116050997058
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.9375,
+          "recall": 0.9375,
+          "f1": 0.9375
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.9333333333333333,
+            "recall": 0.9333333333333333,
+            "f1": 0.9333333333333333
+          },
+          "added": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "deleted": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.9654761904761905,
+        "macro_operation_f1": 0.5517006802721088
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.59375,
+          "recall": 0.59375,
+          "f1": 0.59375
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.35294117647058826,
+            "f1": 0.5217391304347826
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7774936061381075,
+        "macro_operation_f1": 0.44428206065034714
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.4,
+        "match_margin_min": 0.06,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.765625,
+          "recall": 0.765625,
+          "f1": 0.765625
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.6086956521739131,
+            "recall": 0.9333333333333333,
+            "f1": 0.7368421052631579
+          },
+          "added": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "deleted": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.35294117647058826,
+            "f1": 0.5217391304347826
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.8655116050997058,
+        "macro_operation_f1": 0.8655116050997058
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.9375,
+          "recall": 0.9375,
+          "f1": 0.9375
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.9333333333333333,
+            "recall": 0.9333333333333333,
+            "f1": 0.9333333333333333
+          },
+          "added": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "deleted": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.9654761904761905,
+        "macro_operation_f1": 0.5517006802721088
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.59375,
+          "recall": 0.59375,
+          "f1": 0.59375
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.35294117647058826,
+            "f1": 0.5217391304347826
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7774936061381075,
+        "macro_operation_f1": 0.44428206065034714
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.4,
+        "match_margin_min": 0.1,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.7121212121212122,
+          "recall": 0.734375,
+          "f1": 0.7230769230769231
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.5909090909090909,
+            "recall": 0.8666666666666667,
+            "f1": 0.7027027027027027
+          },
+          "added": {
+            "precision": 0.5,
+            "recall": 1,
+            "f1": 0.6666666666666666
+          },
+          "deleted": {
+            "precision": 0.3333333333333333,
+            "recall": 1,
+            "f1": 0.5
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7319878319878319,
+        "macro_operation_f1": 0.7319878319878319
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.8787878787878788,
+          "recall": 0.90625,
+          "f1": 0.8923076923076924
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.9285714285714286,
+            "recall": 0.8666666666666667,
+            "f1": 0.896551724137931
+          },
+          "added": {
+            "precision": 0.6666666666666666,
+            "recall": 1,
+            "f1": 0.8
+          },
+          "deleted": {
+            "precision": 0.5,
+            "recall": 1,
+            "f1": 0.6666666666666666
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.8229474548440066,
+        "macro_operation_f1": 0.47025568848228944
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.5454545454545454,
+          "recall": 0.5625,
+          "f1": 0.5538461538461539
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7606951871657754,
+        "macro_operation_f1": 0.43468296409472884
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.5,
+        "match_margin_min": 0,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.765625,
+          "recall": 0.765625,
+          "f1": 0.765625
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.6086956521739131,
+            "recall": 0.9333333333333333,
+            "f1": 0.7368421052631579
+          },
+          "added": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "deleted": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.35294117647058826,
+            "f1": 0.5217391304347826
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.8655116050997058,
+        "macro_operation_f1": 0.8655116050997058
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.9375,
+          "recall": 0.9375,
+          "f1": 0.9375
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.9333333333333333,
+            "recall": 0.9333333333333333,
+            "f1": 0.9333333333333333
+          },
+          "added": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "deleted": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.9654761904761905,
+        "macro_operation_f1": 0.5517006802721088
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.59375,
+          "recall": 0.59375,
+          "f1": 0.59375
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.35294117647058826,
+            "f1": 0.5217391304347826
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7774936061381075,
+        "macro_operation_f1": 0.44428206065034714
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.5,
+        "match_margin_min": 0.03,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.765625,
+          "recall": 0.765625,
+          "f1": 0.765625
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.6086956521739131,
+            "recall": 0.9333333333333333,
+            "f1": 0.7368421052631579
+          },
+          "added": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "deleted": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.35294117647058826,
+            "f1": 0.5217391304347826
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.8655116050997058,
+        "macro_operation_f1": 0.8655116050997058
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.9375,
+          "recall": 0.9375,
+          "f1": 0.9375
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.9333333333333333,
+            "recall": 0.9333333333333333,
+            "f1": 0.9333333333333333
+          },
+          "added": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "deleted": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.9654761904761905,
+        "macro_operation_f1": 0.5517006802721088
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.59375,
+          "recall": 0.59375,
+          "f1": 0.59375
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.35294117647058826,
+            "f1": 0.5217391304347826
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7774936061381075,
+        "macro_operation_f1": 0.44428206065034714
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.5,
+        "match_margin_min": 0.06,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.765625,
+          "recall": 0.765625,
+          "f1": 0.765625
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.6086956521739131,
+            "recall": 0.9333333333333333,
+            "f1": 0.7368421052631579
+          },
+          "added": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "deleted": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.35294117647058826,
+            "f1": 0.5217391304347826
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.8655116050997058,
+        "macro_operation_f1": 0.8655116050997058
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.9375,
+          "recall": 0.9375,
+          "f1": 0.9375
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.9333333333333333,
+            "recall": 0.9333333333333333,
+            "f1": 0.9333333333333333
+          },
+          "added": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "deleted": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.9654761904761905,
+        "macro_operation_f1": 0.5517006802721088
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.59375,
+          "recall": 0.59375,
+          "f1": 0.59375
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.35294117647058826,
+            "f1": 0.5217391304347826
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7774936061381075,
+        "macro_operation_f1": 0.44428206065034714
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.5,
+        "match_margin_min": 0.1,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.7121212121212122,
+          "recall": 0.734375,
+          "f1": 0.7230769230769231
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.5909090909090909,
+            "recall": 0.8666666666666667,
+            "f1": 0.7027027027027027
+          },
+          "added": {
+            "precision": 0.5,
+            "recall": 1,
+            "f1": 0.6666666666666666
+          },
+          "deleted": {
+            "precision": 0.3333333333333333,
+            "recall": 1,
+            "f1": 0.5
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7319878319878319,
+        "macro_operation_f1": 0.7319878319878319
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.8787878787878788,
+          "recall": 0.90625,
+          "f1": 0.8923076923076924
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.9285714285714286,
+            "recall": 0.8666666666666667,
+            "f1": 0.896551724137931
+          },
+          "added": {
+            "precision": 0.6666666666666666,
+            "recall": 1,
+            "f1": 0.8
+          },
+          "deleted": {
+            "precision": 0.5,
+            "recall": 1,
+            "f1": 0.6666666666666666
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.8229474548440066,
+        "macro_operation_f1": 0.47025568848228944
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.5454545454545454,
+          "recall": 0.5625,
+          "f1": 0.5538461538461539
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7606951871657754,
+        "macro_operation_f1": 0.43468296409472884
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.6,
+        "match_margin_min": 0,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.6865671641791045,
+          "recall": 0.71875,
+          "f1": 0.7022900763358778
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.5714285714285714,
+            "recall": 0.8,
+            "f1": 0.6666666666666666
+          },
+          "added": {
+            "precision": 0.4,
+            "recall": 1,
+            "f1": 0.5714285714285714
+          },
+          "deleted": {
+            "precision": 0.25,
+            "recall": 1,
+            "f1": 0.4
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.6989486703772417,
+        "macro_operation_f1": 0.6989486703772417
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.8235294117647058,
+          "recall": 0.875,
+          "f1": 0.8484848484848485
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.9230769230769231,
+            "recall": 0.8,
+            "f1": 0.8571428571428571
+          },
+          "added": {
+            "precision": 0.5,
+            "recall": 1,
+            "f1": 0.6666666666666666
+          },
+          "deleted": {
+            "precision": 0.3333333333333333,
+            "recall": 1,
+            "f1": 0.5
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.738095238095238,
+        "macro_operation_f1": 0.42176870748299317
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.5454545454545454,
+          "recall": 0.5625,
+          "f1": 0.5538461538461539
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7606951871657754,
+        "macro_operation_f1": 0.43468296409472884
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.6,
+        "match_margin_min": 0.03,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.6865671641791045,
+          "recall": 0.71875,
+          "f1": 0.7022900763358778
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.5714285714285714,
+            "recall": 0.8,
+            "f1": 0.6666666666666666
+          },
+          "added": {
+            "precision": 0.4,
+            "recall": 1,
+            "f1": 0.5714285714285714
+          },
+          "deleted": {
+            "precision": 0.25,
+            "recall": 1,
+            "f1": 0.4
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.6989486703772417,
+        "macro_operation_f1": 0.6989486703772417
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.8235294117647058,
+          "recall": 0.875,
+          "f1": 0.8484848484848485
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.9230769230769231,
+            "recall": 0.8,
+            "f1": 0.8571428571428571
+          },
+          "added": {
+            "precision": 0.5,
+            "recall": 1,
+            "f1": 0.6666666666666666
+          },
+          "deleted": {
+            "precision": 0.3333333333333333,
+            "recall": 1,
+            "f1": 0.5
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.738095238095238,
+        "macro_operation_f1": 0.42176870748299317
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.5454545454545454,
+          "recall": 0.5625,
+          "f1": 0.5538461538461539
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7606951871657754,
+        "macro_operation_f1": 0.43468296409472884
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.6,
+        "match_margin_min": 0.06,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.6865671641791045,
+          "recall": 0.71875,
+          "f1": 0.7022900763358778
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.5714285714285714,
+            "recall": 0.8,
+            "f1": 0.6666666666666666
+          },
+          "added": {
+            "precision": 0.4,
+            "recall": 1,
+            "f1": 0.5714285714285714
+          },
+          "deleted": {
+            "precision": 0.25,
+            "recall": 1,
+            "f1": 0.4
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.6989486703772417,
+        "macro_operation_f1": 0.6989486703772417
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.8235294117647058,
+          "recall": 0.875,
+          "f1": 0.8484848484848485
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.9230769230769231,
+            "recall": 0.8,
+            "f1": 0.8571428571428571
+          },
+          "added": {
+            "precision": 0.5,
+            "recall": 1,
+            "f1": 0.6666666666666666
+          },
+          "deleted": {
+            "precision": 0.3333333333333333,
+            "recall": 1,
+            "f1": 0.5
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.738095238095238,
+        "macro_operation_f1": 0.42176870748299317
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.5454545454545454,
+          "recall": 0.5625,
+          "f1": 0.5538461538461539
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7606951871657754,
+        "macro_operation_f1": 0.43468296409472884
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.6,
+        "match_margin_min": 0.1,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.6617647058823529,
+          "recall": 0.703125,
+          "f1": 0.6818181818181818
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.55,
+            "recall": 0.7333333333333333,
+            "f1": 0.6285714285714286
+          },
+          "added": {
+            "precision": 0.3333333333333333,
+            "recall": 1,
+            "f1": 0.5
+          },
+          "deleted": {
+            "precision": 0.2,
+            "recall": 1,
+            "f1": 0.3333333333333333
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.6737786023500308,
+        "macro_operation_f1": 0.6737786023500308
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.7714285714285715,
+          "recall": 0.84375,
+          "f1": 0.8059701492537313
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.9166666666666666,
+            "recall": 0.7333333333333333,
+            "f1": 0.8148148148148148
+          },
+          "added": {
+            "precision": 0.4,
+            "recall": 1,
+            "f1": 0.5714285714285714
+          },
+          "deleted": {
+            "precision": 0.25,
+            "recall": 1,
+            "f1": 0.4
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.6787037037037037,
+        "macro_operation_f1": 0.3878306878306878
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.5454545454545454,
+          "recall": 0.5625,
+          "f1": 0.5538461538461539
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7606951871657754,
+        "macro_operation_f1": 0.43468296409472884
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.7,
+        "match_margin_min": 0,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.5694444444444444,
+          "recall": 0.640625,
+          "f1": 0.6029411764705882
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.4375,
+            "recall": 0.4666666666666667,
+            "f1": 0.45161290322580644
+          },
+          "added": {
+            "precision": 0.2,
+            "recall": 1,
+            "f1": 0.3333333333333333
+          },
+          "deleted": {
+            "precision": 0.1111111111111111,
+            "recall": 1,
+            "f1": 0.2
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.6056416701577991,
+        "macro_operation_f1": 0.6056416701577991
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.5897435897435898,
+          "recall": 0.71875,
+          "f1": 0.647887323943662
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.875,
+            "recall": 0.4666666666666667,
+            "f1": 0.6086956521739131
+          },
+          "added": {
+            "precision": 0.2222222222222222,
+            "recall": 1,
+            "f1": 0.36363636363636365
+          },
+          "deleted": {
+            "precision": 0.125,
+            "recall": 1,
+            "f1": 0.2222222222222222
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.5307814166509819,
+        "macro_operation_f1": 0.3033036666577039
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.5454545454545454,
+          "recall": 0.5625,
+          "f1": 0.5538461538461539
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7606951871657754,
+        "macro_operation_f1": 0.43468296409472884
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.7,
+        "match_margin_min": 0.03,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.5694444444444444,
+          "recall": 0.640625,
+          "f1": 0.6029411764705882
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.4375,
+            "recall": 0.4666666666666667,
+            "f1": 0.45161290322580644
+          },
+          "added": {
+            "precision": 0.2,
+            "recall": 1,
+            "f1": 0.3333333333333333
+          },
+          "deleted": {
+            "precision": 0.1111111111111111,
+            "recall": 1,
+            "f1": 0.2
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.6056416701577991,
+        "macro_operation_f1": 0.6056416701577991
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.5897435897435898,
+          "recall": 0.71875,
+          "f1": 0.647887323943662
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.875,
+            "recall": 0.4666666666666667,
+            "f1": 0.6086956521739131
+          },
+          "added": {
+            "precision": 0.2222222222222222,
+            "recall": 1,
+            "f1": 0.36363636363636365
+          },
+          "deleted": {
+            "precision": 0.125,
+            "recall": 1,
+            "f1": 0.2222222222222222
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.5307814166509819,
+        "macro_operation_f1": 0.3033036666577039
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.5454545454545454,
+          "recall": 0.5625,
+          "f1": 0.5538461538461539
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7606951871657754,
+        "macro_operation_f1": 0.43468296409472884
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.7,
+        "match_margin_min": 0.06,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.5694444444444444,
+          "recall": 0.640625,
+          "f1": 0.6029411764705882
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.4375,
+            "recall": 0.4666666666666667,
+            "f1": 0.45161290322580644
+          },
+          "added": {
+            "precision": 0.2,
+            "recall": 1,
+            "f1": 0.3333333333333333
+          },
+          "deleted": {
+            "precision": 0.1111111111111111,
+            "recall": 1,
+            "f1": 0.2
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.6056416701577991,
+        "macro_operation_f1": 0.6056416701577991
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.5897435897435898,
+          "recall": 0.71875,
+          "f1": 0.647887323943662
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.875,
+            "recall": 0.4666666666666667,
+            "f1": 0.6086956521739131
+          },
+          "added": {
+            "precision": 0.2222222222222222,
+            "recall": 1,
+            "f1": 0.36363636363636365
+          },
+          "deleted": {
+            "precision": 0.125,
+            "recall": 1,
+            "f1": 0.2222222222222222
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.5307814166509819,
+        "macro_operation_f1": 0.3033036666577039
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.5454545454545454,
+          "recall": 0.5625,
+          "f1": 0.5538461538461539
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7606951871657754,
+        "macro_operation_f1": 0.43468296409472884
+      }
+    },
+    {
+      "parameters": {
+        "global_match_min": 0.7,
+        "match_margin_min": 0.1,
+        "structural_min": 0.75,
+        "lexical_unchanged_min": 0.55,
+        "group_penalty": 0.05,
+        "gap_penalty": 0.2,
+        "semantic_unchanged_min": 0.85,
+        "maximum_group_size": 3,
+        "margin_axis": "take_a",
+        "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+      },
+      "overall": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6",
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.5694444444444444,
+          "recall": 0.640625,
+          "f1": 0.6029411764705882
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.75,
+            "recall": 0.8571428571428571,
+            "f1": 0.8
+          },
+          "modified": {
+            "precision": 0.4375,
+            "recall": 0.4666666666666667,
+            "f1": 0.45161290322580644
+          },
+          "added": {
+            "precision": 0.2,
+            "recall": 1,
+            "f1": 0.3333333333333333
+          },
+          "deleted": {
+            "precision": 0.1111111111111111,
+            "recall": 1,
+            "f1": 0.2
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.6056416701577991,
+        "macro_operation_f1": 0.6056416701577991
+      },
+      "easy_pairs_1_to_6": {
+        "pair_ids": [
+          "pair-1",
+          "pair-2",
+          "pair-3",
+          "pair-4",
+          "pair-5",
+          "pair-6"
+        ],
+        "relationship": {
+          "precision": 0.5897435897435898,
+          "recall": 0.71875,
+          "f1": 0.647887323943662
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.9285714285714286,
+            "recall": 0.9285714285714286,
+            "f1": 0.9285714285714286
+          },
+          "modified": {
+            "precision": 0.875,
+            "recall": 0.4666666666666667,
+            "f1": 0.6086956521739131
+          },
+          "added": {
+            "precision": 0.2222222222222222,
+            "recall": 1,
+            "f1": 0.36363636363636365
+          },
+          "deleted": {
+            "precision": 0.125,
+            "recall": 1,
+            "f1": 0.2222222222222222
+          },
+          "moved": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "split": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "merged": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "macro_f1_supported": 0.5307814166509819,
+        "macro_operation_f1": 0.3033036666577039
+      },
+      "difficult_development_pairs_7_to_14": {
+        "pair_ids": [
+          "pair-7",
+          "pair-8",
+          "pair-9",
+          "pair-10",
+          "pair-11",
+          "pair-12",
+          "pair-13",
+          "pair-14"
+        ],
+        "relationship": {
+          "precision": 0.5454545454545454,
+          "recall": 0.5625,
+          "f1": 0.5538461538461539
+        },
+        "per_operation": {
+          "unchanged": {
+            "precision": 0.5,
+            "recall": 0.7142857142857143,
+            "f1": 0.5882352941176471
+          },
+          "modified": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "added": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "deleted": {
+            "precision": 0,
+            "recall": 0,
+            "f1": 0
+          },
+          "moved": {
+            "precision": 1,
+            "recall": 0.29411764705882354,
+            "f1": 0.45454545454545453
+          },
+          "split": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "merged": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "supported_operations": [
+          "unchanged",
+          "moved",
+          "split",
+          "merged"
+        ],
+        "macro_f1_supported": 0.7606951871657754,
+        "macro_operation_f1": 0.43468296409472884
+      }
+    }
+  ],
+  "overall": {
+    "pair_ids": [
+      "pair-1",
+      "pair-2",
+      "pair-3",
+      "pair-4",
+      "pair-5",
+      "pair-6",
+      "pair-7",
+      "pair-8",
+      "pair-9",
+      "pair-10",
+      "pair-11",
+      "pair-12",
+      "pair-13",
+      "pair-14"
+    ],
+    "relationship": {
+      "precision": 0.765625,
+      "recall": 0.765625,
+      "f1": 0.765625
+    },
+    "per_operation": {
+      "unchanged": {
+        "precision": 0.75,
+        "recall": 0.8571428571428571,
+        "f1": 0.8
+      },
+      "modified": {
+        "precision": 0.6086956521739131,
+        "recall": 0.9333333333333333,
+        "f1": 0.7368421052631579
+      },
+      "added": {
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "deleted": {
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "moved": {
+        "precision": 1,
+        "recall": 0.35294117647058826,
+        "f1": 0.5217391304347826
+      },
+      "split": {
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "merged": {
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      }
+    },
+    "supported_operations": [
+      "unchanged",
+      "modified",
+      "added",
+      "deleted",
+      "moved",
+      "split",
+      "merged"
+    ],
+    "macro_f1_supported": 0.8655116050997058,
+    "macro_operation_f1": 0.8655116050997058
+  },
+  "easy_pairs_1_to_6": {
+    "pair_ids": [
+      "pair-1",
+      "pair-2",
+      "pair-3",
+      "pair-4",
+      "pair-5",
+      "pair-6"
+    ],
+    "relationship": {
+      "precision": 0.9375,
+      "recall": 0.9375,
+      "f1": 0.9375
+    },
+    "per_operation": {
+      "unchanged": {
+        "precision": 0.9285714285714286,
+        "recall": 0.9285714285714286,
+        "f1": 0.9285714285714286
+      },
+      "modified": {
+        "precision": 0.9333333333333333,
+        "recall": 0.9333333333333333,
+        "f1": 0.9333333333333333
+      },
+      "added": {
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "deleted": {
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "moved": {
+        "precision": 0,
+        "recall": 0,
+        "f1": 0
+      },
+      "split": {
+        "precision": 0,
+        "recall": 0,
+        "f1": 0
+      },
+      "merged": {
+        "precision": 0,
+        "recall": 0,
+        "f1": 0
+      }
+    },
+    "supported_operations": [
+      "unchanged",
+      "modified",
+      "added",
+      "deleted"
+    ],
+    "macro_f1_supported": 0.9654761904761905,
+    "macro_operation_f1": 0.5517006802721088
+  },
+  "difficult_development_pairs_7_to_14": {
+    "pair_ids": [
+      "pair-7",
+      "pair-8",
+      "pair-9",
+      "pair-10",
+      "pair-11",
+      "pair-12",
+      "pair-13",
+      "pair-14"
+    ],
+    "relationship": {
+      "precision": 0.59375,
+      "recall": 0.59375,
+      "f1": 0.59375
+    },
+    "per_operation": {
+      "unchanged": {
+        "precision": 0.5,
+        "recall": 0.7142857142857143,
+        "f1": 0.5882352941176471
+      },
+      "modified": {
+        "precision": 0,
+        "recall": 0,
+        "f1": 0
+      },
+      "added": {
+        "precision": 0,
+        "recall": 0,
+        "f1": 0
+      },
+      "deleted": {
+        "precision": 0,
+        "recall": 0,
+        "f1": 0
+      },
+      "moved": {
+        "precision": 1,
+        "recall": 0.35294117647058826,
+        "f1": 0.5217391304347826
+      },
+      "split": {
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "merged": {
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      }
+    },
+    "supported_operations": [
+      "unchanged",
+      "moved",
+      "split",
+      "merged"
+    ],
+    "macro_f1_supported": 0.7774936061381075,
+    "macro_operation_f1": 0.44428206065034714
+  },
+  "operation_counts_predicted": {
+    "unchanged": 24,
+    "modified": 23,
+    "added": 2,
+    "deleted": 1,
+    "moved": 6,
+    "split": 4,
+    "merged": 4
+  },
+  "detailed_error_report": [
+    {
+      "pair_id": "pair-1",
+      "false_positive_relationships": [],
+      "false_negatives": [],
+      "incorrect_operation_labels": []
+    },
+    {
+      "pair_id": "pair-2",
+      "false_positive_relationships": [],
+      "false_negatives": [],
+      "incorrect_operation_labels": []
+    },
+    {
+      "pair_id": "pair-3",
+      "false_positive_relationships": [],
+      "false_negatives": [],
+      "incorrect_operation_labels": []
+    },
+    {
+      "pair_id": "pair-4",
+      "false_positive_relationships": [],
+      "false_negatives": [],
+      "incorrect_operation_labels": []
+    },
+    {
+      "pair_id": "pair-5",
+      "false_positive_relationships": [],
+      "false_negatives": [],
+      "incorrect_operation_labels": []
+    },
+    {
+      "pair_id": "pair-6",
+      "false_positive_relationships": [
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a1"
+          ],
+          "take_b_segment_ids": [
+            "b1"
+          ]
+        },
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a3"
+          ],
+          "take_b_segment_ids": [
+            "b3"
+          ]
+        }
+      ],
+      "false_negatives": [
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a1"
+          ],
+          "take_b_segment_ids": [
+            "b1"
+          ]
+        },
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a3"
+          ],
+          "take_b_segment_ids": [
+            "b3"
+          ]
+        }
+      ],
+      "incorrect_operation_labels": [
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a1"
+          ],
+          "take_b_segment_ids": [
+            "b1"
+          ]
+        },
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a3"
+          ],
+          "take_b_segment_ids": [
+            "b3"
+          ]
+        }
+      ]
+    },
+    {
+      "pair_id": "pair-7",
+      "false_positive_relationships": [
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a4"
+          ],
+          "take_b_segment_ids": [
+            "b3"
+          ]
+        },
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a5"
+          ],
+          "take_b_segment_ids": [
+            "b4"
+          ]
+        },
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a3"
+          ],
+          "take_b_segment_ids": [
+            "b2"
+          ]
+        }
+      ],
+      "false_negatives": [
+        {
+          "operation": "moved",
+          "take_a_segment_ids": [
+            "a3"
+          ],
+          "take_b_segment_ids": [
+            "b2"
+          ]
+        },
+        {
+          "operation": "moved",
+          "take_a_segment_ids": [
+            "a4"
+          ],
+          "take_b_segment_ids": [
+            "b3"
+          ]
+        },
+        {
+          "operation": "moved",
+          "take_a_segment_ids": [
+            "a5"
+          ],
+          "take_b_segment_ids": [
+            "b4"
+          ]
+        }
+      ],
+      "incorrect_operation_labels": [
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a4"
+          ],
+          "take_b_segment_ids": [
+            "b3"
+          ]
+        },
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a5"
+          ],
+          "take_b_segment_ids": [
+            "b4"
+          ]
+        },
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a3"
+          ],
+          "take_b_segment_ids": [
+            "b2"
+          ]
+        }
+      ]
+    },
+    {
+      "pair_id": "pair-8",
+      "false_positive_relationships": [
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a5"
+          ],
+          "take_b_segment_ids": [
+            "b4"
+          ]
+        },
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a1"
+          ],
+          "take_b_segment_ids": [
+            "b1"
+          ]
+        },
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a3"
+          ],
+          "take_b_segment_ids": [
+            "b2"
+          ]
+        }
+      ],
+      "false_negatives": [
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a1"
+          ],
+          "take_b_segment_ids": [
+            "b1"
+          ]
+        },
+        {
+          "operation": "moved",
+          "take_a_segment_ids": [
+            "a3"
+          ],
+          "take_b_segment_ids": [
+            "b2"
+          ]
+        },
+        {
+          "operation": "moved",
+          "take_a_segment_ids": [
+            "a5"
+          ],
+          "take_b_segment_ids": [
+            "b4"
+          ]
+        }
+      ],
+      "incorrect_operation_labels": [
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a5"
+          ],
+          "take_b_segment_ids": [
+            "b4"
+          ]
+        },
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a1"
+          ],
+          "take_b_segment_ids": [
+            "b1"
+          ]
+        },
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a3"
+          ],
+          "take_b_segment_ids": [
+            "b2"
+          ]
+        }
+      ]
+    },
+    {
+      "pair_id": "pair-9",
+      "false_positive_relationships": [
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a4"
+          ],
+          "take_b_segment_ids": [
+            "b2"
+          ]
+        },
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a5"
+          ],
+          "take_b_segment_ids": [
+            "b4"
+          ]
+        }
+      ],
+      "false_negatives": [
+        {
+          "operation": "moved",
+          "take_a_segment_ids": [
+            "a4"
+          ],
+          "take_b_segment_ids": [
+            "b2"
+          ]
+        },
+        {
+          "operation": "moved",
+          "take_a_segment_ids": [
+            "a5"
+          ],
+          "take_b_segment_ids": [
+            "b4"
+          ]
+        }
+      ],
+      "incorrect_operation_labels": [
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a4"
+          ],
+          "take_b_segment_ids": [
+            "b2"
+          ]
+        },
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a5"
+          ],
+          "take_b_segment_ids": [
+            "b4"
+          ]
+        }
+      ]
+    },
+    {
+      "pair_id": "pair-10",
+      "false_positive_relationships": [
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a1"
+          ],
+          "take_b_segment_ids": [
+            "b1"
+          ]
+        },
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a2"
+          ],
+          "take_b_segment_ids": [
+            "b3"
+          ]
+        },
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a3"
+          ],
+          "take_b_segment_ids": [
+            "b4"
+          ]
+        },
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a4"
+          ],
+          "take_b_segment_ids": [
+            "b5"
+          ]
+        }
+      ],
+      "false_negatives": [
+        {
+          "operation": "moved",
+          "take_a_segment_ids": [
+            "a1"
+          ],
+          "take_b_segment_ids": [
+            "b1"
+          ]
+        },
+        {
+          "operation": "moved",
+          "take_a_segment_ids": [
+            "a2"
+          ],
+          "take_b_segment_ids": [
+            "b3"
+          ]
+        },
+        {
+          "operation": "moved",
+          "take_a_segment_ids": [
+            "a3"
+          ],
+          "take_b_segment_ids": [
+            "b4"
+          ]
+        },
+        {
+          "operation": "moved",
+          "take_a_segment_ids": [
+            "a4"
+          ],
+          "take_b_segment_ids": [
+            "b5"
+          ]
+        }
+      ],
+      "incorrect_operation_labels": [
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a1"
+          ],
+          "take_b_segment_ids": [
+            "b1"
+          ]
+        },
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a2"
+          ],
+          "take_b_segment_ids": [
+            "b3"
+          ]
+        },
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a3"
+          ],
+          "take_b_segment_ids": [
+            "b4"
+          ]
+        },
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a4"
+          ],
+          "take_b_segment_ids": [
+            "b5"
+          ]
+        }
+      ]
+    },
+    {
+      "pair_id": "pair-11",
+      "false_positive_relationships": [],
+      "false_negatives": [],
+      "incorrect_operation_labels": []
+    },
+    {
+      "pair_id": "pair-12",
+      "false_positive_relationships": [
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a4"
+          ],
+          "take_b_segment_ids": [
+            "b6"
+          ]
+        }
+      ],
+      "false_negatives": [
+        {
+          "operation": "unchanged",
+          "take_a_segment_ids": [
+            "a4"
+          ],
+          "take_b_segment_ids": [
+            "b6"
+          ]
+        }
+      ],
+      "incorrect_operation_labels": [
+        {
+          "operation": "modified",
+          "take_a_segment_ids": [
+            "a4"
+          ],
+          "take_b_segment_ids": [
+            "b6"
+          ]
+        }
+      ]
+    },
+    {
+      "pair_id": "pair-13",
+      "false_positive_relationships": [],
+      "false_negatives": [],
+      "incorrect_operation_labels": []
+    },
+    {
+      "pair_id": "pair-14",
+      "false_positive_relationships": [],
+      "false_negatives": [],
+      "incorrect_operation_labels": []
+    }
+  ],
+  "comparison_to_baseline_v1": {
+    "overall_relationship_f1_delta": 0.23621323529411764,
+    "overall_macro_f1_supported_delta": 0.46460657588673754,
+    "difficult_relationship_f1_delta": 0.42708333333333337,
+    "difficult_macro_f1_supported_delta": 0.6774936061381075
+  },
+  "comparison_to_speech_diff_v1": {
+    "overall_relationship_f1_delta": 0.11483134920634919,
+    "overall_macro_f1_supported_delta": 0.31281909157487897,
+    "difficult_relationship_f1_delta": 0.18105158730158732,
+    "difficult_macro_f1_supported_delta": 0.19416027280477421
+  },
+  "success_conditions": {
+    "checks": {
+      "moved_f1": {
+        "threshold": 0.4,
+        "actual": 0.5217391304347826,
+        "passed": true
+      },
+      "deleted_f1": {
+        "threshold": 0,
+        "actual": 1,
+        "passed": true
+      },
+      "split_f1": {
+        "threshold": 0.7,
+        "actual": 1,
+        "passed": true
+      },
+      "merged_f1": {
+        "threshold": 0.6,
+        "actual": 1,
+        "passed": true
+      },
+      "difficult_relationship_f1": {
+        "threshold": 0.4126984126984127,
+        "actual": 0.59375,
+        "passed": true
+      },
+      "difficult_macro_f1_supported": {
+        "threshold": 0.5833333333333333,
+        "actual": 0.7774936061381075,
+        "passed": true
+      },
+      "overall_relationship_f1": {
+        "threshold": 0.6,
+        "actual": 0.765625,
+        "passed": true
+      }
+    },
+    "passed": true
+  }
+}

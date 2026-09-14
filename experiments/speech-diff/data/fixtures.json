@@ -1,0 +1,50 @@
+{
+  "schema_version": "speech-diff/v1",
+  "pairs": [
+    {
+      "pair_id": "pair-1",
+      "take_a": { "segments": [
+        { "segment_id": "a1", "text": "We need a clear plan." },
+        { "segment_id": "a2", "text": "The team will review it Friday." }
+      ] },
+      "take_b": { "segments": [
+        { "segment_id": "b1", "text": "We need a clear plan." },
+        { "segment_id": "b2", "text": "The team will review it on Friday." }
+      ] },
+      "relationships": [
+        { "operation": "unchanged", "take_a_segment_ids": ["a1"], "take_b_segment_ids": ["b1"] },
+        { "operation": "unchanged", "take_a_segment_ids": ["a2"], "take_b_segment_ids": ["b2"] }
+      ]
+    },
+    {
+      "pair_id": "pair-2",
+      "take_a": { "segments": [{ "segment_id": "a1", "text": "The launch is next month." }] },
+      "take_b": { "segments": [{ "segment_id": "b1", "text": "We are moving the launch to next month." }] },
+      "relationships": [{ "operation": "modified", "take_a_segment_ids": ["a1"], "take_b_segment_ids": ["b1"] }]
+    },
+    {
+      "pair_id": "pair-3",
+      "take_a": { "segments": [{ "segment_id": "a1", "text": "Call the client." }, { "segment_id": "a2", "text": "Send the revised proposal." }] },
+      "take_b": { "segments": [{ "segment_id": "b1", "text": "Send the revised proposal." }, { "segment_id": "b2", "text": "Call the client." }] },
+      "relationships": [{ "operation": "moved", "take_a_segment_ids": ["a1"], "take_b_segment_ids": ["b2"] }, { "operation": "moved", "take_a_segment_ids": ["a2"], "take_b_segment_ids": ["b1"] }]
+    },
+    {
+      "pair_id": "pair-4",
+      "take_a": { "segments": [{ "segment_id": "a1", "text": "We should test the release." }] },
+      "take_b": { "segments": [{ "segment_id": "b1", "text": "We should test the release." }, { "segment_id": "b2", "text": "We should test it with users." }] },
+      "relationships": [{ "operation": "split", "take_a_segment_ids": ["a1"], "take_b_segment_ids": ["b1", "b2"] }]
+    },
+    {
+      "pair_id": "pair-5",
+      "take_a": { "segments": [{ "segment_id": "a1", "text": "The build is green." }, { "segment_id": "a2", "text": "All checks passed." }] },
+      "take_b": { "segments": [{ "segment_id": "b1", "text": "The build is green and all checks passed." }] },
+      "relationships": [{ "operation": "merged", "take_a_segment_ids": ["a1", "a2"], "take_b_segment_ids": ["b1"] }]
+    },
+    {
+      "pair_id": "pair-6",
+      "take_a": { "segments": [{ "segment_id": "a1", "text": "We ship on Tuesday." }] },
+      "take_b": { "segments": [{ "segment_id": "b1", "text": "We ship on Tuesday." }, { "segment_id": "b2", "text": "The demo is optional." }] },
+      "relationships": [{ "operation": "unchanged", "take_a_segment_ids": ["a1"], "take_b_segment_ids": ["b1"] }, { "operation": "added", "take_a_segment_ids": [], "take_b_segment_ids": ["b2"] }]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { runSpeechCI, compareRuns, splitChunks } from "../src/engine.js";
+import { validateTest } from "../src/schema.js";
+
+const embedder = async (texts) => Object.fromEntries(texts.map((text) => { const s = text.toLowerCase(); return [text, [s.includes("problem") || s.includes("manual"), s.includes("solution") || s.includes("product"), s.includes("traction") || /\d/.test(s), s.includes("forbidden"), s.includes("chatgpt") || s.includes("difference")]]; }));
+const make = (tests, transcript = "The problem is manual work. The product is a solution. We have 25 users. ChatGPT is different from us.") => runSpeechCI({ take_id: "t", duration_seconds: 55, transcript, tests }, { embedder });
+test("stable sentence chunks", () => assert.deepEqual(splitChunks("One. Two, then three."), [{ index: 0, text: "One." }, { index: 1, text: "Two," }, { index: 2, text: "then three." }]));
+test("duration", async () => assert.equal((await make([{ id: "duration", type: "duration_max", name: "Duration", config: { max_seconds: 60 } }])).results[0].passed, true));
+test("semantic presence and absence", async () => { const r = await make([{ id: "presence", type: "semantic_presence", name: "P", config: { concept: "problem" } }, { id: "absence", type: "semantic_absence", name: "A", config: { concept: "forbidden" } }]); assert.deepEqual(r.results.map((x) => x.passed), [true, true]); });
+test("semantic ordering", async () => { const r = await make([{ id: "ordering", type: "semantic_order", name: "Order", config: { before: "problem", after: "solution" } }]); assert.equal(r.results[0].passed, true); });
+test("numeric evidence", async () => assert.equal((await make([{ id: "numeric", type: "numeric_evidence", name: "Evidence", config: { concept: "traction", window_chunks: 1 } }])).results[0].passed, true));
+test("phrase count and fillers", async () => { const r = await make([{ id: "phrases", type: "phrase_count_max", name: "Phrase", config: { phrase: "the", max_count: 1 } }, { id: "fillers", type: "filler_limit", name: "Fillers", config: { fillers: ["um"], max_count: 0 } }], "Um, the problem is here. The product works."); assert.deepEqual(r.results.map((x) => x.passed), [false, false]); });
+test("concept coverage", async () => assert.equal((await make([{ id: "coverage", type: "concept_coverage", name: "Coverage", config: { concepts: ["problem", "product"], mode: "ALL" } }])).results[0].passed, true));
+test("fix, regression, unchanged, new and removed classifications", () => { const a = { passed: 1, results: [{ id: "fixed", name: "F", passed: false }, { id: "reg", name: "R", passed: true }, { id: "same", name: "S", passed: true }, { id: "removed", name: "X", passed: true }] }; const b = { passed: 1, results: [{ id: "fixed", name: "F", passed: true }, { id: "reg", name: "R", passed: false }, { id: "same", name: "S", passed: true }, { id: "new", name: "N", passed: false }] }; const d = compareRuns(a, b); assert.deepEqual(d.changes.map((x) => x.classification), ["fixed", "regression", "still_passing", "new_test", "removed_test"]); });
+test("malformed schema", () => assert.throws(() => validateTest({ id: "Bad ID", type: "duration_max", name: "x", config: { max_seconds: 1 } }), /stable ID/));
+test("deterministic repeatability with cached embedding provider", async () => { const suite = [{ id: "repeat", type: "semantic_presence", name: "P", config: { concept: "problem" } }]; assert.deepEqual(await make(suite), await make(suite)); });

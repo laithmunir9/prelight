@@ -1,0 +1,15 @@
+{
+  "algorithm_version": "speech-diff-v1.1",
+  "global_match_min": [0.4, 0.5, 0.6, 0.7],
+  "match_margin_min": [0, 0.03, 0.06, 0.1],
+  "fixed_parameters": {
+    "structural_min": 0.75,
+    "lexical_unchanged_min": 0.55,
+    "group_penalty": 0.05,
+    "gap_penalty": 0.2,
+    "semantic_unchanged_min": 0.85,
+    "maximum_group_size": 3,
+    "margin_axis": "take_a",
+    "weighted_lis_tie_break": "higher total semantic weight, then longer subsequence, then lexicographically smaller B-position sequence"
+  }
+}

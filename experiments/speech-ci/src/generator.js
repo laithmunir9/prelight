@@ -1,0 +1,6 @@
+import { validateSuite } from "./schema.js";
+export async function suggestTests({ context, goal, apiKey = process.env.OPENAI_API_KEY, baseUrl = "https://api.openai.com/v1" }) {
+  if (!apiKey) throw new Error("OPENAI_API_KEY is required for test generation");
+  const response = await fetch(`${baseUrl}/chat/completions`, { method: "POST", headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" }, body: JSON.stringify({ model: "gpt-5.5", response_format: { type: "json_object" }, messages: [{ role: "system", content: "Return ONLY one JSON object with exactly one key: tests. tests must be an array. Every array item must have exactly these four keys and no others: id, type, name, config. Do not add requirement, description, rationale, query, seconds, or any other keys. Types must be one of duration_max, semantic_presence, semantic_absence, semantic_order, numeric_evidence, phrase_count_max, filler_limit, concept_coverage. Never evaluate a take." }, { role: "user", content: JSON.stringify({ context, goal }) }] }) });
+  if (!response.ok) throw new Error(`Test generation failed: ${(await response.text()).slice(0, 300)}`); const payload = await response.json(); const parsed = JSON.parse(payload.choices[0].message.content); validateSuite(parsed.tests); return parsed.tests;
+}
