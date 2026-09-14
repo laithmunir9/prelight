@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/studio.css" />
-  <style>
+  <style id="legacyStyles" media="not all">
     :root {
       --bad: #c0453a;
       --r: 20px;
@@ -655,7 +655,7 @@
     }
   </style>
 </head>
-<body>
+<body class="prelight-page">
   <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
     <defs>
       <filter id="sketchWobble" x="-20%" y="-30%" width="140%" height="160%">
@@ -698,6 +698,7 @@
 <script src="/sessionReplay.js"></script>
 <script src="/speakingProfile.js"></script>
 <script src="/speechProfiler.js"></script>
+<script src="/studioState.js"></script>
 <script src="/studio.js"></script>
 <script>
 const S = {
@@ -950,7 +951,9 @@ function status(msg) {
 }
 
 function render() {
-  if (S.screen === "studio") { renderStudio(); return; }
+  if (S.screen === "studio") { document.getElementById("legacyStyles").media = "not all"; renderStudio(); return; }
+  document.getElementById("legacyStyles").media = "all";
+  document.body.classList.remove("prelight-page");
   document.body.classList.toggle("landing-page", S.screen === "gate");
   if (S.screen === "picker") renderPicker();
   else if (S.screen === "soundcheck") renderSoundcheck();
@@ -989,12 +992,12 @@ function renderGate() {
 function openAuth(mode) {
   S.authMode = mode;
   S.authOpen = true;
-  renderGate();
+  render();
 }
 
 function closeAuth() {
   S.authOpen = false;
-  renderGate();
+  render();
 }
 
 function renderAuthDialog() {
@@ -1042,8 +1045,7 @@ function renderAuthDialog() {
       S.student = j.student;
       S.screen = "studio";
       S.authOpen = false;
-      render();
-      renderHeaderUser();
+      location.assign("/studio");
     } catch (e) { err(e); }
   };
 }
@@ -2350,16 +2352,17 @@ function improvementNote(history) {
 }
 
 (async () => {
+  render();
   if (S.token) {
     try {
       const j = await api("/api/student/me");
       S.student = j.student;
-      S.screen = "picker";
+      S.screen = "studio";
       await loadServerHistory();
     } catch {
       localStorage.removeItem("greenRoomToken");
       S.token = "";
-      S.screen = "gate";
+      S.screen = "studio";
     }
   }
   render();
