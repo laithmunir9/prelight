@@ -57,6 +57,8 @@ Apply `supabase/migrations/20260829000001_create_practice_sessions.sql` manually
 
 The public GitHub Actions workflow in `.github/workflows/supabase-keepalive.yml` sends a harmless Supabase query every four days. Apply the keepalive migration to the hosted project, then add `SUPABASE_URL` and either `SUPABASE_PUBLISHABLE_KEY` (current) or `SUPABASE_ANON_KEY` (legacy) as repository Actions secrets before enabling it. The workflow prints the Supabase response when the RPC is missing or inaccessible.
 
+Migrations are deployed automatically by `.github/workflows/supabase-migrations.yml` when migration files change on `main`. Add `SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`, and `SUPABASE_PROJECT_ID` as repository Actions secrets once. The publishable/anon key must not be used for migrations because it cannot change the database schema.
+
 Start the app:
 
 ```bash
