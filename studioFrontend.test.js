@@ -146,3 +146,21 @@ test('guided steps follow actual take state and can be dismissed',()=>{
  }
  assert.doesNotMatch(boot('/studio','?demo=1&tour=1').html,/Speaking tutorial/);
 });
+
+test('comparison summary describes direction, ties and unavailable measurements accurately',()=>{
+  const cases=[
+    [{duration:78,longPauseCount:5},{duration:72,longPauseCount:3},'6 seconds shorter; 2 fewer long pauses'],
+    [{duration:72,longPauseCount:3},{duration:73,longPauseCount:4},'1 second longer; 1 more long pause'],
+    [{duration:72.1,longPauseCount:0},{duration:72.2,longPauseCount:0},'about the same length; the same number of long pauses'],
+    [{duration:78,longPauseCount:null},{duration:72,longPauseCount:null},'6 seconds shorter.'],
+  ];
+  for(const [from,to,expected] of cases){
+    const app=boot('/studio','?workspace=Speech',{prelightStudioTakes:JSON.stringify([
+      {id:'a',label:'Earlier',workspace:'Speech',features:{...features,...from}},
+      {id:'b',label:'<Latest>',workspace:'Speech',features:{...features,...to}}
+    ])});
+    app.node('compareBtn').listeners.click();
+    assert.ok(app.html.includes(`&lt;Latest&gt; compared with Earlier: ${expected}`));
+    assert.doesNotMatch(app.html,/<Latest>|NaN/);
+  }
+});

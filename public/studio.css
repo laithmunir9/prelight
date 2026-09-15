@@ -456,3 +456,9 @@ body.prelight-page #main { display:block; }
 @media (max-width:680px) {
   .prelight-studio .pl-simple .pl-topbar > .pl-actions .pl-btn { font-size:13px; }
 }
+
+/* Explain the trace and next action without adding another panel. */
+.prelight-studio .pl-reading-help { color:#c0c7d7; font-size:14px; line-height:1.65; max-width:720px; margin:0 0 16px; }
+.prelight-studio .pl-next-step { color:#f8f4ed; font-size:14px; line-height:1.65; margin:0 0 22px; }
+.prelight-studio .pl-comparison-summary { color:#f8f4ed; font-size:20px; line-height:1.5; max-width:760px; margin:0 0 26px; overflow-wrap:anywhere; }
+.prelight-studio .pl-first-use .pl-empty p { color:#c0c7d7; line-height:1.65; }

@@ -51,7 +51,7 @@
       <section class="pl-landing-content" ${introStep?'inert':''}>
         <div class="pl-mascot-greeting"><span>Hi, I’m Prelight.</span><img class="pl-hero-mark" src="/prelight-mascot.png" width="144" height="144" alt="Prelight mascot"/></div>
         <h1>A little practice.<br/>A <em>clearer voice.</em></h1>
-        <p class="pl-landing-copy">Record. Look back. Try again.<br/>See what changes between takes.</p>
+        <p class="pl-landing-copy">Practice a pitch, an interview answer, or a speech.<br/>Record it twice. See how your delivery changes.</p>
         <button class="pl-btn pl-primary pl-start-tutorial" id="startTutorial">Show me how</button>
         <a class="pl-skip-intro" href="/studio">Go straight to Studio</a>
         <p class="pl-signin-line">Already have an account? <button id="studioSignIn">Sign in</button></p>
@@ -67,7 +67,7 @@
     return `<div class="pl-intro-backdrop"><section class="pl-intro-dialog" id="introDialog" role="dialog" aria-modal="true" aria-labelledby="introTitle">
       <button class="pl-intro-close" id="introClose" aria-label="Close introduction">×</button>
       <img src="/prelight-mascot.png" width="112" height="112" alt=""/>
-      <h2 id="introTitle">Your next take starts here.</h2><p>Start with something you want to say. Record it, look back, then try again.</p><button class="pl-btn pl-primary" id="introContinue">Open my workspace</button>
+      <h2 id="introTitle">Your next take starts here.</h2><p>Say a short pitch or answer out loud. You’ll see where you pause and how your voice moves. Say it again, then compare the two versions.</p><button class="pl-btn pl-primary" id="introContinue">Open my workspace</button>
     </section></div>`;
   }
   function closeIntro() {introStep=null;renderLanding();document.getElementById('startTutorial').focus();}
@@ -102,10 +102,10 @@
     if(!guided)return '';
     const step=takes.length===0?1:takes.length===1?2:mode==='compare'?4:3;
     const [title,copy,action]=[
-      ['Record your first take','Pick a short thought and say it out loud. You can stop whenever you like.','Record your first take'],
-      ['See what happened','Energy shows emphasis. Pitch shows how your voice moves. The blocks mark pauses. Try the same thought again.','Record another take'],
+      ['Record your first take','A take is one recording. Say a short version of your pitch or answer, then stop to see your delivery.','Record your first take'],
+      ['See what happened','This is a picture of your delivery. Look for pauses and changes in your voice, then record the same words again to compare.','Record another take'],
       ['What changed?','You have two versions. Put them side by side to see what changed in your delivery.','Compare with previous'],
-      ['A little clearer, take by take','That’s the loop: record, inspect, try again, compare. Your takes are here whenever you want another run.','Finish tutorial']
+      ['A little clearer, take by take','Read what changed below. Decide which delivery fits what you want to say, then record another version whenever you’re ready.','Finish tutorial']
     ][step-1];
     return `<aside class="pl-guide" aria-label="Speaking tutorial"><img src="/prelight-mascot.png" width="76" height="76" alt=""/><div class="pl-guide-body"><div class="pl-guide-meta">Prelight <span>Step ${step} of 4</span><button id="exitGuide" aria-label="Exit tutorial">×</button></div><h2>${title}</h2><p>${copy}</p><button class="pl-btn pl-primary" id="guideAction">${action}</button></div></aside>`;
   }
@@ -118,11 +118,24 @@
     const pauseBlocks = f.pauses.map(p=>`<rect x="${p.start/f.duration*1000}" y="0" width="${p.duration/f.duration*1000}" height="110" class="pl-pause"/>`).join('');
     return `<div class="pl-timeline pl-selectable" tabindex="0" aria-label="Synchronized energy, pitch and pause timeline. Drag to select a range. Escape clears selection." data-duration="${f.duration}"><div class="pl-selection" hidden></div><div class="pl-track"><div class="pl-track-label">Energy</div><svg viewBox="0 0 1000 110" preserveAspectRatio="none" role="img" aria-label="Energy over time">${pauseBlocks}<polyline class="pl-energy" points="${points(f.energy)}"/></svg></div><div class="pl-track"><div class="pl-track-label">Pitch</div><svg viewBox="0 0 1000 110" preserveAspectRatio="none" role="img" aria-label="Pitch over time">${pauseBlocks}<polyline class="pl-pitch" points="${points(f.pitch)}"/></svg></div><div class="pl-track pl-pause-track"><div class="pl-track-label">Pauses</div><svg viewBox="0 0 1000 110" preserveAspectRatio="none" role="img" aria-label="Silent regions">${pauseBlocks}</svg></div><div class="pl-ticks">${Array.from({length:5},(_,i)=>`<span>${time(f.duration*i/4)}</span>`).join('')}</div></div>`;
   }
+  function comparisonSummary(previous, active) {
+    const a = previous.features, b = active.features;
+    const changes = [];
+    if (Number.isFinite(a.duration) && Number.isFinite(b.duration)) {
+      const seconds = Math.round(b.duration) - Math.round(a.duration);
+      changes.push(seconds === 0 ? 'about the same length' : `${Math.abs(seconds)} ${Math.abs(seconds) === 1 ? 'second' : 'seconds'} ${seconds < 0 ? 'shorter' : 'longer'}`);
+    }
+    if (Number.isFinite(a.longPauseCount) && Number.isFinite(b.longPauseCount)) {
+      const pauses = b.longPauseCount - a.longPauseCount;
+      changes.push(pauses === 0 ? 'the same number of long pauses' : `${Math.abs(pauses)} ${pauses < 0 ? 'fewer' : 'more'} long ${Math.abs(pauses) === 1 ? 'pause' : 'pauses'}`);
+    }
+    return changes.length ? `${escape(active.label)} compared with ${escape(previous.label)}: ${changes.join('; ')}.` : 'See the measurements below to compare these takes.';
+  }
   function diffCanvas(previous, active) {
     const a = previous.features, b = active.features;
     const alignment = window.SpeechProfiler.compareTakes(previous,active);
     const aligned = (feature, side, kind) => alignment.path.map(pair => feature[kind][pair[side]]);
-    return `<div class="pl-canvas-heading"><div><div class="pl-eyebrow">Compare takes</div><h2>${escape(previous.label)} <span class="pl-muted">→</span> ${escape(active.label)}</h2></div><label class="pl-compare-picker">Compare with<select id="compareTake">${takes.filter(t=>t.id!==active.id).map(t=>`<option value="${escape(t.id)}" ${t.id===previous.id?'selected':''}>${escape(t.label)}</option>`).join('')}</select></label></div><div class="pl-diff-metrics">${[['Duration',time(a.duration),time(b.duration)],['Silence',`${fmt(a.silenceRatio*100)}%`,`${fmt(b.silenceRatio*100)}%`],['Long pauses',a.longPauseCount,b.longPauseCount],['Pitch variation',`${fmt(a.pitchVariability,0)} Hz`,`${fmt(b.pitchVariability,0)} Hz`]].map(([label,from,to])=>`<div><span>${label}</span><strong>${from} <i>→</i> ${to}</strong></div>`).join('')}</div><div class="pl-alignment-title"><h3>Your takes overlaid</h3></div><div class="pl-timeline pl-aligned">${['energy','pitch'].map(kind=>`<div class="pl-track"><div class="pl-track-label">${kind}</div><svg viewBox="0 0 1000 110" preserveAspectRatio="none" role="img" aria-label="${kind} comparison"><polyline class="pl-previous" points="${points(aligned(a,0,kind))}"/><polyline class="pl-energy" points="${points(aligned(b,1,kind))}"/></svg></div>`).join('')}<div class="pl-ticks"><span>Start</span><span>End</span></div></div><div class="pl-legend"><span><i class="pl-key-previous"></i>${escape(previous.label)}</span><span><i></i>${escape(active.label)}</span></div>`;
+    return `<div class="pl-canvas-heading"><div><div class="pl-eyebrow">Compare takes</div><h2>${escape(previous.label)} <span class="pl-muted">→</span> ${escape(active.label)}</h2></div><label class="pl-compare-picker">Compare with<select id="compareTake">${takes.filter(t=>t.id!==active.id).map(t=>`<option value="${escape(t.id)}" ${t.id===previous.id?'selected':''}>${escape(t.label)}</option>`).join('')}</select></label></div><p class="pl-comparison-summary">${comparisonSummary(previous,active)}</p><div class="pl-diff-metrics">${[['Duration',time(a.duration),time(b.duration)],['Silence',`${fmt(a.silenceRatio*100)}%`,`${fmt(b.silenceRatio*100)}%`],['Long pauses',a.longPauseCount,b.longPauseCount],['Pitch variation',`${fmt(a.pitchVariability,0)} Hz`,`${fmt(b.pitchVariability,0)} Hz`]].map(([label,from,to])=>`<div><span>${label}</span><strong>${from} <i>→</i> ${to}</strong></div>`).join('')}</div><div class="pl-alignment-title"><h3>Your takes overlaid</h3></div><p class="pl-reading-help">Follow each color to see where your delivery changed. Shorter or fewer pauses isn’t always better—choose what fits your message.</p><div class="pl-timeline pl-aligned">${['energy','pitch'].map(kind=>`<div class="pl-track"><div class="pl-track-label">${kind}</div><svg viewBox="0 0 1000 110" preserveAspectRatio="none" role="img" aria-label="${kind} comparison"><polyline class="pl-previous" points="${points(aligned(a,0,kind))}"/><polyline class="pl-energy" points="${points(aligned(b,1,kind))}"/></svg></div>`).join('')}<div class="pl-ticks"><span>Start</span><span>End</span></div></div><div class="pl-legend"><span><i class="pl-key-previous"></i>${escape(previous.label)}</span><span><i></i>${escape(active.label)}</span></div>`;
   }
   function render() {
     if (!/^\/studio\/?$/.test(location.pathname)) { renderLanding(); return; }
@@ -149,17 +162,19 @@
       ${f?`<aside class="pl-rail"><div class="pl-rail-heading"><h2>Takes</h2></div><div class="pl-takes">${takes.slice().reverse().map(t=>`<button class="pl-take ${t.id===selected?'pl-active':''}" data-take="${escape(t.id)}" aria-pressed="${t.id===selected}"><span><strong>${escape(t.label)}</strong><small>${time(t.features.duration)}</small></span></button>`).join('')}</div><button class="pl-text-btn pl-new" id="newTake">＋ ${demo?'Start your workspace':'New take'}</button></aside>`:''}
       <section class="pl-canvas">${guideHtml()}${f?(isComparing?diffCanvas(previous,active):`
         <div class="pl-canvas-heading"><div><div class="pl-eyebrow">${escape(active.label)}</div><h2>Performance trace</h2></div></div>
+        <p class="pl-reading-help">Energy shows how loud your voice is. Pitch shows its ups and downs. Blocks mark pauses.</p>
+        ${!guided?`<p class="pl-next-step">${takes.length===1?'Next: record the same pitch or answer again, then compare the two takes.':'Next: compare this take with another to see what changed.'}</p>`:''}
         ${timeline(f)}
         <div class="pl-canvas-foot"><span>Drag to select · Arrow keys to adjust · Esc to clear</span><span class="pl-inspector-range" aria-live="polite"></span></div>
         <dl class="pl-headline-metrics">${metricRows([['Duration',time(f.duration)],['Pauses',f.pauses.length],['Silence',fmt(f.silenceRatio*100),'%'],['Pitch variation',fmt(f.pitchVariability,0),'Hz']])}</dl>
         <details class="pl-details"><summary>View details</summary><div class="pl-inspector"><p class="pl-metrics-scope">Whole take</p><dl class="pl-metrics">${metricRows([['Median pitch',fmt(f.medianPitch,0),'Hz'],['Long pauses',f.longPauseCount]])}</dl><p class="pl-inspector-note">These measurements describe the whole take, including when a region is selected.</p></div></details>
         ${demo?'<p class="pl-demo-note">Example recordings. Start your workspace to record your own.</p>':''}
-      `):`<div class="pl-empty"><img class="pl-character" src="/prelight-mascot.png" width="88" height="88" alt=""/><h2>Record your first take</h2><p>Record yourself. See what happened. Try again. Compare.</p><button class="pl-btn pl-primary" id="firstTake">Record your first take</button></div>`}</section>
+      `):`<div class="pl-empty"><img class="pl-character" src="/prelight-mascot.png" width="88" height="88" alt=""/><h2>Record your first take</h2><p>A take is one recording. Say a short version of your pitch or answer. Then record it again to see what changes.</p><button class="pl-btn pl-primary" id="firstTake">Record your first take</button></div>`}</section>
       </div>${modalHtml()}</div>`;
     bind();
   }
   function modalHtml() {
-    return modal ? `<div class="pl-modal"><form class="pl-dialog" id="takeDialog" role="dialog" aria-modal="true" aria-labelledby="takeDialogTitle"><img class="pl-character" src="/prelight-mascot.png" width="72" height="72" alt=""/><h2 id="takeDialogTitle">Ready when you are.</h2><p>Start recording when you’re ready to speak.</p><label for="takeName">Take name</label><input id="takeName" value="Take ${takes.length+1}" maxlength="100"/><div class="pl-actions"><button type="button" class="pl-btn" id="cancelTake">Cancel</button><button class="pl-btn pl-primary" id="recordTake" type="submit">Record new take</button></div><p id="recordStatus" role="status" aria-live="polite">Microphone access is requested only when you record.</p></form></div>` : '';
+    return modal ? `<div class="pl-modal"><form class="pl-dialog" id="takeDialog" role="dialog" aria-modal="true" aria-labelledby="takeDialogTitle"><img class="pl-character" src="/prelight-mascot.png" width="72" height="72" alt=""/><h2 id="takeDialogTitle">Ready when you are.</h2><p>${takes.length?'Say the same pitch or answer again. Stop when you’re done, then compare your delivery.':'Say your pitch or answer out loud. Stop when you’re done to see where you paused and how your voice moved.'}</p><label for="takeName">Take name</label><input id="takeName" value="Take ${takes.length+1}" maxlength="100"/><div class="pl-actions"><button type="button" class="pl-btn" id="cancelTake">Cancel</button><button class="pl-btn pl-primary" id="recordTake" type="submit">Record new take</button></div><p id="recordStatus" role="status" aria-live="polite">Microphone access is requested only when you record.</p></form></div>` : '';
   }
   async function startRecording() {
     if (recordingState !== 'idle') return;
