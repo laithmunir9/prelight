@@ -1,8 +1,8 @@
 /* These screens own their typography and layout. Legacy styles are disabled here. */
-body.prelight-page { margin:0; background:#131416; color:#ededef; }
+body.prelight-page { margin:0; background:#20263f; color:#f8f4ed; }
 body.prelight-page > .shell > header { display:none; }
 body.prelight-page #main { display:block; }
-.prelight-landing, .prelight-studio { --pl-bg:#131416; --pl-line:#ffffff12; --pl-muted:#94959c; --pl-accent:#d57455; font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:#ededef; background:var(--pl-bg); letter-spacing:-.015em; }
+.prelight-landing, .prelight-studio { --pl-bg:#20263f; --pl-line:#f8f4ed20; --pl-muted:#b8bfd0; --pl-accent:#d57455; font:14px/1.5 "IBM Plex Sans",system-ui,sans-serif; color:#f8f4ed; background:var(--pl-bg); letter-spacing:-.015em; }
 :is(.prelight-landing,.prelight-studio) * { box-sizing:border-box; }
 :is(.prelight-landing,.prelight-studio) :is(h1,h2,h3,p) { margin:0; font-family:inherit; }
 :is(.prelight-landing,.prelight-studio) :is(button,input,select) { font:inherit; color:inherit; letter-spacing:inherit; }
@@ -18,24 +18,24 @@ body.prelight-page #main { display:block; }
 :is(.prelight-landing,.prelight-studio) .pl-btn:disabled { opacity:.35; cursor:default; }
 :is(.prelight-landing,.prelight-studio) .pl-text-btn { padding:8px; border:0; background:none; color:#aaaab1; font-size:13px; }
 :is(.prelight-landing,.prelight-studio) .pl-text-btn:hover { color:#fff; }
-:is(.prelight-landing,.prelight-studio) input { min-width:0; border:1px solid #ffffff1c; border-radius:7px; background:#1b1c1f; padding:13px 15px; outline-offset:2px; }
+:is(.prelight-landing,.prelight-studio) input { min-width:0; border:1px solid #ffffff1c; border-radius:7px; background:#272e49; padding:13px 15px; outline-offset:2px; }
 :is(.prelight-landing,.prelight-studio) input::placeholder { color:#777981; }
 .prelight-landing { min-height:100svh; display:flex; flex-direction:column; }
 .prelight-landing .pl-landing-nav { display:flex; align-items:center; justify-content:space-between; padding:30px 48px; }
-.prelight-landing .pl-nav-note { color:#777980; font-size:12px; }
+.prelight-landing .pl-nav-note { color:#aab2c5; font-size:12px; }
 .prelight-landing .pl-landing-content { width:min(860px,100%); margin:auto; padding:42px 24px 85px; text-align:center; }
 .prelight-landing .pl-hero-mark { width:116px; height:116px; margin-bottom:33px; }
 .prelight-landing h1 { font-size:clamp(42px,5.4vw,76px); font-weight:500; line-height:1.1; letter-spacing:-.065em; }
-.prelight-landing .pl-landing-copy { margin:22px 0 49px; font-size:17px; color:#999aa1; letter-spacing:-.02em; }
+.prelight-landing .pl-landing-copy { margin:22px 0 49px; font-size:17px; color:#b8bfd0; letter-spacing:-.02em; }
 .prelight-landing .pl-practice-form { max-width:560px; margin:0 auto; text-align:left; }
 .prelight-landing .pl-practice-form label { display:block; margin:0 0 12px 2px; color:#bfc0c5; font-size:12px; }
-.prelight-landing .pl-input-wrap { display:flex; align-items:center; padding:7px; border:1px solid #ffffff20; border-radius:11px; background:#1c1d20; box-shadow:0 8px 32px #0002; }
-.prelight-landing .pl-input-wrap > span { margin:0 8px 0 11px; font-size:23px; color:#75777e; }
+.prelight-landing .pl-input-wrap { display:flex; align-items:center; padding:7px; border:1px solid #ffffff20; border-radius:11px; background:#272e49; box-shadow:0 8px 32px #0002; }
+.prelight-landing .pl-input-wrap > span { margin:0 8px 0 11px; font-size:23px; color:#aab2c5; }
 .prelight-landing .pl-input-wrap input { width:100%; border:0; background:none; padding:10px 6px; font-size:15px; }
 .prelight-landing .pl-input-wrap:focus-within { border-color:#d5745580; }
 .prelight-landing .pl-input-wrap .pl-btn { min-height:43px; }
 .prelight-landing #studioSignIn { margin-top:19px; }
-.prelight-landing .pl-landing-footer { display:flex; align-items:center; justify-content:space-between; padding:26px 48px; color:#707179; font-size:12px; }
+.prelight-landing .pl-landing-footer { display:flex; align-items:center; justify-content:space-between; padding:26px 48px; color:#aab2c5; font-size:12px; }
 .prelight-landing .pl-landing-footer a { color:#adaeb4; }
 .prelight-landing .pl-landing-footer a span { padding-left:7px; }
 .prelight-studio .pl-shell { display:grid; grid-template-columns:204px minmax(0,1fr) 280px; grid-template-rows:72px minmax(calc(100svh - 72px),auto); }
@@ -48,67 +48,67 @@ body.prelight-page #main { display:block; }
 .prelight-studio .pl-actions { display:flex; gap:8px; align-items:center; }
 .prelight-studio .pl-topbar > .pl-actions { margin-left:auto; }
 .prelight-studio .pl-is-active { border-color:#d5745550; color:#e0a08b; }
-.prelight-studio .pl-rail { display:flex; flex-direction:column; padding:30px 12px 20px; border-right:1px solid var(--pl-line); background:#111214; min-width:0; }
-.prelight-studio .pl-rail-heading { display:flex; justify-content:space-between; padding:0 13px 19px; color:#72747b; }
+.prelight-studio .pl-rail { display:flex; flex-direction:column; padding:30px 12px 20px; border-right:1px solid var(--pl-line); background:#1b2036; min-width:0; }
+.prelight-studio .pl-rail-heading { display:flex; justify-content:space-between; padding:0 13px 19px; color:#aab2c5; }
 .prelight-studio .pl-rail-heading h2 { font-size:10px; font-weight:500; letter-spacing:.13em; text-transform:uppercase; }
 .prelight-studio .pl-rail-heading > span { font-size:10px; font-variant-numeric:tabular-nums; }
 .prelight-studio .pl-takes { display:grid; gap:5px; }
 .prelight-studio .pl-take { border:1px solid transparent; background:none; border-radius:7px; padding:13px 12px; text-align:left; display:flex; align-items:center; gap:12px; min-width:0; width:100%; }
 .prelight-studio .pl-take:hover { background:#ffffff04; }
-.prelight-studio .pl-take.pl-active { border-color:#ffffff08; background:#222326; }
+.prelight-studio .pl-take.pl-active { border-color:#ffffff08; background:#303752; }
 .prelight-studio .pl-take-icon { color:#666971; font-size:23px; line-height:1; }
 .prelight-studio .pl-active .pl-take-icon { color:#d57455; }
 .prelight-studio .pl-take > span:nth-child(2) { min-width:0; }
 .prelight-studio .pl-take strong { display:block; font-size:12px; font-weight:500; overflow-wrap:anywhere; }
-.prelight-studio .pl-take small { display:block; margin-top:4px; color:#777a83; font-size:10px; }
+.prelight-studio .pl-take small { display:block; margin-top:4px; color:#aeb6c9; font-size:10px; }
 .prelight-studio .pl-active-dot { width:4px; height:4px; border-radius:50%; background:#d57455; margin-left:auto; flex-shrink:0; }
 .prelight-studio .pl-new { text-align:left; margin:16px 7px; font-size:12px; }
 .prelight-studio .pl-rail-footer { margin-top:auto; padding:25px 10px 0; color:#9a9ca4; font-size:10px; }
-.prelight-studio .pl-rail-footer p { margin-top:8px; font-size:10px; line-height:1.6; color:#64666e; }
+.prelight-studio .pl-rail-footer p { margin-top:8px; font-size:10px; line-height:1.6; color:#aab2c5; }
 .prelight-studio .pl-status-dot { display:inline-block; width:5px; height:5px; border-radius:50%; background:#969991; margin-right:7px; }
 .prelight-studio .pl-canvas { min-width:0; padding:38px 36px 24px; display:flex; flex-direction:column; }
 .prelight-studio .pl-canvas-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; margin-bottom:31px; }
-.prelight-studio .pl-eyebrow { font-size:10px; font-weight:500; color:#888a93; letter-spacing:.11em; text-transform:uppercase; }
+.prelight-studio .pl-eyebrow { font-size:10px; font-weight:500; color:#aab2c5; letter-spacing:.11em; text-transform:uppercase; }
 .prelight-studio .pl-heading-dot { color:#484a51; padding:0 9px; }
 .prelight-studio .pl-canvas-heading h2 { font-size:27px; font-weight:500; letter-spacing:-.045em; margin-top:12px; overflow-wrap:anywhere; }
 .prelight-studio .pl-duration { color:#b6b8bf; font-size:13px; font-variant-numeric:tabular-nums; }
-.prelight-studio .pl-duration span { font-size:11px; color:#62656e; padding-left:5px; }
-.prelight-studio .pl-trace-caption { display:flex; justify-content:space-between; font-size:11px; color:#787b84; padding:0 0 19px; }
-.prelight-studio .pl-trace-caption > span:last-child { color:#646770; }
+.prelight-studio .pl-duration span { font-size:11px; color:#aab2c5; padding-left:5px; }
+.prelight-studio .pl-trace-caption { display:flex; justify-content:space-between; font-size:11px; color:#b8bfd0; padding:0 0 19px; }
+.prelight-studio .pl-trace-caption > span:last-child { color:#aab2c5; }
 .prelight-studio .pl-timeline { border-top:1px solid #ffffff0b; }
-.prelight-studio .pl-track { position:relative; height:clamp(152px,22vh,208px); border-bottom:1px solid #ffffff0a; background-image:linear-gradient(to right,#ffffff07 1px,transparent 1px); background-size:25% 100%; padding:49px 0 17px; }
+.prelight-studio .pl-track { position:relative; height:148px; border-bottom:1px solid #ffffff0a; background-image:linear-gradient(to right,#ffffff07 1px,transparent 1px); background-size:25% 100%; padding:49px 0 17px; }
 .prelight-studio .pl-track:after { content:''; position:absolute; left:0; right:0; top:65%; border-bottom:1px dashed #ffffff08; pointer-events:none; }
 .prelight-studio .pl-track-label { position:absolute; top:18px; font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:#a3a6af; }
-.prelight-studio .pl-track-label span { color:#555963; text-transform:none; letter-spacing:0; margin-left:8px; }
+.prelight-studio .pl-track-label span { color:#aab2c5; text-transform:none; letter-spacing:0; margin-left:8px; }
 .prelight-studio .pl-track svg { display:block; width:100%; height:100%; overflow:visible; }
 .prelight-studio .pl-track polyline { fill:none; stroke-width:1.5; vector-effect:non-scaling-stroke; stroke-linejoin:round; stroke-linecap:round; }
 .prelight-studio .pl-energy { stroke:#d9876a; }
-.prelight-studio .pl-pitch { stroke:#b5becd; }
+.prelight-studio .pl-pitch { stroke:#c8d5df; }
 .prelight-studio .pl-previous { stroke:#909aaa; opacity:.7; }
 .prelight-studio .pl-pause { fill:#aab1c2; opacity:.055; }
 .prelight-studio .pl-pause-track { height:100px; padding-top:53px; padding-bottom:21px; }
 .prelight-studio .pl-pause-track .pl-pause { opacity:.2; }
-.prelight-studio .pl-ticks { display:flex; justify-content:space-between; padding:13px 0; color:#737781; font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; }
-.prelight-studio .pl-legend { display:flex; gap:23px; color:#9498a2; font-size:10px; padding:23px 0; }
+.prelight-studio .pl-ticks { display:flex; justify-content:space-between; padding:13px 0; color:#aeb6c9; font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; }
+.prelight-studio .pl-legend { display:flex; gap:23px; color:#b8bfd0; font-size:10px; padding:23px 0; }
 .prelight-studio .pl-legend > span { display:flex; align-items:center; gap:7px; }
 .prelight-studio .pl-legend i { width:12px; height:2px; background:#d9876a; }
-.prelight-studio .pl-legend .pl-key-pitch { background:#b5becd; }
+.prelight-studio .pl-legend .pl-key-pitch { background:#c8d5df; }
 .prelight-studio .pl-legend .pl-key-previous { background:#909aaa; }
 .prelight-studio .pl-legend .pl-key-pause { height:7px; width:7px; background:#aab1c233; }
-.prelight-studio .pl-canvas-foot { display:flex; justify-content:space-between; margin-top:auto; padding-top:24px; font-size:10px; color:#575b65; }
-.prelight-studio .pl-inspector { border-left:1px solid var(--pl-line); padding:36px 28px 24px; min-width:0; background:#161719; overflow-wrap:anywhere; }
+.prelight-studio .pl-canvas-foot { display:flex; justify-content:space-between; margin-top:auto; padding-top:24px; font-size:10px; color:#aab2c5; }
+.prelight-studio .pl-inspector { border-left:1px solid var(--pl-line); padding:36px 28px 24px; min-width:0; background:#242a44; overflow-wrap:anywhere; }
 .prelight-studio .pl-inspector h2 { font-size:22px; font-weight:500; margin:20px 0 5px; letter-spacing:-.04em; }
-.prelight-studio .pl-inspector-range { display:block; font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; color:#8b8e98; }
+.prelight-studio .pl-inspector-range { display:block; font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; color:#aeb6c9; }
 .prelight-studio .pl-inspector-range span { padding:0 5px; color:#464951; }
 .prelight-studio .pl-metrics { margin:31px 0 0; }
 .prelight-studio .pl-metrics > div { padding:16px 0; border-top:1px solid #ffffff09; }
-.prelight-studio .pl-metrics dt { font-size:11px; color:#90949e; }
+.prelight-studio .pl-metrics dt { font-size:11px; color:#b5bdd0; }
 .prelight-studio .pl-metrics dd { margin:5px 0 0; font-size:25px; font-weight:400; font-variant-numeric:tabular-nums; letter-spacing:-.035em; }
-.prelight-studio .pl-metrics dd span { font-size:12px; color:#737884; padding-left:5px; }
-.prelight-studio .pl-inspector-note { margin-top:30px; font-size:11px; color:#717680; line-height:1.8; }
+.prelight-studio .pl-metrics dd span { font-size:12px; color:#aeb6c9; padding-left:5px; }
+.prelight-studio .pl-inspector-note { margin-top:30px; font-size:11px; color:#b8bfd0; line-height:1.8; }
 .prelight-studio .pl-muted { color:#757984; }
 .prelight-studio .pl-compare-picker { display:flex; flex-direction:column; gap:5px; color:#81858e; font-size:10px; }
-.prelight-studio .pl-compare-picker select { border:1px solid #ffffff20; border-radius:5px; background:#222326; padding:7px 24px 7px 10px; font-size:12px; }
+.prelight-studio .pl-compare-picker select { border:1px solid #ffffff20; border-radius:5px; background:#303752; padding:7px 24px 7px 10px; font-size:12px; }
 .prelight-studio .pl-diff-metrics { display:grid; grid-template-columns:1fr 1fr; gap:22px 30px; padding:23px 0 28px; border-top:1px solid var(--pl-line); border-bottom:1px solid var(--pl-line); }
 .prelight-studio .pl-diff-metrics span { display:block; color:#8c919a; font-size:11px; }
 .prelight-studio .pl-diff-metrics strong { display:block; margin-top:6px; font-size:19px; font-weight:400; font-variant-numeric:tabular-nums; }
@@ -128,7 +128,7 @@ body.prelight-page #main { display:block; }
 .prelight-studio.pl-onboarding input { width:100%; margin-bottom:18px; }
 .prelight-studio.pl-onboarding .pl-btn { float:right; }
 .prelight-studio .pl-modal, .prelight-landing .rm-auth-backdrop { position:fixed; inset:0; display:grid; place-items:center; z-index:50; background:#0009; backdrop-filter:blur(8px); padding:24px; }
-.prelight-studio .pl-dialog, .prelight-landing .rm-auth-dialog { width:min(440px,100%); padding:32px; background:#1c1d20; border:1px solid #ffffff1c; border-radius:14px; box-shadow:0 30px 100px #0007; }
+.prelight-studio .pl-dialog, .prelight-landing .rm-auth-dialog { width:min(440px,100%); padding:32px; background:#272e49; border:1px solid #ffffff1c; border-radius:14px; box-shadow:0 30px 100px #0007; }
 .prelight-studio .pl-dialog h2, .prelight-landing .rm-auth-dialog h2 { font-size:28px; font-weight:500; letter-spacing:-.04em; margin:12px 0; }
 .prelight-studio .pl-dialog p, .prelight-landing .rm-auth-dialog p { font-size:12px; color:#9a9ea9; margin:12px 0 20px; }
 .prelight-studio .pl-dialog label, .prelight-landing .rm-auth-dialog label { display:block; font-size:12px; margin:14px 0 8px; color:#adafb7; }
@@ -143,10 +143,111 @@ body.prelight-page #main { display:block; }
 .prelight-landing .rm-auth-dialog .err { color:#e79c84; font-size:12px; }
 @media (min-width:1600px) { .prelight-studio .pl-shell { grid-template-columns:216px minmax(0,1fr) 300px; } .prelight-studio .pl-canvas { padding-left:48px; padding-right:48px; } }
 @media (max-width:1200px) { .prelight-studio .pl-shell { grid-template-columns:190px minmax(0,1fr) 260px; } .prelight-studio .pl-canvas { padding-left:24px; padding-right:24px; } .prelight-studio .pl-topbar { gap:18px; } .prelight-studio .pl-inspector { padding-left:24px; padding-right:24px; } }
-@media (max-width:900px) { .prelight-studio .pl-shell { min-width:960px; } }
+
 @media (max-width:600px) { .prelight-landing .pl-landing-nav { padding:24px; } .prelight-landing .pl-nav-note { display:none; } .prelight-landing .pl-landing-content { padding:36px 23px 55px; } .prelight-landing .pl-hero-mark { width:88px; height:88px; margin-bottom:27px; } .prelight-landing .pl-landing-copy { max-width:285px; margin:20px auto 37px; font-size:15px; line-height:1.7; } .prelight-landing .pl-input-wrap { flex-wrap:wrap; } .prelight-landing .pl-input-wrap input { width:calc(100% - 46px); } .prelight-landing .pl-input-wrap .pl-btn { width:100%; margin-top:7px; } .prelight-landing .pl-landing-footer { padding:24px; font-size:10px; } .prelight-landing .rm-auth-dialog { padding:24px; } }
 .prelight-studio .pl-selectable { position:relative; cursor:crosshair; user-select:none; touch-action:none; }
 .prelight-studio .pl-selection { position:absolute; top:0; bottom:41px; pointer-events:none; z-index:2; background:#d5745517; border-left:1px solid #d9876a; border-right:1px solid #d9876a; }
 .prelight-studio .pl-inspector-range small { display:block; margin-top:7px; color:#d99781; font:10px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
-.prelight-studio .pl-metrics-scope { margin-top:25px; color:#5f646e; font-size:10px; }
+.prelight-studio .pl-metrics-scope { margin-top:25px; color:#aab2c5; font-size:10px; }
 .prelight-studio .pl-metrics { margin-top:10px; }
+
+/* Restore the original Studio palette and editorial typography. */
+:is(.prelight-landing,.prelight-studio) .pl-brand,
+:is(.prelight-landing,.prelight-studio) :is(h1,h2) {
+  font-family:Fraunces,Georgia,serif;
+  letter-spacing:-.025em;
+}
+:is(.prelight-landing,.prelight-studio) .pl-primary { color:#fffaf4; }
+:is(.prelight-landing,.prelight-studio) .pl-text-btn { color:#b8bfd0; }
+.prelight-studio .pl-workspace-title h1 { font-size:20px; }
+.prelight-studio .pl-canvas-heading h2 { font-size:28px; }
+.prelight-studio .pl-take { border-radius:4px; border-left:2px solid transparent; }
+.prelight-studio .pl-take.pl-active { border-left-color:#d57455; background:#f8f4ed12; }
+.prelight-studio .pl-take strong { font-size:14px; }
+.prelight-studio .pl-take small { font-size:12px; }
+.prelight-studio .pl-timeline { background:#272e49; border:1px solid #f8f4ed24; border-radius:7px; padding:0 20px; }
+.prelight-studio .pl-track { border-bottom-color:#f8f4ed14; }
+.prelight-studio .pl-track-label { font-size:11px; }
+.prelight-studio .pl-pause { fill:#e9b17e; opacity:.1; }
+.prelight-studio .pl-pause-track { height:84px; padding-top:45px; padding-bottom:15px; }
+.prelight-studio .pl-pause-track .pl-pause { opacity:.4; }
+.prelight-studio .pl-legend .pl-key-pause { background:#e9b17e80; }
+.prelight-studio .pl-metrics { display:grid; grid-template-columns:1fr 1fr; border-top:1px solid #f8f4ed20; }
+.prelight-studio .pl-metrics > div { padding:17px 8px 17px 0; border-top:0; border-bottom:1px solid #f8f4ed20; }
+.prelight-studio .pl-metrics dt { font-size:12px; }
+.prelight-studio .pl-metrics dd { font-size:24px; }
+.prelight-studio .pl-inspector-note { font-size:12px; }
+.prelight-studio .pl-canvas-foot { margin-top:0; padding-top:12px; flex-wrap:wrap; gap:10px; }
+.prelight-studio .pl-selection { border-radius:0; }
+.prelight-studio .pl-dialog { border-radius:8px; }
+@media (max-width:1000px) {
+  .prelight-studio .pl-shell { grid-template-columns:180px minmax(0,1fr); grid-template-rows:72px auto auto; min-height:100svh; }
+  .prelight-studio .pl-rail { grid-row:2/4; }
+  .prelight-studio .pl-inspector { grid-column:2; border-left:0; border-top:1px solid var(--pl-line); }
+  .prelight-studio .pl-metrics { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .prelight-studio .pl-inspector h2 { margin-top:10px; }
+  .prelight-studio .pl-inspector-note { margin-top:16px; }
+  .prelight-studio .pl-topbar .pl-brand { width:auto; }
+}
+@media (max-width:680px) {
+  .prelight-studio .pl-shell { display:flex; flex-direction:column; min-height:100svh; }
+  .prelight-studio .pl-topbar { flex-wrap:wrap; padding:18px 20px; gap:16px; }
+  .prelight-studio .pl-workspace-title { flex:1; gap:12px; }
+  .prelight-studio .pl-workspace-title h1 { font-size:17px; }
+  .prelight-studio .pl-topbar > .pl-actions { width:100%; margin:0; }
+  .prelight-studio .pl-topbar > .pl-actions .pl-btn { flex:1; min-height:42px; }
+  .prelight-studio .pl-rail { padding:18px 16px 12px; border-right:0; border-bottom:1px solid var(--pl-line); }
+  .prelight-studio .pl-rail-heading { padding:0 4px 12px; }
+  .prelight-studio .pl-takes { display:flex; overflow-x:auto; gap:6px; }
+  .prelight-studio .pl-take { flex:0 0 138px; padding:10px; }
+  .prelight-studio .pl-rail-footer,.prelight-studio .pl-new { display:none; }
+  .prelight-studio .pl-canvas { padding:26px 20px; }
+  .prelight-studio .pl-canvas-heading { align-items:flex-start; margin-bottom:22px; }
+  .prelight-studio .pl-canvas-heading h2 { font-size:26px; }
+  .prelight-studio .pl-duration { padding-top:34px; white-space:nowrap; }
+  .prelight-studio .pl-trace-caption { flex-wrap:wrap; gap:8px; font-size:12px; }
+  .prelight-studio .pl-timeline { padding:0 12px; }
+  .prelight-studio .pl-track { height:126px; }
+  .prelight-studio .pl-pause-track { height:78px; }
+  .prelight-studio .pl-inspector { padding:24px 20px; }
+  .prelight-studio .pl-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .prelight-studio .pl-legend { gap:18px; padding:17px 0; }
+  .prelight-studio .pl-dialog { padding:24px; }
+  .prelight-studio .pl-empty { padding:36px 0; }
+  .prelight-studio .pl-empty h2 { font-size:28px; }
+  .prelight-studio.pl-onboarding { padding:24px; }
+  .prelight-studio .pl-alignment-title { gap:12px; }
+}
+
+/* Keep the trace central; reveal supporting measurements on request. */
+.prelight-studio .pl-shell.pl-simple { grid-template-columns:190px minmax(0,1fr); }
+.prelight-studio .pl-simple .pl-canvas { width:100%; max-width:1200px; margin:0 auto; }
+.prelight-studio .pl-simple .pl-rail { grid-row:2; }
+.prelight-studio .pl-simple .pl-rail-heading h2 { font-family:"IBM Plex Sans",sans-serif; }
+.prelight-studio .pl-simple .pl-take { padding:12px; }
+.prelight-studio .pl-simple .pl-take small { color:#aeb6c9; font-size:11px; }
+.prelight-studio .pl-simple .pl-canvas-heading { margin-bottom:24px; }
+.prelight-studio .pl-headline-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:24px; margin:30px 0; }
+.prelight-studio .pl-headline-metrics dt { color:#b8bfd0; font-size:12px; }
+.prelight-studio .pl-headline-metrics dd { margin:6px 0 0; font-size:25px; font-variant-numeric:tabular-nums; }
+.prelight-studio .pl-headline-metrics dd span { font-size:12px; margin-left:4px; color:#aeb6c9; }
+.prelight-studio .pl-details { border-top:1px solid var(--pl-line); padding-top:16px; }
+.prelight-studio .pl-details summary { cursor:pointer; color:#b8bfd0; font-size:12px; width:fit-content; }
+.prelight-studio .pl-details .pl-inspector { border:0; background:none; padding:0; }
+.prelight-studio .pl-details .pl-metrics { max-width:440px; border:0; }
+.prelight-studio .pl-details .pl-metrics > div { border:0; }
+.prelight-studio .pl-details .pl-inspector-note { margin-top:0; }
+.prelight-studio .pl-simple .pl-inspector-range { font-size:11px; }
+.prelight-studio .pl-simple .pl-inspector-range small { display:inline; margin-left:10px; }
+.prelight-studio .pl-demo-note { color:#aeb6c9; font-size:11px; margin-top:24px; }
+.prelight-studio .pl-shell.pl-first-use { grid-template-columns:1fr; }
+.prelight-studio .pl-first-use .pl-canvas { min-height:calc(100svh - 72px); }
+.prelight-studio .pl-first-use .pl-empty p { max-width:360px; margin:16px auto 28px; }
+@media (max-width:680px) {
+  .prelight-studio .pl-simple .pl-new { display:block; margin:8px 0 0; padding:8px 4px; }
+  .prelight-studio .pl-simple .pl-headline-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+  .prelight-studio .pl-simple .pl-topbar > .pl-actions { flex-wrap:wrap; }
+  .prelight-studio .pl-simple .pl-topbar > .pl-actions .pl-btn { gap:8px; padding:10px; }
+  .prelight-studio .pl-simple .pl-canvas-heading { flex-wrap:wrap; }
+  .prelight-studio .pl-first-use .pl-empty h2 { font-size:27px; }
+}

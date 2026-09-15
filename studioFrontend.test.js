@@ -38,15 +38,15 @@ test('root remains the landing page even with stored takes',()=>{
   assert.equal(app.context.location.assigned,'/studio?workspace=Interview%20answer');
 });
 test('fresh Studio asks for a workspace, and named workspace starts without demo takes',()=>{
-  assert.match(boot('/studio').html,/Create workspace/);
+  assert.match(boot('/studio').html,/Start recording/);
   const app=boot('/studio/','?workspace=Product%20Pitch');
-  assert.match(app.html,/No takes yet/);
+  assert.match(app.html,/Record your first take/);
   assert.doesNotMatch(app.html,/Take 4|pl-demo-tag/);
   assert.equal(app.micCalls,0);
 });
 test('stale stored demo is migrated and not presented as real user content',()=>{
   const app=boot('/studio','?workspace=Product%20Pitch',{prelightStudioTakes:JSON.stringify([{id:'old',label:'NeutralEye Pitch',features}])});
-  assert.match(app.html,/No takes yet/);
+  assert.match(app.html,/Record your first take/);
   assert.doesNotMatch(app.html,/NeutralEye|Neutral Eye/);
   assert.equal(JSON.parse(app.entries.get('prelightStudioTakes'))[0].demo,true);
 });
@@ -55,8 +55,8 @@ test('explicit demo is labeled, never persisted, and comparison lives in the can
   assert.match(app.html,/pl-demo-tag.*Demo/);
   assert.equal(app.entries.has('prelightStudioTakes'),false);
   app.node('compareBtn').listeners.click();
-  assert.match(app.html,/<section class="pl-canvas">[\s\S]*Aligned acoustic traces[\s\S]*<aside class="pl-inspector">/);
-  assert.doesNotMatch(app.html.split('<aside class="pl-inspector">')[1],/Aligned acoustic traces/);
+  assert.match(app.html,/<section class="pl-canvas">[\s\S]*Your takes overlaid/);
+  assert.doesNotMatch(app.html,/DTW|acoustic|RMS|F0/);
   assert.equal(app.micCalls,0);
 });
 test('opening and cancelling the recording dialog never requests microphone access',()=>{
@@ -70,7 +70,7 @@ test('opening and cancelling the recording dialog never requests microphone acce
 });
 test('only submitting Record invokes the guarded media API',async()=>{
   const app=boot('/studio','?workspace=Speech');
-  app.node('topNew').listeners.click();
+  app.node('firstTake').listeners.click();
   app.node('takeDialog').listeners.submit({preventDefault(){}});
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(app.micCalls,1);
@@ -80,4 +80,35 @@ test('workspace and take names are escaped before rendering',()=>{
   const app=boot('/studio','?workspace=%3Cscript%3Ealert(1)%3C%2Fscript%3E');
   assert.doesNotMatch(app.html,/<script>/);
   assert.match(app.html,/&lt;script&gt;/);
+});
+
+function withTakes(count) {
+  return boot('/studio','?workspace=Speech',{prelightStudioTakes:JSON.stringify(Array.from({length:count},(_,i)=>({id:`real-${i+1}`,label:`Take ${i+1}`,workspace:'Speech',features})))});
+}
+test('zero takes exposes only the first recording action',()=>{
+  const app=withTakes(0);
+  assert.match(app.html,/id="firstTake">Record your first take/);
+  assert.doesNotMatch(app.html,/id="compareBtn"|id="topNew"|pl-headline-metrics|pl-details|class="pl-rail"/);
+});
+test('one take defers comparison and puts extra measurements in collapsed details',()=>{
+  const app=withTakes(1);
+  assert.match(app.html,/id="topNew">Record another take/);
+  assert.doesNotMatch(app.html,/id="compareBtn"|RMS|F0|Acoustic/);
+  assert.equal((app.html.split('class="pl-headline-metrics">')[1].split('</dl>')[0].match(/<dt>/g)||[]).length,4);
+  assert.match(app.html,/<details class="pl-details"><summary>View details/);
+  assert.match(app.html,/<details[\s\S]*Median pitch/);
+});
+test('two and several takes make comparison primary, recording secondary',()=>{
+  for(const count of [2,4]) {
+    const app=withTakes(count);
+    assert.match(app.html,/class="pl-btn pl-primary" id="compareBtn">Compare with previous/);
+    assert.match(app.html,/class="pl-btn " id="topNew">Record new take/);
+    app.node('compareBtn').listeners.click();
+    assert.match(app.html,new RegExp(`Take ${count-1} <span class="pl-muted">→</span> Take ${count}`));
+    assert.match(app.html,/Your takes overlaid/);
+    assert.doesNotMatch(app.html,/DTW|acoustic|alignment path|RMS|F0/);
+    assert.match(app.html,/class="pl-btn pl-primary" id="topNew">Record new take/);
+    app.node('compareBtn').listeners.click();
+    assert.match(app.html,/Performance trace/);
+  }
 });
