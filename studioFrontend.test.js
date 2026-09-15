@@ -128,7 +128,7 @@ test('introduction opens a clean workspace without requesting the mic',()=>{
 test('tutorial workspace starts empty for returning users and preserves prior takes',()=>{
  const saved=JSON.stringify([{id:'real',label:'Saved take',workspace:'Product pitch',features}]);
  const app=boot('/studio','?tour=1',{prelightStudioTakes:saved,prelightStudioWorkspace:JSON.stringify('Product pitch')});
- assert.match(app.html,/What would you like to practice/);
+ assert.match(app.html,/What are you pitching/);
  assert.doesNotMatch(app.html,/Saved take|Performance trace|id="compareBtn"/);
  app.node('practiceType').value='Product pitch';
  app.node('practiceForm').listeners.submit({preventDefault(){}});
@@ -141,7 +141,7 @@ test('tutorial workspace starts empty for returning users and preserves prior ta
 test('old tutorial URLs never infer a step from saved takes, and exit stays exited on reload',()=>{
  const saved=JSON.stringify(Array.from({length:3},(_,i)=>({id:`real-${i}`,label:`Take ${i+1}`,workspace:'Speech',features})));
  const app=boot('/studio','?workspace=Speech&tour=1',{prelightStudioTakes:saved});
- assert.match(app.html,/What would you like to practice/);
+ assert.match(app.html,/What are you pitching/);
  assert.doesNotMatch(app.html,/Step 3|Performance trace/);
  app.node('practiceType').value='Speech';
  app.node('practiceForm').listeners.submit({preventDefault(){}});

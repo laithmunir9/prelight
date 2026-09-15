@@ -52,7 +52,7 @@
       <section class="pl-landing-content" ${introStep?'inert':''}>
         <div class="pl-mascot-greeting"><span>Hi, I’m Prelight.</span><img class="pl-hero-mark" src="/prelight-mascot.png" width="144" height="144" alt="Prelight mascot"/></div>
         <h1>A little practice.<br/>A <em>clearer voice.</em></h1>
-        <p class="pl-landing-copy">Practice a pitch, an interview answer, or a speech.<br/>Record it twice. See how your delivery changes.</p>
+        <p class="pl-landing-copy">Rehearse your 60-second pitch before the meeting.<br/>Try two deliveries. See what changed.</p>
         <button class="pl-btn pl-primary pl-start-tutorial" id="startTutorial">Show me how</button>
         <p class="pl-signin-line">Already have an account? <button id="studioSignIn">Sign in</button></p>
       </section>
@@ -67,7 +67,7 @@
     return `<div class="pl-intro-backdrop"><section class="pl-intro-dialog" id="introDialog" role="dialog" aria-modal="true" aria-labelledby="introTitle">
       <button class="pl-intro-close" id="introClose" aria-label="Close introduction">×</button>
       <img src="/prelight-mascot.png" width="112" height="112" alt=""/>
-      <h2 id="introTitle">Your next take starts here.</h2><p>Say a short pitch or answer out loud. You’ll see where you pause and how your voice moves. Say it again, then compare the two versions.</p><button class="pl-btn pl-primary" id="introContinue">Open my workspace</button>
+      <h2 id="introTitle">Your next take starts here.</h2><p>Explain your idea in about 60 seconds. Record it once, try a deliberate pause in your next take, then compare the difference.</p><button class="pl-btn pl-primary" id="introContinue">Open my workspace</button>
     </section></div>`;
   }
   function closeIntro() {introStep=null;renderLanding();document.getElementById('startTutorial').focus();}
@@ -84,9 +84,9 @@
       <div class="pl-topbar">${brand}<div class="pl-workspace-title"><span class="pl-slash">/</span><h1>New practice</h1></div><a class="pl-exit-tutorial" href="/studio">Exit tutorial</a></div>
       <section class="pl-canvas"><aside class="pl-guide" aria-label="Start your speaking practice"><img src="/prelight-mascot.png" width="76" height="76" alt=""/><div class="pl-guide-body">
         <div class="pl-guide-meta">Prelight <span>Let’s start something</span></div>
-        <h2 id="practiceHeading">What would you like to practice?</h2><p>A pitch, an answer, a story. Choose one or give your practice a name.</p>
-        <form id="practiceForm"><label class="pl-sr-only" for="practiceType">Practice name</label><input id="practiceType" placeholder="What do you want to say?" maxlength="100" required autocomplete="off"/>
-        <div class="pl-practice-choices">${['Product pitch','Interview answer','Presentation','Speech'].map(name=>`<button type="button" data-practice="${name}">${name}</button>`).join('')}</div>
+        <h2 id="practiceHeading">What are you pitching?</h2><p>Choose an idea you want to explain. We’ll practice a short version together.</p>
+        <form id="practiceForm"><label class="pl-sr-only" for="practiceType">Pitch name</label><input id="practiceType" value="Product pitch" placeholder="Give your pitch a name" maxlength="100" required autocomplete="off"/>
+        <div class="pl-practice-choices">${['Product pitch','Business idea','Project proposal'].map(name=>`<button type="button" data-practice="${name}">${name}</button>`).join('')}</div>
         <button class="pl-btn pl-primary" type="submit">Start practicing</button></form>
       </div></aside></section></div></div>`;
     document.querySelectorAll('[data-practice]').forEach(button=>button.onclick=()=>{document.getElementById('practiceType').value=button.dataset.practice;document.getElementById('practiceType').focus();});
@@ -106,10 +106,10 @@
     if(!guided)return '';
     const step=takes.length===0?1:takes.length===1?2:mode==='compare'?4:3;
     const [title,copy,action]=[
-      ['Record your first take','A take is one recording. Say a short version of your pitch or answer, then stop to see your delivery.','Record your first take'],
-      ['See what happened','This is a picture of your delivery. Look for pauses and changes in your voice, then record the same words again to compare.','Record another take'],
-      ['What changed?','You have two versions. Put them side by side to see what changed in your delivery.','Compare with previous'],
-      ['A little clearer, take by take','Read what changed below. Decide which delivery fits what you want to say, then record another version whenever you’re ready.','Finish tutorial']
+      ['Record your first take','A take is one recording. Aim for about 60 seconds: who are you helping, what problem do they face, and how does your idea help? Start with “My idea helps…” and speak naturally.','Record your first take'],
+      ['See what happened','The blocks show where you paused. Try the same pitch again, this time leaving a deliberate pause after your main point. See how that changes the trace.','Record another take'],
+      ['What changed?','You’ve tried two deliveries of your pitch. Compare them to see where your pauses and timing changed.','Compare with previous'],
+      ['A little clearer, take by take','Find the pause you tried in your second take. Check how the timing changed, then decide whether that pause fits your message. You can rehearse again before your meeting.','Finish tutorial']
     ][step-1];
     return `<aside class="pl-guide" aria-label="Speaking tutorial"><img src="/prelight-mascot.png" width="76" height="76" alt=""/><div class="pl-guide-body"><div class="pl-guide-meta">Prelight <span>Step ${step} of 4</span><button id="exitGuide" aria-label="Exit tutorial">×</button></div><h2>${title}</h2><p>${copy}</p><button class="pl-btn pl-primary" id="guideAction">${action}</button></div></aside>`;
   }
