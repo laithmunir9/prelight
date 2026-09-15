@@ -81,7 +81,7 @@
   }
   function renderTutorialStart() {
     document.getElementById('main').innerHTML = `<div class="prelight-studio"><div class="pl-shell pl-simple pl-first-use pl-tutorial-start">
-      <div class="pl-topbar">${brand}<div class="pl-workspace-title"><span class="pl-slash">/</span><h1>New practice</h1></div><a class="pl-exit-tutorial" href="/studio">Exit tutorial</a></div>
+      <div class="pl-topbar">${brand}<div class="pl-workspace-title"><span class="pl-slash">/</span><h1>New practice</h1></div></div>
       <section class="pl-canvas"><aside class="pl-guide" aria-label="Start your speaking practice"><img src="/prelight-mascot.png" width="76" height="76" alt=""/><div class="pl-guide-body">
         <div class="pl-guide-meta">Prelight <span>Let’s start something</span></div>
         <h2 id="practiceHeading">What are you pitching?</h2><p>Choose an idea you want to explain. We’ll practice a short version together.</p>
@@ -111,7 +111,7 @@
       ['What changed?','You’ve tried two deliveries of your pitch. Compare them to see where your pauses and timing changed.','Compare with previous'],
       ['A little clearer, take by take','Find the pause you tried in your second take. Check how the timing changed, then decide whether that pause fits your message. You can rehearse again before your meeting.','Finish tutorial']
     ][step-1];
-    return `<aside class="pl-guide" aria-label="Speaking tutorial"><img src="/prelight-mascot.png" width="76" height="76" alt=""/><div class="pl-guide-body"><div class="pl-guide-meta">Prelight <span>Step ${step} of 4</span><button id="exitGuide" aria-label="Exit tutorial">×</button></div><h2>${title}</h2><p>${copy}</p><button class="pl-btn pl-primary" id="guideAction">${action}</button></div></aside>`;
+    return `<aside class="pl-guide" aria-label="Speaking tutorial"><img src="/prelight-mascot.png" width="76" height="76" alt=""/><div class="pl-guide-body"><div class="pl-guide-meta">Prelight <span>Step ${step} of 4</span></div><h2>${title}</h2><p>${copy}</p><button class="pl-btn pl-primary" id="guideAction">${action}</button></div></aside>`;
   }
   function points(values, width=1000, height=110) {
     const valid = values.filter(Number.isFinite);
@@ -222,7 +222,6 @@
   }
   function closeModal() { if(recordingState!=='idle') return; modal=false;render();document.getElementById(guided&&takes.length<2?'guideAction':returnFocus)?.focus(); }
   function bind() {
-    document.getElementById('exitGuide')?.addEventListener('click',()=>{guided=false;render();document.getElementById(takes.length?'topNew':'firstTake')?.focus();});
     document.getElementById('guideAction')?.addEventListener('click',()=>{
       if(takes.length>=2&&mode==='compare'){guided=false;render();document.getElementById('topNew')?.focus();}
       else document.getElementById(takes.length>=2?'compareBtn':takes.length?'topNew':'firstTake')?.click();

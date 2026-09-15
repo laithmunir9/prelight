@@ -138,7 +138,7 @@ test('tutorial workspace starts empty for returning users and preserves prior ta
  assert.equal(app.entries.get('prelightStudioTakes'),saved);
  assert.equal(app.micCalls,0);
 });
-test('old tutorial URLs never infer a step from saved takes, and exit stays exited on reload',()=>{
+test('old tutorial URLs start fresh and reopened practice does not restart the guide',()=>{
  const saved=JSON.stringify(Array.from({length:3},(_,i)=>({id:`real-${i}`,label:`Take ${i+1}`,workspace:'Speech',features})));
  const app=boot('/studio','?workspace=Speech&tour=1',{prelightStudioTakes:saved});
  assert.match(app.html,/What are you pitching/);
@@ -147,8 +147,8 @@ test('old tutorial URLs never infer a step from saved takes, and exit stays exit
  app.node('practiceForm').listeners.submit({preventDefault(){}});
  assert.match(app.html,/Step 1 of 4/);
  assert.equal(app.context.location.replaced,'/studio?workspace=Speech%202');
- app.node('exitGuide').listeners.click();
- assert.doesNotMatch(app.html,/Speaking tutorial/);
+ assert.doesNotMatch(app.html,/Exit tutorial|exitGuide|pl-exit-tutorial/);
+ assert.match(app.html,/<a class="pl-brand" href="\/" aria-label="Prelight home"/);
  const reopened=boot('/studio','?workspace=Speech%202',Object.fromEntries(app.entries));
  assert.doesNotMatch(reopened.html,/Speaking tutorial|Step 3/);
  assert.equal(reopened.entries.get('prelightStudioTakes'),saved);
