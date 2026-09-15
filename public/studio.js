@@ -7,7 +7,8 @@
   state.migrate(localStorage);
   const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
   const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const freshTutorial = params.get('tour') === '1' && !params.has('workspace') && !demo;
+  // Every explicit tutorial entry starts a new lesson, even from an old bookmarked URL.
+  const freshTutorial = params.get('tour') === '1' && !demo;
   let workspaceName = freshTutorial ? '' : state.cleanName(params.get('workspace')?.trim().slice(0, 100) || read(WORKSPACE_KEY, '') || '');
   const stored = read(KEY, []);
   let allTakes = Array.isArray(stored) ? stored.filter(t => t && t.features && Array.isArray(t.features.energy) && t.features.energy.length && Array.isArray(t.features.pitch)) : [];
@@ -26,7 +27,7 @@
       return {id:`demo-${n+1}`, label:`Take ${n+1}`, demo:true, createdAt:new Date(2026,8,14,10,n*7).toISOString(), features:{duration,energy,pitch,voiced:energy.map(v=>v>.01),energyMean:.2,energyVariance:.004,pauses,silenceRatio:pauses.reduce((s,p)=>s+p.duration,0)/duration,medianPitch:142,pitchVariability:24,longPauseCount:2}};
     });
   }
-  let takes = demo ? demoTakes() : allTakes.filter(t => !state.isDemo(t) && (!t.workspace || t.workspace === workspaceName));
+  let takes = demo ? demoTakes() : freshTutorial ? [] : allTakes.filter(t => !state.isDemo(t) && (t.workspace || 'Product Pitch') === workspaceName);
   let selected = takes.at(-1)?.id;
   let compare = takes.at(-2)?.id;
   let mode = 'trace';
@@ -40,7 +41,7 @@
   const time = s => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
   const brand = '<a class="pl-brand" href="/" aria-label="Prelight home"><img src="/prelight-mascot.png" width="36" height="36" alt=""/>Prelight</a>';
   function save() {
-    allTakes = [...allTakes.filter(t => state.isDemo(t) || (t.workspace && t.workspace !== workspaceName)), ...takes];
+    allTakes = [...allTakes.filter(t => state.isDemo(t) || (t.workspace || 'Product Pitch') !== workspaceName), ...takes];
     try { localStorage.setItem(KEY, JSON.stringify(allTakes)); } catch {}
   }
   function renderLanding() {
@@ -94,7 +95,11 @@
       // Start a fresh practice without mixing in or replacing earlier takes.
       const names=new Set(allTakes.filter(t=>!state.isDemo(t)).map(t=>t.workspace || 'Product Pitch'));
       let name=requested, suffix=2;while(names.has(name))name=`${requested} ${suffix++}`;
-      location.assign(`/studio?workspace=${encodeURIComponent(name)}&tour=1`);
+      workspaceName=name; takes=[]; selected=undefined; compare=undefined; mode='trace';
+      try { localStorage.setItem(WORKSPACE_KEY, JSON.stringify(workspaceName)); } catch {}
+      // The lesson lives in this visit. Reloading restores practice, not a guessed tutorial step.
+      history.replaceState(null, '', `/studio?workspace=${encodeURIComponent(workspaceName)}`);
+      render(); document.getElementById('guideAction').focus();
     });
   }
   function guideHtml() {

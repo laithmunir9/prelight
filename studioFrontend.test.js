@@ -15,6 +15,7 @@ function boot(path='/', search='', initial={}) {
   };
   const context = {
     URLSearchParams, console, Date,
+    history:{replaceState(_state,_unused,url){context.location.replaced=url;}},
     location:{pathname:path,search,assign(url){this.assigned=url;}},
     localStorage:{get length(){return entries.size;},key:i=>[...entries.keys()][i],getItem:k=>entries.get(k)??null,setItem:(k,v)=>entries.set(k,v)},
     navigator:{mediaDevices:{async getUserMedia(){micCalls++;throw new Error('Test guard: no device access');}}},
@@ -131,20 +132,33 @@ test('tutorial workspace starts empty for returning users and preserves prior ta
  assert.doesNotMatch(app.html,/Saved take|Performance trace|id="compareBtn"/);
  app.node('practiceType').value='Product pitch';
  app.node('practiceForm').listeners.submit({preventDefault(){}});
- assert.equal(app.context.location.assigned,'/studio?workspace=Product%20pitch%202&tour=1');
+ assert.equal(app.context.location.replaced,'/studio?workspace=Product%20pitch%202');
+ assert.match(app.html,/Step 1 of 4/);
+ assert.doesNotMatch(app.html,/Saved take|Step 3 of 4/);
  assert.equal(app.entries.get('prelightStudioTakes'),saved);
  assert.equal(app.micCalls,0);
 });
-test('guided steps follow actual take state and can be dismissed',()=>{
- for(const count of [0,1,2]){
-  const app=boot('/studio','?workspace=Speech&tour=1',{prelightStudioTakes:JSON.stringify(Array.from({length:count},(_,i)=>({id:`real-${i}`,label:`Take ${i+1}`,workspace:'Speech',features})))});
-  assert.match(app.html,new RegExp(`Step ${count+1} of 4`));
-  if(count===2){app.node('compareBtn').listeners.click();assert.match(app.html,/Step 4 of 4/);}
-  app.node('exitGuide').listeners.click();
-  assert.doesNotMatch(app.html,/Speaking tutorial/);
-  assert.equal(app.micCalls,0);
- }
+test('old tutorial URLs never infer a step from saved takes, and exit stays exited on reload',()=>{
+ const saved=JSON.stringify(Array.from({length:3},(_,i)=>({id:`real-${i}`,label:`Take ${i+1}`,workspace:'Speech',features})));
+ const app=boot('/studio','?workspace=Speech&tour=1',{prelightStudioTakes:saved});
+ assert.match(app.html,/What would you like to practice/);
+ assert.doesNotMatch(app.html,/Step 3|Performance trace/);
+ app.node('practiceType').value='Speech';
+ app.node('practiceForm').listeners.submit({preventDefault(){}});
+ assert.match(app.html,/Step 1 of 4/);
+ assert.equal(app.context.location.replaced,'/studio?workspace=Speech%202');
+ app.node('exitGuide').listeners.click();
+ assert.doesNotMatch(app.html,/Speaking tutorial/);
+ const reopened=boot('/studio','?workspace=Speech%202',Object.fromEntries(app.entries));
+ assert.doesNotMatch(reopened.html,/Speaking tutorial|Step 3/);
+ assert.equal(reopened.entries.get('prelightStudioTakes'),saved);
+ assert.equal(app.micCalls,0);
  assert.doesNotMatch(boot('/studio','?demo=1&tour=1').html,/Speaking tutorial/);
+});
+test('legacy unassigned takes do not leak into a newly named practice',()=>{
+ const app=boot('/studio','?workspace=New%20practice',{prelightStudioTakes:JSON.stringify([{id:'legacy',label:'Earlier recording',features}])});
+ assert.doesNotMatch(app.html,/Earlier recording|Performance trace/);
+ assert.match(app.html,/Record your first take/);
 });
 
 test('comparison summary describes direction, ties and unavailable measurements accurately',()=>{
