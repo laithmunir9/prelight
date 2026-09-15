@@ -35,9 +35,7 @@ test('root remains the landing page even with stored takes',()=>{
   assert.equal(app.micCalls,0);
   app.node('startTutorial').onclick();
   app.node('introContinue').listeners.click();
-  app.node('practiceType').value='Interview answer';
-  app.node('practiceForm').listeners.submit({preventDefault(){}});
-  assert.equal(app.context.location.assigned,'/studio?workspace=Interview%20answer&tour=1');
+  assert.equal(app.context.location.assigned,'/studio?tour=1');
 });
 test('fresh Studio asks for a workspace, and named workspace starts without demo takes',()=>{
   assert.match(boot('/studio').html,/Start recording/);
@@ -115,18 +113,26 @@ test('two and several takes make comparison primary, recording secondary',()=>{
   }
 });
 
-test('introduction is optional, preserves the practice draft, and never requests the mic',()=>{
+test('introduction opens a clean workspace without requesting the mic',()=>{
  const app=boot('/');
  assert.match(app.html,/Go straight to Studio/);
  app.node('startTutorial').onclick();
  assert.match(app.html,/Your next take starts here/);
  app.node('introContinue').listeners.click();
- app.node('practiceType').value='My keynote';
- app.node('introBack').listeners.click();
- app.node('introContinue').listeners.click();
- assert.match(app.html,/value="My keynote"/);
+ assert.equal(app.context.location.assigned,'/studio?tour=1');
  app.node('introClose').listeners.click();
  assert.doesNotMatch(app.html,/id="introDialog"/);
+ assert.equal(app.micCalls,0);
+});
+test('tutorial workspace starts empty for returning users and preserves prior takes',()=>{
+ const saved=JSON.stringify([{id:'real',label:'Saved take',workspace:'Product pitch',features}]);
+ const app=boot('/studio','?tour=1',{prelightStudioTakes:saved,prelightStudioWorkspace:JSON.stringify('Product pitch')});
+ assert.match(app.html,/What would you like to practice/);
+ assert.doesNotMatch(app.html,/Saved take|Performance trace|id="compareBtn"/);
+ app.node('practiceType').value='Product pitch';
+ app.node('practiceForm').listeners.submit({preventDefault(){}});
+ assert.equal(app.context.location.assigned,'/studio?workspace=Product%20pitch%202&tour=1');
+ assert.equal(app.entries.get('prelightStudioTakes'),saved);
  assert.equal(app.micCalls,0);
 });
 test('guided steps follow actual take state and can be dismissed',()=>{

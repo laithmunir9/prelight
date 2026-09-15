@@ -7,11 +7,12 @@
   state.migrate(localStorage);
   const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
   const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  let workspaceName = state.cleanName(params.get('workspace')?.trim().slice(0, 100) || read(WORKSPACE_KEY, '') || '');
+  const freshTutorial = params.get('tour') === '1' && !params.has('workspace') && !demo;
+  let workspaceName = freshTutorial ? '' : state.cleanName(params.get('workspace')?.trim().slice(0, 100) || read(WORKSPACE_KEY, '') || '');
   const stored = read(KEY, []);
   let allTakes = Array.isArray(stored) ? stored.filter(t => t && t.features && Array.isArray(t.features.energy) && t.features.energy.length && Array.isArray(t.features.pitch)) : [];
   if (demo) workspaceName = 'Product Pitch';
-  if (!workspaceName && allTakes.some(t => !state.isDemo(t))) workspaceName = 'Product Pitch';
+  if (!freshTutorial && !workspaceName && allTakes.some(t => !state.isDemo(t))) workspaceName = 'Product Pitch';
   if (workspaceName && !demo) { try { localStorage.setItem(WORKSPACE_KEY, JSON.stringify(workspaceName)); } catch {} }
   function demoTakes() {
     return Array.from({length:4}, (_, n) => {
@@ -31,7 +32,6 @@
   let mode = 'trace';
   let modal = false;
   let introStep = null;
-  let practiceDraft = '';
   let guided = params.get('tour') === '1' && !demo;
   let recorder = null;
   let recordingState = 'idle';
@@ -65,23 +65,38 @@
   }
   function introHtml() {
     if (!introStep) return '';
-    const choosing = introStep === 'practice';
     return `<div class="pl-intro-backdrop"><section class="pl-intro-dialog" id="introDialog" role="dialog" aria-modal="true" aria-labelledby="introTitle">
       <button class="pl-intro-close" id="introClose" aria-label="Close introduction">×</button>
       <img src="/prelight-mascot.png" width="112" height="112" alt=""/>
-      ${choosing?`<h2 id="introTitle">What are you practicing?</h2><form id="practiceForm"><label class="pl-sr-only" for="practiceType">What are you practicing?</label><input id="practiceType" value="${escape(practiceDraft)}" placeholder="Give your practice a name" maxlength="100" required autocomplete="off"/><div class="pl-practice-choices">${['Product pitch','Interview answer','Presentation','Speech'].map(name=>`<button type="button" data-practice="${name}">${name}</button>`).join('')}</div><button class="pl-btn pl-primary" type="submit">Let’s begin</button></form><button class="pl-intro-back" id="introBack">Back</button>`:`<h2 id="introTitle">Your next take starts here.</h2><p>Record yourself. See where you pause and how your voice moves. Then try again and compare.</p><button class="pl-btn pl-primary" id="introContinue">Continue</button>`}
+      <h2 id="introTitle">Your next take starts here.</h2><p>Start with something you want to say. Record it, look back, then try again.</p><button class="pl-btn pl-primary" id="introContinue">Open my workspace</button>
     </section></div>`;
   }
   function closeIntro() {introStep=null;renderLanding();document.getElementById('startTutorial').focus();}
   function bindIntro() {
     document.getElementById('introClose')?.addEventListener('click',closeIntro);
-    document.getElementById('introContinue')?.addEventListener('click',()=>{introStep='practice';renderLanding();document.getElementById('practiceType').focus();});
-    document.getElementById('introBack')?.addEventListener('click',()=>{practiceDraft=document.getElementById('practiceType').value;introStep='welcome';renderLanding();document.getElementById('introContinue').focus();});
-    document.querySelectorAll('[data-practice]').forEach(button=>button.onclick=()=>{document.getElementById('practiceType').value=button.dataset.practice;document.getElementById('practiceType').focus();});
-    document.getElementById('practiceForm')?.addEventListener('submit',e=>{e.preventDefault();const name=document.getElementById('practiceType').value.trim();if(name)location.assign(`/studio?workspace=${encodeURIComponent(name)}&tour=1`);});
+    document.getElementById('introContinue')?.addEventListener('click',()=>location.assign('/studio?tour=1'));
     document.getElementById('introDialog')?.addEventListener('keydown',e=>{
       if(e.key==='Escape')closeIntro();
       if(e.key==='Tab'){const controls=[...e.currentTarget.querySelectorAll('button,input')];const first=controls[0],last=controls.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+    });
+  }
+  function renderTutorialStart() {
+    document.getElementById('main').innerHTML = `<div class="prelight-studio"><div class="pl-shell pl-simple pl-first-use pl-tutorial-start">
+      <div class="pl-topbar">${brand}<div class="pl-workspace-title"><span class="pl-slash">/</span><h1>New practice</h1></div><a class="pl-exit-tutorial" href="/studio">Exit tutorial</a></div>
+      <section class="pl-canvas"><aside class="pl-guide" aria-label="Start your speaking practice"><img src="/prelight-mascot.png" width="76" height="76" alt=""/><div class="pl-guide-body">
+        <div class="pl-guide-meta">Prelight <span>Let’s start something</span></div>
+        <h2 id="practiceHeading">What would you like to practice?</h2><p>A pitch, an answer, a story. Choose one or give your practice a name.</p>
+        <form id="practiceForm"><label class="pl-sr-only" for="practiceType">Practice name</label><input id="practiceType" placeholder="What do you want to say?" maxlength="100" required autocomplete="off"/>
+        <div class="pl-practice-choices">${['Product pitch','Interview answer','Presentation','Speech'].map(name=>`<button type="button" data-practice="${name}">${name}</button>`).join('')}</div>
+        <button class="pl-btn pl-primary" type="submit">Start practicing</button></form>
+      </div></aside></section></div></div>`;
+    document.querySelectorAll('[data-practice]').forEach(button=>button.onclick=()=>{document.getElementById('practiceType').value=button.dataset.practice;document.getElementById('practiceType').focus();});
+    document.getElementById('practiceForm').addEventListener('submit',e=>{
+      e.preventDefault();const requested=document.getElementById('practiceType').value.trim();if(!requested)return;
+      // Start a fresh practice without mixing in or replacing earlier takes.
+      const names=new Set(allTakes.filter(t=>!state.isDemo(t)).map(t=>t.workspace || 'Product Pitch'));
+      let name=requested, suffix=2;while(names.has(name))name=`${requested} ${suffix++}`;
+      location.assign(`/studio?workspace=${encodeURIComponent(name)}&tour=1`);
     });
   }
   function guideHtml() {
@@ -115,6 +130,7 @@
     document.body.classList.add('prelight-page');
     document.body.classList.remove('landing-page');
     document.title = `${workspaceName || 'What are you practicing?'} · Prelight Studio`;
+    if (!workspaceName && guided) {renderTutorialStart(); return;}
     if (!workspaceName) {
       document.getElementById('main').innerHTML = `<div class="prelight-studio pl-onboarding"><nav>${brand}</nav><form id="workspaceForm"><h1 id="practiceHeading">What are you practicing?</h1><input aria-labelledby="practiceHeading" id="workspaceName" placeholder="Product pitch" maxlength="100" required/><button class="pl-btn pl-primary">Start recording <span>→</span></button></form></div>`;
       document.getElementById('workspaceForm').onsubmit = e => {e.preventDefault(); const name = document.getElementById('workspaceName').value.trim(); if(name) location.assign(`/studio?workspace=${encodeURIComponent(name)}`);};
@@ -127,7 +143,7 @@
     const newLabel = demo ? 'Start your workspace' : takes.length === 1 ? 'Record another take' : 'Record new take';
     const compareLabel = takes.findIndex(t => t.id === selected) > 0 ? 'Compare with previous' : 'Compare takes';
     const metricRows = rows => rows.map(([label,value,unit='']) => `<div><dt>${label}</dt><dd>${value}<span>${unit}</span></dd></div>`).join('');
-    document.getElementById('main').innerHTML = `<div class="prelight-studio"><div class="pl-shell pl-simple ${f?'':'pl-first-use'}">
+    document.getElementById('main').innerHTML = `<div class="prelight-studio"><div class="pl-shell pl-simple ${f?'':'pl-first-use'} ${guided&&!f?'pl-tutorial-start':''}">
       <div class="pl-topbar">${brand}<div class="pl-workspace-title"><span class="pl-slash">/</span><h1>${escape(workspaceName)}</h1>${demo?'<span class="pl-demo-tag">Demo</span>':''}</div>
         ${f?`<div class="pl-actions">${takes.length>=2?`<button class="pl-btn ${isComparing?'':'pl-primary'}" id="compareBtn">${isComparing?'Back to trace':compareLabel}</button>`:''}<button class="pl-btn ${takes.length<2||isComparing?'pl-primary':''}" id="topNew">${newLabel}</button></div>`:''}
       </div>

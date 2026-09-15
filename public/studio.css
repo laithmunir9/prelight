@@ -391,3 +391,25 @@ body.prelight-page #main { display:block; }
 .pl-guided-landing #practiceType:focus { outline:none; border-color:#c8d5df; box-shadow:0 0 0 1px #c8d5df; }
 .prelight-studio .pl-guide .pl-btn.pl-primary { background:#f8f4ed; border-color:#f8f4ed; color:#20263f; border-radius:12px; }
 .prelight-studio .pl-guide .pl-btn.pl-primary:hover { background:#fffdfa; border-color:#fffdfa; }
+
+/* Keep supporting copy centered at every breakpoint. */
+.prelight-landing.pl-guided-landing .pl-landing-copy { width:100%; max-width:520px; margin:22px auto 30px; text-align:center; }
+.prelight-studio .pl-track-label { left:16px; }
+.prelight-studio .pl-tutorial-start .pl-canvas { max-width:none; background-image:radial-gradient(#c8d5df18 1px,transparent 1px); background-size:28px 28px; }
+.prelight-studio .pl-exit-tutorial { margin-left:auto; color:#b8bfd0; font-size:12px; white-space:nowrap; }
+.prelight-studio .pl-tutorial-start .pl-guide { width:min(640px,100%); }
+.prelight-studio .pl-tutorial-start .pl-guide-body { position:relative; }
+.prelight-studio .pl-tutorial-start .pl-guide-body:before { content:''; position:absolute; left:-9px; top:32px; border-right:9px solid #303952; border-top:9px solid transparent; border-bottom:9px solid transparent; }
+.prelight-studio .pl-tutorial-start #practiceType { width:100%; margin-bottom:14px; font-size:16px; }
+.prelight-studio .pl-tutorial-start #practiceType:focus { outline:none; border-color:#c8d5df; box-shadow:0 0 0 1px #c8d5df; }
+.prelight-studio .pl-tutorial-start .pl-practice-choices { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 22px; }
+.prelight-studio .pl-tutorial-start .pl-practice-choices button { border:1px solid #ffffff26; background:#ffffff08; border-radius:20px; padding:8px 12px; font-size:12px; }
+.prelight-studio .pl-tutorial-start .pl-practice-choices button:hover { background:#ffffff15; }
+@media (max-width:600px) {
+  .prelight-studio .pl-tutorial-start .pl-topbar { gap:12px; }
+  .prelight-studio .pl-tutorial-start .pl-workspace-title { flex:none; }
+  .prelight-studio .pl-tutorial-start .pl-guide { flex-direction:column; }
+  .prelight-studio .pl-tutorial-start .pl-guide > img { margin:0 0 0 18px; width:64px; height:64px; }
+  .prelight-studio .pl-tutorial-start .pl-guide-body { width:100%; }
+  .prelight-studio .pl-tutorial-start .pl-guide-body:before { left:40px; top:-9px; border-bottom:9px solid #303952; border-left:9px solid transparent; border-right:9px solid transparent; border-top:0; }
+}
