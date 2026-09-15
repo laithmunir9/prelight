@@ -131,7 +131,7 @@
     document.title = `${workspaceName || 'What are you practicing?'} · Prelight Studio`;
     if (!workspaceName && guided) {renderTutorialStart(); return;}
     if (!workspaceName) {
-      document.getElementById('main').innerHTML = `<div class="prelight-studio pl-onboarding"><nav>${brand}</nav><form id="workspaceForm"><h1 id="practiceHeading">What are you practicing?</h1><input aria-labelledby="practiceHeading" id="workspaceName" placeholder="Product pitch" maxlength="100" required/><button class="pl-btn pl-primary">Start recording <span>→</span></button></form></div>`;
+      document.getElementById('main').innerHTML = `<div class="prelight-studio pl-onboarding"><nav>${brand}</nav><form id="workspaceForm"><img class="pl-character" src="/prelight-mascot.png" width="88" height="88" alt=""/><h1 id="practiceHeading">What are you practicing?</h1><input aria-labelledby="practiceHeading" id="workspaceName" placeholder="Product pitch" maxlength="100" required/><button class="pl-btn pl-primary">Start recording <span>→</span></button></form></div>`;
       document.getElementById('workspaceForm').onsubmit = e => {e.preventDefault(); const name = document.getElementById('workspaceName').value.trim(); if(name) location.assign(`/studio?workspace=${encodeURIComponent(name)}`);};
       return;
     }
@@ -159,7 +159,7 @@
     bind();
   }
   function modalHtml() {
-    return modal ? `<div class="pl-modal"><form class="pl-dialog" id="takeDialog" role="dialog" aria-modal="true" aria-labelledby="takeDialogTitle"><div class="pl-eyebrow">A fresh take</div><h2 id="takeDialogTitle">Ready when you are.</h2><p>Start recording when you’re ready to speak.</p><label for="takeName">Take name</label><input id="takeName" value="Take ${takes.length+1}" maxlength="100"/><div class="pl-actions"><button type="button" class="pl-btn" id="cancelTake">Cancel</button><button class="pl-btn pl-primary" id="recordTake" type="submit">Record new take</button></div><p id="recordStatus" role="status" aria-live="polite">Microphone access is requested only when you record.</p></form></div>` : '';
+    return modal ? `<div class="pl-modal"><form class="pl-dialog" id="takeDialog" role="dialog" aria-modal="true" aria-labelledby="takeDialogTitle"><img class="pl-character" src="/prelight-mascot.png" width="72" height="72" alt=""/><h2 id="takeDialogTitle">Ready when you are.</h2><p>Start recording when you’re ready to speak.</p><label for="takeName">Take name</label><input id="takeName" value="Take ${takes.length+1}" maxlength="100"/><div class="pl-actions"><button type="button" class="pl-btn" id="cancelTake">Cancel</button><button class="pl-btn pl-primary" id="recordTake" type="submit">Record new take</button></div><p id="recordStatus" role="status" aria-live="polite">Microphone access is requested only when you record.</p></form></div>` : '';
   }
   async function startRecording() {
     if (recordingState !== 'idle') return;
