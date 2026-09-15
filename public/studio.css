@@ -328,3 +328,12 @@ body.prelight-page #main { display:block; }
   .prelight-landing .pl-input-wrap { grid-template-columns:24px minmax(0,1fr); }
   .prelight-landing .pl-input-wrap .pl-btn { grid-column:1/-1; width:100%; }
 }
+
+/* The character carries the personality; workspace controls stay quiet. */
+:is(.prelight-landing,.prelight-studio) .pl-brand img { width:36px; height:36px; object-fit:contain; }
+.prelight-landing .pl-hero-mark { width:144px; height:144px; object-fit:contain; margin-bottom:28px; }
+.prelight-landing .rm-auth-dialog .pl-character { display:block; width:72px; height:72px; object-fit:contain; margin-bottom:16px; }
+.prelight-studio .pl-empty .pl-character { width:88px; height:88px; object-fit:contain; margin-bottom:20px; }
+@media (max-width:600px) {
+  .prelight-landing .pl-hero-mark { width:112px; height:112px; margin-bottom:24px; }
+}

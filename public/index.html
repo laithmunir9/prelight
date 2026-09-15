@@ -1007,6 +1007,7 @@ function renderAuthDialog() {
     <div class="rm-auth-backdrop" id="authBackdrop" role="presentation">
       <section class="rm-auth-dialog" role="dialog" aria-modal="true" aria-labelledby="authTitle">
         <button class="rm-auth-close" id="authClose" type="button" aria-label="Close account dialog">×</button>
+        <img class="pl-character" src="/prelight-character.png" width="72" height="72" alt=""/>
         <h2 id="authTitle">${S.authMode === "register" ? "Your room is ready." : "Welcome back."}</h2>
         <p class="sub">${S.authMode === "register" ? "Create your private Prelight account to start your first practice." : "Sign in to return to your practice path."}</p>
         ${S.authMode === "register" ? `<label>Name <div class="input-wrap"><input id="name" placeholder="Your name" autocomplete="name" /></div></label>` : ""}
