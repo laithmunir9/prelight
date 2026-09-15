@@ -53,7 +53,6 @@
         <h1>A little practice.<br/>A <em>clearer voice.</em></h1>
         <p class="pl-landing-copy">Practice a pitch, an interview answer, or a speech.<br/>Record it twice. See how your delivery changes.</p>
         <button class="pl-btn pl-primary pl-start-tutorial" id="startTutorial">Show me how</button>
-        <a class="pl-skip-intro" href="/studio">Go straight to Studio</a>
         <p class="pl-signin-line">Already have an account? <button id="studioSignIn">Sign in</button></p>
       </section>
       ${introHtml()}<div id="authRoot"></div></div>`;

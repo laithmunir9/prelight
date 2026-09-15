@@ -351,7 +351,6 @@ body.prelight-page #main { display:block; }
 .pl-guided-landing .pl-start-tutorial { min-width:260px; min-height:54px; }
 .prelight-landing.pl-guided-landing .pl-primary { border-radius:12px; background:#f8f4ed; color:#20263f; border-color:#f8f4ed; font-size:15px; box-shadow:0 8px 24px #10142630; }
 .prelight-landing.pl-guided-landing .pl-primary:hover { background:#fffdfa; border-color:#fffdfa; color:#20263f; }
-.pl-guided-landing .pl-skip-intro { display:block; width:fit-content; margin:18px auto 0; color:#b8bfd0; font-size:12px; }
 .pl-guided-landing .pl-signin-line { margin-top:30px; color:#aeb6c9; font-size:13px; }
 .pl-guided-landing #studioSignIn { margin:0; padding:0; background:none; border:0; color:#f8f4ed; text-decoration:underline; text-underline-offset:4px; }
 .pl-guided-landing .pl-intro-backdrop { position:fixed; inset:0; z-index:45; display:grid; place-items:center; padding:24px; background:#101426a6; backdrop-filter:blur(10px); }

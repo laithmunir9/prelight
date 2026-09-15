@@ -115,7 +115,7 @@ test('two and several takes make comparison primary, recording secondary',()=>{
 
 test('introduction opens a clean workspace without requesting the mic',()=>{
  const app=boot('/');
- assert.match(app.html,/Go straight to Studio/);
+ assert.doesNotMatch(app.html,/Go straight to Studio|pl-skip-intro/);
  app.node('startTutorial').onclick();
  assert.match(app.html,/Your next take starts here/);
  app.node('introContinue').listeners.click();
