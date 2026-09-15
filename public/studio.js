@@ -35,7 +35,7 @@
   let returnFocus = 'topNew';
   const fmt = (n, d=1) => Number.isFinite(n) ? n.toFixed(d) : '—';
   const time = s => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
-  const brand = '<a class="pl-brand" href="/" aria-label="Prelight home"><img src="/prelight-hermes.png" width="36" height="36" alt=""/>Prelight</a>';
+  const brand = '<a class="pl-brand" href="/" aria-label="Prelight home"><img src="/prelight-mascot.png" width="36" height="36" alt=""/>Prelight</a>';
   function save() {
     allTakes = [...allTakes.filter(t => state.isDemo(t) || (t.workspace && t.workspace !== workspaceName)), ...takes];
     try { localStorage.setItem(KEY, JSON.stringify(allTakes)); } catch {}
@@ -43,7 +43,7 @@
   function renderLanding() {
     document.body.classList.add('prelight-page');
     document.title = 'Prelight · An IDE for speaking';
-    document.getElementById('main').innerHTML = `<div class="prelight-landing"><nav class="pl-landing-nav">${brand}<span class="pl-nav-note">A little practice. A clearer voice.</span></nav><section class="pl-landing-content"><img class="pl-hero-mark" src="/prelight-hermes.png" width="144" height="144" alt="Prelight character"/><h1>An IDE for speaking.</h1><p class="pl-landing-copy">Record yourself. See what happened. Try again. Compare.</p><form id="practiceForm" class="pl-practice-form"><label for="practiceType">What are you practicing?</label><div class="pl-input-wrap"><span aria-hidden="true">↗</span><input id="practiceType" placeholder="Startup pitch" maxlength="100" autocomplete="off" list="practiceExamples"/><datalist id="practiceExamples"><option value="Startup pitch"><option value="Interview answer"><option value="Presentation"><option value="Speech"></datalist><button class="pl-btn pl-primary" type="submit">Start recording <span aria-hidden="true">→</span></button></div></form><button class="pl-text-btn" id="studioSignIn">Sign in</button></section><footer class="pl-landing-footer"><span>Your next take starts here.</span><a href="/studio?demo=1">Explore the demo <span aria-hidden="true">↗</span></a></footer><div id="authRoot"></div></div>`;
+    document.getElementById('main').innerHTML = `<div class="prelight-landing"><nav class="pl-landing-nav">${brand}<span class="pl-nav-note">A little practice. A clearer voice.</span></nav><section class="pl-landing-content"><img class="pl-hero-mark" src="/prelight-mascot.png" width="144" height="144" alt="Prelight mascot"/><h1>An IDE for speaking.</h1><p class="pl-landing-copy">Record yourself. See what happened. Try again. Compare.</p><form id="practiceForm" class="pl-practice-form"><label for="practiceType">What are you practicing?</label><div class="pl-input-wrap"><span aria-hidden="true">↗</span><input id="practiceType" placeholder="Startup pitch" maxlength="100" autocomplete="off" list="practiceExamples"/><datalist id="practiceExamples"><option value="Startup pitch"><option value="Interview answer"><option value="Presentation"><option value="Speech"></datalist><button class="pl-btn pl-primary" type="submit">Start recording <span aria-hidden="true">→</span></button></div></form><button class="pl-text-btn" id="studioSignIn">Sign in</button></section><footer class="pl-landing-footer"><span>Your next take starts here.</span><a href="/studio?demo=1">Explore the demo <span aria-hidden="true">↗</span></a></footer><div id="authRoot"></div></div>`;
     document.getElementById('practiceForm').onsubmit = e => {e.preventDefault();location.assign(`/studio?workspace=${encodeURIComponent(document.getElementById('practiceType').value.trim() || 'Product Pitch')}`);};
     document.getElementById('studioSignIn').onclick = () => { if (typeof openAuth === 'function') openAuth('login'); };
     if (typeof S !== 'undefined' && S.authOpen) renderAuthDialog();
@@ -92,7 +92,7 @@
         <dl class="pl-headline-metrics">${metricRows([['Duration',time(f.duration)],['Pauses',f.pauses.length],['Silence',fmt(f.silenceRatio*100),'%'],['Pitch variation',fmt(f.pitchVariability,0),'Hz']])}</dl>
         <details class="pl-details"><summary>View details</summary><div class="pl-inspector"><p class="pl-metrics-scope">Whole take</p><dl class="pl-metrics">${metricRows([['Median pitch',fmt(f.medianPitch,0),'Hz'],['Long pauses',f.longPauseCount]])}</dl><p class="pl-inspector-note">These measurements describe the whole take, including when a region is selected.</p></div></details>
         ${demo?'<p class="pl-demo-note">Example recordings. Start your workspace to record your own.</p>':''}
-      `):`<div class="pl-empty"><img class="pl-character" src="/prelight-hermes.png" width="88" height="88" alt=""/><h2>Record your first take</h2><p>Record yourself. See what happened. Try again. Compare.</p><button class="pl-btn pl-primary" id="firstTake">Record your first take</button></div>`}</section>
+      `):`<div class="pl-empty"><img class="pl-character" src="/prelight-mascot.png" width="88" height="88" alt=""/><h2>Record your first take</h2><p>Record yourself. See what happened. Try again. Compare.</p><button class="pl-btn pl-primary" id="firstTake">Record your first take</button></div>`}</section>
       </div>${modalHtml()}</div>`;
     bind();
   }
