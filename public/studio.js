@@ -56,7 +56,6 @@
         <a class="pl-skip-intro" href="/studio">Go straight to Studio</a>
         <p class="pl-signin-line">Already have an account? <button id="studioSignIn">Sign in</button></p>
       </section>
-      <footer class="pl-landing-footer" ${introStep?'inert':''}><span>Practice before the room is real.</span><a href="/studio?demo=1">Explore an example ↗</a></footer>
       ${introHtml()}<div id="authRoot"></div></div>`;
     document.getElementById('startTutorial').onclick = () => {introStep='welcome';renderLanding();document.getElementById('introContinue').focus();};
     document.getElementById('studioSignIn').onclick = () => { if (typeof openAuth === 'function') openAuth('login'); };
