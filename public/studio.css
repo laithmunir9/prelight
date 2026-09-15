@@ -337,3 +337,57 @@ body.prelight-page #main { display:block; }
 @media (max-width:600px) {
   .prelight-landing .pl-hero-mark { width:112px; height:112px; margin-bottom:24px; }
 }
+
+/* Character-led introduction, with a quiet navy workspace underneath. */
+.prelight-landing.pl-guided-landing { background:radial-gradient(ellipse at 50% 20%,#303853 0%,#20263f 65%); }
+.pl-guided-landing .pl-landing-content { max-width:680px; padding:30px 24px 60px; }
+.pl-guided-landing .pl-mascot-greeting { position:relative; width:144px; margin:32px auto 24px; }
+.pl-guided-landing .pl-mascot-greeting > span { position:absolute; bottom:calc(100% + 10px); left:72px; width:max-content; background:#f8f4ed; color:#20263f; padding:12px 18px; border-radius:18px; font-size:14px; }
+.pl-guided-landing .pl-mascot-greeting > span:after { content:''; position:absolute; bottom:-7px; left:22px; border-top:8px solid #f8f4ed; border-left:8px solid transparent; border-right:8px solid transparent; }
+.pl-guided-landing .pl-hero-mark { display:block; margin:0; }
+.prelight-landing.pl-guided-landing h1 { font-family:"IBM Plex Sans",sans-serif; font-size:clamp(38px,4.5vw,62px); font-weight:600; letter-spacing:-.045em; line-height:1.12; }
+.pl-guided-landing h1 em { font-weight:400; }
+.pl-guided-landing .pl-landing-copy { font-size:16px; line-height:1.65; margin:22px 0 30px; }
+.pl-guided-landing .pl-start-tutorial { min-width:260px; min-height:54px; }
+.prelight-landing.pl-guided-landing .pl-primary { border-radius:12px; background:#f8f4ed; color:#20263f; border-color:#f8f4ed; font-size:15px; box-shadow:0 8px 24px #10142630; }
+.prelight-landing.pl-guided-landing .pl-primary:hover { background:#fffdfa; border-color:#fffdfa; color:#20263f; }
+.pl-guided-landing .pl-skip-intro { display:block; width:fit-content; margin:18px auto 0; color:#b8bfd0; font-size:12px; }
+.pl-guided-landing .pl-signin-line { margin-top:30px; color:#aeb6c9; font-size:13px; }
+.pl-guided-landing #studioSignIn { margin:0; padding:0; background:none; border:0; color:#f8f4ed; text-decoration:underline; text-underline-offset:4px; }
+.pl-guided-landing .pl-intro-backdrop { position:fixed; inset:0; z-index:45; display:grid; place-items:center; padding:24px; background:#101426a6; backdrop-filter:blur(10px); }
+.pl-guided-landing .pl-intro-dialog { position:relative; width:min(560px,100%); max-height:calc(100dvh - 48px); overflow-y:auto; padding:38px; border:1px solid #ffffff25; border-radius:24px; background:linear-gradient(150deg,#343d58,#272e49); box-shadow:0 24px 70px #080b1955; text-align:center; }
+.pl-guided-landing .pl-intro-dialog > img { display:block; object-fit:contain; margin:0 auto 24px; }
+.pl-guided-landing .pl-intro-dialog h2 { font:500 26px/1.3 "IBM Plex Sans",sans-serif; letter-spacing:-.025em; margin-bottom:16px; }
+.pl-guided-landing .pl-intro-dialog p { max-width:420px; color:#c0c7d7; font-size:16px; line-height:1.7; margin:0 auto 30px; }
+.pl-guided-landing .pl-intro-dialog .pl-btn { min-width:140px; min-height:46px; }
+.pl-guided-landing .pl-intro-close { position:absolute; top:14px; right:14px; width:34px; height:34px; border:0; border-radius:10px; background:#ffffff0b; color:#b8bfd0; font-size:24px; }
+.pl-guided-landing #practiceType { width:100%; padding:15px; text-align:center; font-size:16px; background:#20263f; border-radius:12px; }
+.pl-guided-landing .pl-practice-choices { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin:16px 0 26px; }
+.pl-guided-landing .pl-practice-choices button { border:1px solid #ffffff26; background:#ffffff08; border-radius:24px; padding:9px 13px; font-size:12px; }
+.pl-guided-landing .pl-practice-choices button:hover { background:#ffffff15; }
+.pl-guided-landing .pl-intro-back { display:block; margin:18px auto 0; padding:6px; border:0; background:none; color:#b8bfd0; font-size:13px; }
+.pl-sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+.prelight-studio .pl-guide { display:flex; align-items:flex-start; gap:20px; width:min(660px,100%); margin:0 auto 30px; }
+.prelight-studio .pl-guide > img { object-fit:contain; flex-shrink:0; margin-top:10px; }
+.prelight-studio .pl-guide-body { flex:1; min-width:0; padding:22px 24px; background:#303952; border:1px solid #ffffff1c; border-radius:18px; }
+.prelight-studio .pl-guide-meta { display:flex; align-items:center; gap:12px; font-weight:600; font-size:13px; }
+.prelight-studio .pl-guide-meta span { color:#aeb6c9; font-size:11px; font-weight:400; }
+.prelight-studio .pl-guide-meta button { margin-left:auto; border:0; background:none; font-size:22px; color:#b8bfd0; padding:0 5px; }
+.prelight-studio .pl-guide h2 { font:500 20px/1.3 "IBM Plex Sans",sans-serif; margin:12px 0 8px; }
+.prelight-studio .pl-guide p { color:#c0c7d7; font-size:14px; line-height:1.6; margin-bottom:18px; }
+.prelight-studio .pl-first-use .pl-guide { margin:auto; }
+.prelight-studio .pl-first-use .pl-guide + .pl-empty { display:none; }
+@media (max-width:600px) {
+  .pl-guided-landing .pl-mascot-greeting { width:112px; margin-top:46px; }
+  .pl-guided-landing .pl-mascot-greeting > span { left:40px; font-size:12px; }
+  .pl-guided-landing .pl-intro-dialog { padding:36px 20px 24px; }
+  .pl-guided-landing .pl-intro-dialog h2 { font-size:23px; }
+  .pl-guided-landing .pl-landing-footer { gap:16px; flex-wrap:wrap; }
+  .prelight-studio .pl-guide { gap:10px; }
+  .prelight-studio .pl-guide > img { width:44px; height:44px; }
+  .prelight-studio .pl-guide-body { padding:18px; }
+}
+
+.pl-guided-landing #practiceType:focus { outline:none; border-color:#c8d5df; box-shadow:0 0 0 1px #c8d5df; }
+.prelight-studio .pl-guide .pl-btn.pl-primary { background:#f8f4ed; border-color:#f8f4ed; color:#20263f; border-radius:12px; }
+.prelight-studio .pl-guide .pl-btn.pl-primary:hover { background:#fffdfa; border-color:#fffdfa; }

@@ -30,6 +30,9 @@
   let compare = takes.at(-2)?.id;
   let mode = 'trace';
   let modal = false;
+  let introStep = null;
+  let practiceDraft = '';
+  let guided = params.get('tour') === '1' && !demo;
   let recorder = null;
   let recordingState = 'idle';
   let returnFocus = 'topNew';
@@ -42,11 +45,55 @@
   }
   function renderLanding() {
     document.body.classList.add('prelight-page');
-    document.title = 'Prelight · An IDE for speaking';
-    document.getElementById('main').innerHTML = `<div class="prelight-landing"><nav class="pl-landing-nav">${brand}<span class="pl-nav-note">A little practice. A clearer voice.</span></nav><section class="pl-landing-content"><img class="pl-hero-mark" src="/prelight-mascot.png" width="144" height="144" alt="Prelight mascot"/><h1>An IDE for speaking.</h1><p class="pl-landing-copy">Record yourself. See what happened. Try again. Compare.</p><form id="practiceForm" class="pl-practice-form"><label for="practiceType">What are you practicing?</label><div class="pl-input-wrap"><span aria-hidden="true">↗</span><input id="practiceType" placeholder="Startup pitch" maxlength="100" autocomplete="off" list="practiceExamples"/><datalist id="practiceExamples"><option value="Startup pitch"><option value="Interview answer"><option value="Presentation"><option value="Speech"></datalist><button class="pl-btn pl-primary" type="submit">Start recording <span aria-hidden="true">→</span></button></div></form><button class="pl-text-btn" id="studioSignIn">Sign in</button></section><footer class="pl-landing-footer"><span>Your next take starts here.</span><a href="/studio?demo=1">Explore the demo <span aria-hidden="true">↗</span></a></footer><div id="authRoot"></div></div>`;
-    document.getElementById('practiceForm').onsubmit = e => {e.preventDefault();location.assign(`/studio?workspace=${encodeURIComponent(document.getElementById('practiceType').value.trim() || 'Product Pitch')}`);};
+    document.title = 'Prelight · Practice before the room is real';
+    document.getElementById('main').innerHTML = `<div class="prelight-landing pl-guided-landing">
+      <nav class="pl-landing-nav" ${introStep?'inert':''}>${brand}</nav>
+      <section class="pl-landing-content" ${introStep?'inert':''}>
+        <div class="pl-mascot-greeting"><span>Hi, I’m Prelight.</span><img class="pl-hero-mark" src="/prelight-mascot.png" width="144" height="144" alt="Prelight mascot"/></div>
+        <h1>A little practice.<br/>A <em>clearer voice.</em></h1>
+        <p class="pl-landing-copy">Record. Look back. Try again.<br/>See what changes between takes.</p>
+        <button class="pl-btn pl-primary pl-start-tutorial" id="startTutorial">Show me how</button>
+        <a class="pl-skip-intro" href="/studio">Go straight to Studio</a>
+        <p class="pl-signin-line">Already have an account? <button id="studioSignIn">Sign in</button></p>
+      </section>
+      <footer class="pl-landing-footer" ${introStep?'inert':''}><span>Practice before the room is real.</span><a href="/studio?demo=1">Explore an example ↗</a></footer>
+      ${introHtml()}<div id="authRoot"></div></div>`;
+    document.getElementById('startTutorial').onclick = () => {introStep='welcome';renderLanding();document.getElementById('introContinue').focus();};
     document.getElementById('studioSignIn').onclick = () => { if (typeof openAuth === 'function') openAuth('login'); };
+    bindIntro();
     if (typeof S !== 'undefined' && S.authOpen) renderAuthDialog();
+  }
+  function introHtml() {
+    if (!introStep) return '';
+    const choosing = introStep === 'practice';
+    return `<div class="pl-intro-backdrop"><section class="pl-intro-dialog" id="introDialog" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+      <button class="pl-intro-close" id="introClose" aria-label="Close introduction">×</button>
+      <img src="/prelight-mascot.png" width="112" height="112" alt=""/>
+      ${choosing?`<h2 id="introTitle">What are you practicing?</h2><form id="practiceForm"><label class="pl-sr-only" for="practiceType">What are you practicing?</label><input id="practiceType" value="${escape(practiceDraft)}" placeholder="Give your practice a name" maxlength="100" required autocomplete="off"/><div class="pl-practice-choices">${['Product pitch','Interview answer','Presentation','Speech'].map(name=>`<button type="button" data-practice="${name}">${name}</button>`).join('')}</div><button class="pl-btn pl-primary" type="submit">Let’s begin</button></form><button class="pl-intro-back" id="introBack">Back</button>`:`<h2 id="introTitle">Your next take starts here.</h2><p>Record yourself. See where you pause and how your voice moves. Then try again and compare.</p><button class="pl-btn pl-primary" id="introContinue">Continue</button>`}
+    </section></div>`;
+  }
+  function closeIntro() {introStep=null;renderLanding();document.getElementById('startTutorial').focus();}
+  function bindIntro() {
+    document.getElementById('introClose')?.addEventListener('click',closeIntro);
+    document.getElementById('introContinue')?.addEventListener('click',()=>{introStep='practice';renderLanding();document.getElementById('practiceType').focus();});
+    document.getElementById('introBack')?.addEventListener('click',()=>{practiceDraft=document.getElementById('practiceType').value;introStep='welcome';renderLanding();document.getElementById('introContinue').focus();});
+    document.querySelectorAll('[data-practice]').forEach(button=>button.onclick=()=>{document.getElementById('practiceType').value=button.dataset.practice;document.getElementById('practiceType').focus();});
+    document.getElementById('practiceForm')?.addEventListener('submit',e=>{e.preventDefault();const name=document.getElementById('practiceType').value.trim();if(name)location.assign(`/studio?workspace=${encodeURIComponent(name)}&tour=1`);});
+    document.getElementById('introDialog')?.addEventListener('keydown',e=>{
+      if(e.key==='Escape')closeIntro();
+      if(e.key==='Tab'){const controls=[...e.currentTarget.querySelectorAll('button,input')];const first=controls[0],last=controls.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+    });
+  }
+  function guideHtml() {
+    if(!guided)return '';
+    const step=takes.length===0?1:takes.length===1?2:mode==='compare'?4:3;
+    const [title,copy,action]=[
+      ['Record your first take','Pick a short thought and say it out loud. You can stop whenever you like.','Record your first take'],
+      ['See what happened','Energy shows emphasis. Pitch shows how your voice moves. The blocks mark pauses. Try the same thought again.','Record another take'],
+      ['What changed?','You have two versions. Put them side by side to see what changed in your delivery.','Compare with previous'],
+      ['A little clearer, take by take','That’s the loop: record, inspect, try again, compare. Your takes are here whenever you want another run.','Finish tutorial']
+    ][step-1];
+    return `<aside class="pl-guide" aria-label="Speaking tutorial"><img src="/prelight-mascot.png" width="76" height="76" alt=""/><div class="pl-guide-body"><div class="pl-guide-meta">Prelight <span>Step ${step} of 4</span><button id="exitGuide" aria-label="Exit tutorial">×</button></div><h2>${title}</h2><p>${copy}</p><button class="pl-btn pl-primary" id="guideAction">${action}</button></div></aside>`;
   }
   function points(values, width=1000, height=110) {
     const valid = values.filter(Number.isFinite);
@@ -85,7 +132,7 @@
         ${f?`<div class="pl-actions">${takes.length>=2?`<button class="pl-btn ${isComparing?'':'pl-primary'}" id="compareBtn">${isComparing?'Back to trace':compareLabel}</button>`:''}<button class="pl-btn ${takes.length<2||isComparing?'pl-primary':''}" id="topNew">${newLabel}</button></div>`:''}
       </div>
       ${f?`<aside class="pl-rail"><div class="pl-rail-heading"><h2>Takes</h2></div><div class="pl-takes">${takes.slice().reverse().map(t=>`<button class="pl-take ${t.id===selected?'pl-active':''}" data-take="${escape(t.id)}" aria-pressed="${t.id===selected}"><span><strong>${escape(t.label)}</strong><small>${time(t.features.duration)}</small></span></button>`).join('')}</div><button class="pl-text-btn pl-new" id="newTake">＋ ${demo?'Start your workspace':'New take'}</button></aside>`:''}
-      <section class="pl-canvas">${f?(isComparing?diffCanvas(previous,active):`
+      <section class="pl-canvas">${guideHtml()}${f?(isComparing?diffCanvas(previous,active):`
         <div class="pl-canvas-heading"><div><div class="pl-eyebrow">${escape(active.label)}</div><h2>Performance trace</h2></div></div>
         ${timeline(f)}
         <div class="pl-canvas-foot"><span>Drag to select · Arrow keys to adjust · Esc to clear</span><span class="pl-inspector-range" aria-live="polite"></span></div>
@@ -126,7 +173,7 @@
           const features = window.SpeechProfiler.extractFeatures(buffer.getChannelData(0),buffer.sampleRate);
           const take = {id:`take-${Date.now()}`,label:name.value.trim() || `Take ${takes.length+1}`,workspace:workspaceName,createdAt:new Date().toISOString(),features};
           takes.push(take); selected = take.id; compare = takes.at(-2)?.id; mode='trace';
-          save(); modal=false; recordingState='idle'; render(); document.getElementById('topNew').focus();
+          save(); modal=false; recordingState='idle'; render(); document.getElementById(guided?'guideAction':'topNew').focus();
         } catch { status.textContent='This take could not be analyzed. Please try again.'; reset(); }
         finally { if(context) await context.close(); }
       };
@@ -139,8 +186,13 @@
     }
     function reset() { recordingState='idle'; button.disabled=cancel.disabled=name.disabled=false; button.textContent='Record new take'; }
   }
-  function closeModal() { if(recordingState!=='idle') return; modal=false;render();document.getElementById(returnFocus)?.focus(); }
+  function closeModal() { if(recordingState!=='idle') return; modal=false;render();document.getElementById(guided&&takes.length<2?'guideAction':returnFocus)?.focus(); }
   function bind() {
+    document.getElementById('exitGuide')?.addEventListener('click',()=>{guided=false;render();document.getElementById(takes.length?'topNew':'firstTake')?.focus();});
+    document.getElementById('guideAction')?.addEventListener('click',()=>{
+      if(takes.length>=2&&mode==='compare'){guided=false;render();document.getElementById('topNew')?.focus();}
+      else document.getElementById(takes.length>=2?'compareBtn':takes.length?'topNew':'firstTake')?.click();
+    });
     document.querySelectorAll('[data-take]').forEach(b=>b.onclick=()=>{selected=b.dataset.take; const index=takes.findIndex(t=>t.id===selected); compare=takes[index-1]?.id || takes.find(t=>t.id!==selected)?.id; mode='trace'; render();});
     ['newTake','topNew','firstTake'].forEach(id=>document.getElementById(id)?.addEventListener('click',()=>{if(demo){location.assign('/studio?workspace=Product%20Pitch');return;}returnFocus=id;modal=true;render();document.getElementById('takeName').focus();}));
     const timeline = document.querySelector('.pl-selectable');

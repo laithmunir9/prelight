@@ -30,12 +30,14 @@ const features={duration:2,energy:[.1,.3,.1],pitch:[140,160,140],voiced:[true,tr
 
 test('root remains the landing page even with stored takes',()=>{
   const app=boot('/','',{prelightStudioTakes:JSON.stringify([{id:'real',label:'Saved take',features}])});
-  assert.match(app.html,/An IDE for speaking/);
+  assert.match(app.html,/A little practice/);
   assert.doesNotMatch(app.html,/Performance trace|pl-inspector|Saved take/);
   assert.equal(app.micCalls,0);
+  app.node('startTutorial').onclick();
+  app.node('introContinue').listeners.click();
   app.node('practiceType').value='Interview answer';
-  app.node('practiceForm').onsubmit({preventDefault(){}});
-  assert.equal(app.context.location.assigned,'/studio?workspace=Interview%20answer');
+  app.node('practiceForm').listeners.submit({preventDefault(){}});
+  assert.equal(app.context.location.assigned,'/studio?workspace=Interview%20answer&tour=1');
 });
 test('fresh Studio asks for a workspace, and named workspace starts without demo takes',()=>{
   assert.match(boot('/studio').html,/Start recording/);
@@ -111,4 +113,30 @@ test('two and several takes make comparison primary, recording secondary',()=>{
     app.node('compareBtn').listeners.click();
     assert.match(app.html,/Performance trace/);
   }
+});
+
+test('introduction is optional, preserves the practice draft, and never requests the mic',()=>{
+ const app=boot('/');
+ assert.match(app.html,/Go straight to Studio/);
+ app.node('startTutorial').onclick();
+ assert.match(app.html,/Your next take starts here/);
+ app.node('introContinue').listeners.click();
+ app.node('practiceType').value='My keynote';
+ app.node('introBack').listeners.click();
+ app.node('introContinue').listeners.click();
+ assert.match(app.html,/value="My keynote"/);
+ app.node('introClose').listeners.click();
+ assert.doesNotMatch(app.html,/id="introDialog"/);
+ assert.equal(app.micCalls,0);
+});
+test('guided steps follow actual take state and can be dismissed',()=>{
+ for(const count of [0,1,2]){
+  const app=boot('/studio','?workspace=Speech&tour=1',{prelightStudioTakes:JSON.stringify(Array.from({length:count},(_,i)=>({id:`real-${i}`,label:`Take ${i+1}`,workspace:'Speech',features})))});
+  assert.match(app.html,new RegExp(`Step ${count+1} of 4`));
+  if(count===2){app.node('compareBtn').listeners.click();assert.match(app.html,/Step 4 of 4/);}
+  app.node('exitGuide').listeners.click();
+  assert.doesNotMatch(app.html,/Speaking tutorial/);
+  assert.equal(app.micCalls,0);
+ }
+ assert.doesNotMatch(boot('/studio','?demo=1&tour=1').html,/Speaking tutorial/);
 });
