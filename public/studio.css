@@ -251,3 +251,80 @@ body.prelight-page #main { display:block; }
   .prelight-studio .pl-simple .pl-canvas-heading { flex-wrap:wrap; }
   .prelight-studio .pl-first-use .pl-empty h2 { font-size:27px; }
 }
+
+/* Shared original controls across Studio, landing and account forms. */
+:is(.prelight-studio,.prelight-landing) .pl-btn,
+.prelight-landing .rm-auth-dialog .btn {
+  border:1px solid rgba(248,244,237,.22);
+  border-radius:5px;
+  background:transparent;
+  color:#f8f4ed;
+  padding:10px 14px;
+  font-size:14px;
+  font-weight:600;
+  transition:transform .15s;
+}
+:is(.prelight-studio,.prelight-landing) .pl-btn:hover,
+.prelight-landing .rm-auth-dialog .btn:hover {
+  background:transparent;
+  border-color:rgba(248,244,237,.22);
+  transform:translateY(-1px);
+}
+:is(.prelight-studio,.prelight-landing) .pl-btn.pl-primary,
+:is(.prelight-studio,.prelight-landing) .pl-btn.pl-primary:hover,
+.prelight-landing .rm-auth-dialog .btn.primary,
+.prelight-landing .rm-auth-dialog .btn.primary:hover {
+  background:#d57455;
+  border-color:#d57455;
+  color:#fffaf4;
+}
+.prelight-studio .pl-simple .pl-new {
+  margin:8px 0 0;
+  width:100%;
+  padding:11px 10px;
+  border:1px solid rgba(233,177,126,.75);
+  border-radius:5px;
+  background:transparent;
+  color:#f0c28f;
+  font-weight:600;
+  text-align:center;
+}
+.prelight-studio .pl-simple .pl-new:hover { background:#d57455; color:#fffaf4; }
+@media (max-width:680px) {
+  .prelight-studio .pl-simple .pl-topbar > .pl-actions .pl-btn { font-size:12px; }
+  .prelight-studio .pl-simple .pl-new { width:auto; align-self:flex-start; }
+}
+
+/* Auth labels wrap their fields, so spacing belongs inside each label. */
+.prelight-landing .rm-auth-dialog label { margin:18px 0 0; }
+.prelight-landing .rm-auth-dialog .input-wrap { margin-top:10px; }
+.prelight-landing .rm-auth-dialog input { display:block; margin-bottom:0; }
+.prelight-landing .rm-auth-dialog input:focus {
+  outline:none;
+  border-color:#c8d5df;
+  box-shadow:0 0 0 1px #c8d5df;
+}
+.prelight-landing .rm-auth-dialog .actions { margin-top:24px; }
+
+/* One focus boundary and explicit columns keep the field clear of its CTA. */
+.prelight-landing .pl-input-wrap {
+  display:grid;
+  grid-template-columns:24px minmax(0,1fr) auto;
+  gap:10px;
+  border-radius:5px;
+  box-shadow:none;
+}
+.prelight-landing .pl-input-wrap > span { margin:0; text-align:center; }
+.prelight-landing .pl-input-wrap input { width:100%; }
+.prelight-landing .pl-input-wrap input:focus { outline:none; box-shadow:none; }
+.prelight-landing .pl-input-wrap:focus-within { border-color:#c8d5df; }
+:is(.prelight-landing,.prelight-studio) :focus-visible { outline-color:#c8d5df; }
+.prelight-landing .pl-input-wrap .pl-btn { margin:0; }
+.prelight-landing .rm-auth-dialog { max-height:calc(100dvh - 48px); overflow-y:auto; }
+.prelight-landing .rm-auth-dialog .actions { flex-wrap:wrap; gap:10px; }
+.prelight-studio .pl-dialog { max-height:calc(100dvh - 48px); overflow-y:auto; }
+.prelight-studio .pl-dialog .pl-actions { flex-wrap:wrap; }
+@media (max-width:600px) {
+  .prelight-landing .pl-input-wrap { grid-template-columns:24px minmax(0,1fr); }
+  .prelight-landing .pl-input-wrap .pl-btn { grid-column:1/-1; width:100%; }
+}
