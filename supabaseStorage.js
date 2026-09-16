@@ -60,6 +60,7 @@ async function request(path, options = {}) {
   const { url } = config();
   const response = await fetch(`${url}${path}`, {
     ...options,
+    signal: options.signal || AbortSignal.timeout(10000),
     headers: headers(options.headers),
   });
   if (!response.ok) {
@@ -142,3 +143,11 @@ export async function getPracticeSessionRemote(studentId, id) {
   );
   return rowToPracticeSession(rows[0]);
 }
+
+// All feedback operations are server-only; studentId comes from verified sign-in.
+export const studioFeedbackStore = {
+  quota: studentId => request('/rest/v1/rpc/studio_feedback_quota', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p_student_id:studentId})}),
+  reserve: (studentId,key) => request('/rest/v1/rpc/reserve_studio_feedback', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p_student_id:studentId,p_request_key:key})}),
+  complete: async (studentId,key,feedback) => { const rows = await request(`/rest/v1/studio_feedback_requests?student_id=eq.${encodeURIComponent(studentId)}&request_key=eq.${key}&status=eq.pending`, {method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({status:'completed',feedback})}); if(!Array.isArray(rows)||rows.length!==1) throw new Error('Feedback reservation was not completed'); },
+  failed: (studentId,key) => request(`/rest/v1/studio_feedback_requests?student_id=eq.${encodeURIComponent(studentId)}&request_key=eq.${key}&status=eq.pending`, {method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({status:'failed'})}),
+};

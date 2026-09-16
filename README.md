@@ -1,89 +1,52 @@
 # Prelight
 
-AI-powered public speaking practice for simulated rooms and scenario-based feedback.
+A navy speaking-practice workspace: **record → inspect → record again → compare**.
 
-## Overview
+## Current product
 
-Prelight is a Node.js and browser application for practicing spoken or written communication in simulated scenarios, including interviews, speeches, pitches, exam vivas, and casual speaking practice. It pairs scenario templates with role-specific personas so a learner can practice against a room that responds.
+- A short guided tutorial starts with a fresh pitch workspace on every explicit entry.
+- Microphone audio is analyzed in the browser. Studio saves delivery measurements and take history in LocalStorage; it does not upload or retain the audio.
+- Compare duration, silence, long pauses, pitch variation, and overlaid traces.
+- Optional **Get feedback** sends only four numeric measurements from each take to OpenAI. It returns one measured observation and one delivery exercise, not a score or assessment of what the speaker said.
+- Recording and comparison are unlimited. Each signed-in account gets **five AI feedback attempts per UTC day**. Completed feedback for the same pair is cached; opening it again does not use another attempt. Failed attempts count because a provider request may already have incurred a charge.
 
-## How It Works
+## Run locally
 
-1. A user selects or describes a practice scenario.
-2. The server selects the relevant practice template and persona roster.
-3. The user practices through speech or text.
-4. OpenAI-generated responses simulate the room.
-5. The session is evaluated with transcript-derived signals.
-6. Feedback, history, trends, and milestones are surfaced after practice.
+Node.js 18 or newer:
 
-## Architecture
-
-- `server.js` runs an Express application and serves the browser frontend from `public/`.
-- `practiceTemplates.js` defines scenario templates and persona roles.
-- `practiceClassifier.js` extracts keyword and delivery signals used for responder selection and review summaries.
-- `openaiChatClient.js` handles JSON chat responses for scenario inference, role-play replies, and end-of-session review.
-- `openaiTranscriptionClient.js` transcribes microphone recordings through the OpenAI audio transcription API.
-- `openaiSpeechClient.js` generates persona voice playback through the OpenAI TTS API.
-- `transcriptAsrCorrections.js` applies targeted corrections for known speech recognition failures.
-- `curtainCall.js` validates that highlighted quotes are copied from the transcript.
-- `public/sessionProgress.js` computes local trend rows and milestone progress in the browser.
-- Supabase stores deployed student accounts, session tokens, practice state, usage counters, and bounded practice-session records when `SUPABASE_URL` and `SUPABASE_SECRET_KEY` are configured.
-- Local development falls back to `data/students.json` and `data/practice-sessions.json`, which are ignored by Git.
-
-## Evaluation and Progress
-
-The review flow combines AI feedback with measurable signals instead of relying only on generated prose. Delivery and engagement summaries include turn count, word count, hedging, rambling, question rate, and measured words per minute when microphone timing is available.
-
-Progress milestones are evidence-based. Most milestones require enough turns and words to avoid awarding progress from trivial sessions. The curtain call feature also validates that any quoted "best line" appears verbatim in the student's transcript and drops the quote when it cannot be verified.
-
-## Running Locally
-
-Requirements:
-
-- Node.js 18 or newer
-- An OpenAI API key for AI replies, transcription, and TTS
-
-Setup:
-
-```bash
+```sh
 npm install
 cp .env.example .env
-```
-
-Edit `.env` and set `OPENAI_API_KEY`. The server also supports optional model, audio, and rate-limit environment variables.
-
-For deployed persistence, set `SUPABASE_URL` and `SUPABASE_SECRET_KEY` in Render. The existing `students` table is created by the storage migration.
-
-Apply `supabase/migrations/20260829000001_create_practice_sessions.sql` manually before enabling deployed session history. The Express server uses the server-only Supabase key and still checks the authenticated student's ownership on every session request.
-
-The public GitHub Actions workflow in `.github/workflows/supabase-keepalive.yml` sends a harmless Supabase query every four days. Apply the keepalive migration to the hosted project, then add `SUPABASE_URL` and either `SUPABASE_PUBLISHABLE_KEY` (current) or `SUPABASE_ANON_KEY` (legacy) as repository Actions secrets before enabling it. The workflow prints the Supabase response when the RPC is missing or inaccessible.
-
-
-Start the app:
-
-```bash
 npm start
 ```
 
-By default the app runs at `http://localhost:3848`.
+Open `http://localhost:3848`. Recording and comparison work without an API key. Feedback requires `OPENAI_API_KEY`, `SUPABASE_URL`, and a server-only `SUPABASE_SECRET_KEY` (or legacy `SUPABASE_SERVICE_ROLE_KEY`). Never expose these secrets in frontend code or commit `.env`.
 
-## Testing
+## Production configuration
 
-Run the full test suite:
+1. Apply the SQL migrations in `supabase/migrations`, including `20260915203249_studio_feedback_quota.sql`.
+2. Configure the existing Render service with OpenAI and Supabase secrets. Supabase must refer to the same database as the deployed accounts.
+3. Set `LEGACY_PRACTICE_ENABLED=false` to disable the retired paid role-play, transcription, and speech endpoints. The active Studio flow does not use them.
+4. `STUDIO_FEEDBACK_ENABLED=false` disables feedback without affecting local recording or comparison. Otherwise feedback is available when both providers are configured.
+5. Leave `PRELIGHT_INVITE_CODE` and `GREEN_ROOM_INVITE_CODE` unset for open signup. Existing accounts must be preserved when changing storage configuration; do not switch a live local-data service to an empty database without migration.
 
-```bash
+Git pushes to the deployed branch trigger Render's existing auto-deploy. `render.yaml` describes the service, but `sync: false` fields do not populate secrets on existing services.
+
+## Quota and access control
+
+Express verifies opaque account tokens. Only that verified account ID reaches the database quota functions. Supabase Auth is not used. RLS is enabled on accounts, historical practice sessions, and feedback requests; `anon` and `authenticated` have no table or quota-function privileges. The server-only service role is the intended access path. The advisor's informational “RLS enabled, no policy” notices are intentional for this deny-client-access design.
+
+A PostgreSQL transaction lock serializes reservations for each account across requests and server instances. Reservations happen before contacting OpenAI and are unique to an account and normalized pair of takes. A failed or interrupted request keeps its reservation, preventing retries from generating unbounded charges. Pending reservations expire to failed after two minutes. The provider request has a 20-second timeout, no automatic retries, and at most 300 output tokens using `gpt-4.1-mini`.
+
+The daily quota is **per account**, not a total spending cap. Multiple accounts and growing usage can increase costs. Configure provider billing limits and monitor usage before a broad campaign. Authentication currently has no email verification or password-reset flow. Accounts use salted scrypt passwords and opaque bearer tokens stored in browser LocalStorage. Local fallback account data is unsuitable for Render's ephemeral filesystem; production must use Supabase.
+
+## Verification
+
+```sh
 npm test
+git diff --check
 ```
 
-The tests cover scenario templates, classifier signals, transcript corrections, microphone transcript accumulation, curtain call validation, session progress milestones, local authentication behavior, and bounded local session persistence, including route-level session-token checks.
+`studioFeedback.test.js` tests input validation, authenticated ownership, cached/pending/limited states, provider failures, bounded requests, and fail-closed behavior. `supabase/tests/studio_feedback_quota.sql` tests the real database limit, account isolation, duplicate handling, daily reset, RLS, and grants inside a rolled-back transaction. Existing frontend tests cover zero, one, two, and several takes plus tutorial restart behavior.
 
-## Security and Limitations
-
-Prelight currently uses lightweight local/demo authentication and JSON-file persistence. New passwords are stored as salted scrypt hashes, login returns an opaque session token, and protected routes accept only that token. A temporary legacy-login path migrates old plaintext records to scrypt hashes after a successful login.
-
-This is not production authentication. A deployed multi-user version should move sessions, users, and practice history to a managed database, add secure cookie-based session handling, CSRF protection where needed, password reset flows, and operational monitoring.
-
-Never commit `.env` or `data/students.json`.
-
-## Project Background
-
-Prelight originated during the MBZUAI Hybrid Intelligence Bootcamp and was continued independently afterward. Historical hackathon materials are kept in `docs/hackathon/` for provenance.
+Historical scenario/role-play modules and tests remain in the repository for provenance. They are not the current Studio product. Hackathon materials are in `docs/hackathon/`.

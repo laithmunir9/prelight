@@ -852,7 +852,7 @@ function logout() {
   localStorage.removeItem("greenRoomToken");
   S.token = "";
   S.student = null;
-  S.screen = "gate";
+  S.screen = "studio";
   S.authMode = "login";
   S.practiceTemplate = null;
   S.practiceSessionId = null;
@@ -1012,7 +1012,7 @@ function renderAuthDialog() {
         ${S.authMode === "register" ? `<label>Name <div class="input-wrap"><input id="name" placeholder="Your name" autocomplete="name" /></div></label>` : ""}
         <label>Email <div class="input-wrap"><input id="email" type="email" placeholder="you@example.com" autocomplete="email" /></div></label>
         <label>Password <div class="input-wrap"><input id="pass" type="password" placeholder="At least 8 characters" autocomplete="current-password" /></div></label>
-        ${S.authMode === "register" ? `<label>Invite code <div class="input-wrap"><input id="inviteCode" type="password" placeholder="Your invite code" autocomplete="off" /></div></label>` : ""}
+        ${S.authMode === "register" && window.prelightFeedbackConfig?.inviteRequired !== false ? `<label>Invite code <div class="input-wrap"><input id="inviteCode" type="password" placeholder="Your invite code" autocomplete="off" /></div></label>` : ""}
         <div class="actions">
           <button class="btn primary" id="go">${S.authMode === "register" ? "Enter Prelight" : "Sign in"}</button>
           <button class="btn ghost" id="sw">${S.authMode === "register" ? "I have an account" : "Create an account"}</button>
@@ -1034,7 +1034,7 @@ function renderAuthDialog() {
       let j;
       if (S.authMode === "register") {
         const name = $("#name").value.trim();
-        const inviteCode = $("#inviteCode").value.trim();
+        const inviteCode = $("#inviteCode")?.value.trim() || "";
         if (!name) throw new Error("Please enter your name");
         j = await api("/api/auth/register", { name, email, password, inviteCode });
       } else {
@@ -1045,7 +1045,7 @@ function renderAuthDialog() {
       S.student = j.student;
       S.screen = "studio";
       S.authOpen = false;
-      location.assign("/studio");
+      if (/^\/studio\/?$/.test(location.pathname)) render(); else location.assign("/studio");
     } catch (e) { err(e); }
   };
 }

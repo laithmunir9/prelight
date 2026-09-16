@@ -1,4 +1,5 @@
 import express from "express";
+import { createStudioFeedbackRouter } from "./studioFeedback.js";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join, resolve } from "path";
@@ -79,6 +80,7 @@ const DAILY_LIMITS = {
   tts: Number(process.env.DAILY_TTS_LIMIT || 40),
 };
 const IP_LIMITS = [
+  { path: "/api/studio/feedback", windowMs: 60 * 60 * 1000, max: 120 },
   { path: "/api/practice/transcribe-audio", windowMs: 60 * 60 * 1000, max: Number(process.env.IP_AUDIO_HOURLY_LIMIT || 20) },
   { path: "/api/practice/speak", windowMs: 60 * 60 * 1000, max: Number(process.env.IP_TTS_HOURLY_LIMIT || 80) },
   { path: "/api/practice/message", windowMs: 60 * 60 * 1000, max: Number(process.env.IP_MESSAGE_HOURLY_LIMIT || 120) },
@@ -340,6 +342,14 @@ app.use((req, res, next) => {
   bucket.count += 1;
   next();
 });
+// The retired chat/audio practice APIs are outside Studio's five-session budget.
+// Explicitly disable them on the Studio production service.
+app.use('/api/practice', (req,res,next) => {
+  if(process.env.LEGACY_PRACTICE_ENABLED === 'false' && req.method === 'POST')
+    return res.status(410).json({error:'This practice mode has been retired. Use Prelight Studio to record and compare.'});
+  next();
+});
+app.use("/api/studio", createStudioFeedbackRouter({ getStudentByToken }));
 app.use(express.static(join(__dirname, "public")));
 app.get("/studio", (_req, res) => res.sendFile(join(__dirname, "public", "index.html")));
 app.get("/sessionHistory.js", (_req, res) => res.sendFile(join(__dirname, "sessionHistory.js")));

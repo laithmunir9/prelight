@@ -135,13 +135,63 @@
     }
     return changes.length ? `${escape(active.label)} compared with ${escape(previous.label)}: ${changes.join('; ')}.` : 'See the measurements below to compare these takes.';
   }
+  let feedbackConfig;
+  let configRequested = false;
+  let feedbackOwner = '';
+  let feedbackResults = new Map();
+  function feedbackToken() { return typeof S !== 'undefined' ? S.token || '' : ''; }
+  function feedbackPanel() {
+    return demo ? '' : '<section id="feedbackPanel" class="pl-feedback" aria-label="Optional delivery feedback"></section>';
+  }
+  function refreshFeedback() {
+    const root = document.getElementById('feedbackPanel');
+    if (!root) return;
+    const token = feedbackToken();
+    if (feedbackOwner !== token) { feedbackOwner = token; feedbackResults = new Map(); }
+    if (!feedbackConfig?.feedbackEnabled) { root.hidden = true; return; }
+    root.hidden = false;
+    const active = takes.find(t=>t.id===selected);
+    const previous = takes.find(t=>t.id===compare && t.id!==selected) || takes.find(t=>t.id!==selected);
+    if (!active || !previous) return;
+    const pair = JSON.stringify([previous.id,active.id]);
+    const result = feedbackResults.get(pair);
+    const description = '<h3>Try next</h3><p>Optional AI feedback uses delivery measurements only. Your audio stays on this device.</p>';
+    root.innerHTML = description + (token ? `
+      ${result?.feedback ? `<p class="pl-feedback-observation">${escape(result.feedback.observation)}</p><p>${escape(result.feedback.exercise)}</p>` : `<button class="pl-btn" id="getFeedback" ${result?.loading?'disabled':''}>${result?.loading?'Preparing feedback…':result?.status==='pending'?'Check feedback':'Get feedback'}</button>`}
+      <p role="status">${escape(result?.error || result?.message || '')}</p>
+      <small>${Number.isFinite(result?.remaining)?`${result.remaining} of 5 feedback sessions left today. Resets at midnight UTC.`:'5 feedback sessions a day. Recording and comparison stay unlimited.'}</small>
+      <button class="pl-text-btn" id="feedbackSignOut">Sign out</button>` : '<button class="pl-btn" id="feedbackSignIn">Sign in for feedback</button><small>5 feedback sessions a day. Recording and comparison stay unlimited.</small>');
+    document.getElementById('feedbackSignIn')?.addEventListener('click',()=>openAuth('login'));
+    document.getElementById('feedbackSignOut')?.addEventListener('click',()=>logout());
+    document.getElementById('getFeedback')?.addEventListener('click',async()=>{
+      feedbackResults.set(pair,{...result,loading:true});refreshFeedback();
+      const take = t => ({id:t.id,metrics:{duration:t.features.duration,silenceRatio:t.features.silenceRatio,longPauseCount:t.features.longPauseCount,pitchVariability:t.features.pitchVariability}});
+      let output;
+      try {
+        const response = await fetch('/api/studio/feedback',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({before:take(previous),after:take(active)}),signal:AbortSignal.timeout(45000)});
+        output = await response.json();
+        if(response.status===401) output={error:'Please sign out and sign in again to get feedback.'};
+        else if(!response.ok && !output.error) output={error:'Feedback is unavailable. You can keep practicing.'};
+      } catch {output={error:'The connection was interrupted. Check again to retrieve this pair’s feedback without using another session.'};}
+      if(feedbackToken()!==token)return;
+      feedbackResults.set(pair,output);refreshFeedback();
+    });
+  }
+  function loadFeedbackConfig() {
+    if(configRequested || typeof fetch !== 'function')return;
+    configRequested=true;
+    fetch('/api/studio/config').then(r=>r.ok?r.json():null).then(config=>{
+      feedbackConfig=config;window.prelightFeedbackConfig=config;refreshFeedback();
+    }).catch(()=>{});
+  }
   function diffCanvas(previous, active) {
     const a = previous.features, b = active.features;
     const alignment = window.SpeechProfiler.compareTakes(previous,active);
     const aligned = (feature, side, kind) => alignment.path.map(pair => feature[kind][pair[side]]);
-    return `<div class="pl-canvas-heading"><div><div class="pl-eyebrow">Compare takes</div><h2>${escape(previous.label)} <span class="pl-muted">→</span> ${escape(active.label)}</h2></div><label class="pl-compare-picker">Compare with<select id="compareTake">${takes.filter(t=>t.id!==active.id).map(t=>`<option value="${escape(t.id)}" ${t.id===previous.id?'selected':''}>${escape(t.label)}</option>`).join('')}</select></label></div><p class="pl-comparison-summary">${comparisonSummary(previous,active)}</p><div class="pl-diff-metrics">${[['Duration',time(a.duration),time(b.duration)],['Silence',`${fmt(a.silenceRatio*100)}%`,`${fmt(b.silenceRatio*100)}%`],['Long pauses',a.longPauseCount,b.longPauseCount],['Pitch variation',`${fmt(a.pitchVariability,0)} Hz`,`${fmt(b.pitchVariability,0)} Hz`]].map(([label,from,to])=>`<div><span>${label}</span><strong>${from} <i>→</i> ${to}</strong></div>`).join('')}</div><div class="pl-alignment-title"><h3>Your takes overlaid</h3></div><p class="pl-reading-help">Follow each color to see where your delivery changed. Shorter or fewer pauses isn’t always better—choose what fits your message.</p><div class="pl-timeline pl-aligned">${['energy','pitch'].map(kind=>`<div class="pl-track"><div class="pl-track-label">${kind}</div><svg viewBox="0 0 1000 110" preserveAspectRatio="none" role="img" aria-label="${kind} comparison"><polyline class="pl-previous" points="${points(aligned(a,0,kind))}"/><polyline class="pl-energy" points="${points(aligned(b,1,kind))}"/></svg></div>`).join('')}<div class="pl-ticks"><span>Start</span><span>End</span></div></div><div class="pl-legend"><span><i class="pl-key-previous"></i>${escape(previous.label)}</span><span><i></i>${escape(active.label)}</span></div>`;
+    return `<div class="pl-canvas-heading"><div><div class="pl-eyebrow">Compare takes</div><h2>${escape(previous.label)} <span class="pl-muted">→</span> ${escape(active.label)}</h2></div><label class="pl-compare-picker">Compare with<select id="compareTake">${takes.filter(t=>t.id!==active.id).map(t=>`<option value="${escape(t.id)}" ${t.id===previous.id?'selected':''}>${escape(t.label)}</option>`).join('')}</select></label></div><p class="pl-comparison-summary">${comparisonSummary(previous,active)}</p><div class="pl-diff-metrics">${[['Duration',time(a.duration),time(b.duration)],['Silence',`${fmt(a.silenceRatio*100)}%`,`${fmt(b.silenceRatio*100)}%`],['Long pauses',a.longPauseCount,b.longPauseCount],['Pitch variation',`${fmt(a.pitchVariability,0)} Hz`,`${fmt(b.pitchVariability,0)} Hz`]].map(([label,from,to])=>`<div><span>${label}</span><strong>${from} <i>→</i> ${to}</strong></div>`).join('')}</div><div class="pl-alignment-title"><h3>Your takes overlaid</h3></div><p class="pl-reading-help">Follow each color to see where your delivery changed. Shorter or fewer pauses isn’t always better—choose what fits your message.</p><div class="pl-timeline pl-aligned">${['energy','pitch'].map(kind=>`<div class="pl-track"><div class="pl-track-label">${kind}</div><svg viewBox="0 0 1000 110" preserveAspectRatio="none" role="img" aria-label="${kind} comparison"><polyline class="pl-previous" points="${points(aligned(a,0,kind))}"/><polyline class="pl-energy" points="${points(aligned(b,1,kind))}"/></svg></div>`).join('')}<div class="pl-ticks"><span>Start</span><span>End</span></div></div><div class="pl-legend"><span><i class="pl-key-previous"></i>${escape(previous.label)}</span><span><i></i>${escape(active.label)}</span></div>${feedbackPanel()}`;
   }
   function render() {
+    loadFeedbackConfig();
     if (!/^\/studio\/?$/.test(location.pathname)) { renderLanding(); return; }
     document.body.classList.add('prelight-page');
     document.body.classList.remove('landing-page');
@@ -174,8 +224,10 @@
         <details class="pl-details"><summary>View details</summary><div class="pl-inspector"><p class="pl-metrics-scope">Whole take</p><dl class="pl-metrics">${metricRows([['Median pitch',fmt(f.medianPitch,0),'Hz'],['Long pauses',f.longPauseCount]])}</dl><p class="pl-inspector-note">These measurements describe the whole take, including when a region is selected.</p></div></details>
         ${demo?'<p class="pl-demo-note">Example recordings. Start your workspace to record your own.</p>':''}
       `):`<div class="pl-empty"><img class="pl-character" src="/prelight-mascot.png" width="88" height="88" alt=""/><h2>Record your first take</h2><p>A take is one recording. Say a short version of your pitch or answer. Then record it again to see what changes.</p><button class="pl-btn pl-primary" id="firstTake">Record your first take</button></div>`}</section>
-      </div>${modalHtml()}</div>`;
+      </div>${modalHtml()}<div id="authRoot"></div></div>`;
     bind();
+    refreshFeedback();
+    if(typeof S !== 'undefined' && S.authOpen) renderAuthDialog();
   }
   function modalHtml() {
     return modal ? `<div class="pl-modal"><form class="pl-dialog" id="takeDialog" role="dialog" aria-modal="true" aria-labelledby="takeDialogTitle"><img class="pl-character" src="/prelight-mascot.png" width="72" height="72" alt=""/><h2 id="takeDialogTitle">Ready when you are.</h2><p>${takes.length?'Say the same pitch or answer again. Stop when you’re done, then compare your delivery.':'Say your pitch or answer out loud. Stop when you’re done to see where you paused and how your voice moved.'}</p><label for="takeName">Take name</label><input id="takeName" value="Take ${takes.length+1}" maxlength="100"/><div class="pl-actions"><button type="button" class="pl-btn" id="cancelTake">Cancel</button><button class="pl-btn pl-primary" id="recordTake" type="submit">Record new take</button></div><p id="recordStatus" role="status" aria-live="polite">Microphone access is requested only when you record.</p></form></div>` : '';

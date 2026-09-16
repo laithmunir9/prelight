@@ -127,24 +127,24 @@ body.prelight-page #main { display:block; }
 .prelight-studio.pl-onboarding label { display:block; font-size:12px; margin-bottom:10px; color:#a0a3ac; }
 .prelight-studio.pl-onboarding input { width:100%; margin-bottom:18px; }
 .prelight-studio.pl-onboarding .pl-btn { float:right; }
-.prelight-studio .pl-modal, .prelight-landing .rm-auth-backdrop { position:fixed; inset:0; display:grid; place-items:center; z-index:50; background:#0009; backdrop-filter:blur(8px); padding:24px; }
-.prelight-studio .pl-dialog, .prelight-landing .rm-auth-dialog { width:min(440px,100%); padding:32px; background:#272e49; border:1px solid #ffffff1c; border-radius:14px; box-shadow:0 30px 100px #0007; }
-.prelight-studio .pl-dialog h2, .prelight-landing .rm-auth-dialog h2 { font-size:28px; font-weight:500; letter-spacing:-.04em; margin:12px 0; }
-.prelight-studio .pl-dialog p, .prelight-landing .rm-auth-dialog p { font-size:12px; color:#9a9ea9; margin:12px 0 20px; }
-.prelight-studio .pl-dialog label, .prelight-landing .rm-auth-dialog label { display:block; font-size:12px; margin:14px 0 8px; color:#adafb7; }
-.prelight-studio .pl-dialog input, .prelight-landing .rm-auth-dialog input { width:100%; margin-bottom:16px; }
+.prelight-studio .pl-modal, :is(.prelight-landing,.prelight-studio) .rm-auth-backdrop { position:fixed; inset:0; display:grid; place-items:center; z-index:50; background:#0009; backdrop-filter:blur(8px); padding:24px; }
+.prelight-studio .pl-dialog, :is(.prelight-landing,.prelight-studio) .rm-auth-dialog { width:min(440px,100%); padding:32px; background:#272e49; border:1px solid #ffffff1c; border-radius:14px; box-shadow:0 30px 100px #0007; }
+.prelight-studio .pl-dialog h2, :is(.prelight-landing,.prelight-studio) .rm-auth-dialog h2 { font-size:28px; font-weight:500; letter-spacing:-.04em; margin:12px 0; }
+.prelight-studio .pl-dialog p, :is(.prelight-landing,.prelight-studio) .rm-auth-dialog p { font-size:12px; color:#9a9ea9; margin:12px 0 20px; }
+.prelight-studio .pl-dialog label, :is(.prelight-landing,.prelight-studio) .rm-auth-dialog label { display:block; font-size:12px; margin:14px 0 8px; color:#adafb7; }
+.prelight-studio .pl-dialog input, :is(.prelight-landing,.prelight-studio) .rm-auth-dialog input { width:100%; margin-bottom:16px; }
 .prelight-studio .pl-dialog .pl-actions { justify-content:flex-end; }
 .prelight-studio .pl-dialog #recordStatus { margin-bottom:0; font-size:11px; }
-.prelight-landing .rm-auth-dialog { position:relative; }
-.prelight-landing .rm-auth-dialog .rm-auth-close { position:absolute; top:12px; right:15px; border:0; background:none; color:#aaa; font-size:22px; }
-.prelight-landing .rm-auth-dialog .actions { display:flex; gap:8px; }
-.prelight-landing .rm-auth-dialog .btn { border:1px solid #ffffff25; border-radius:6px; background:transparent; padding:10px 12px; font-size:12px; }
-.prelight-landing .rm-auth-dialog .btn.primary { background:#d57455; color:#151313; border-color:#d57455; }
-.prelight-landing .rm-auth-dialog .err { color:#e79c84; font-size:12px; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog { position:relative; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .rm-auth-close { position:absolute; top:12px; right:15px; border:0; background:none; color:#aaa; font-size:22px; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .actions { display:flex; gap:8px; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .btn { border:1px solid #ffffff25; border-radius:6px; background:transparent; padding:10px 12px; font-size:12px; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .btn.primary { background:#d57455; color:#151313; border-color:#d57455; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .err { color:#e79c84; font-size:12px; }
 @media (min-width:1600px) { .prelight-studio .pl-shell { grid-template-columns:216px minmax(0,1fr) 300px; } .prelight-studio .pl-canvas { padding-left:48px; padding-right:48px; } }
 @media (max-width:1200px) { .prelight-studio .pl-shell { grid-template-columns:190px minmax(0,1fr) 260px; } .prelight-studio .pl-canvas { padding-left:24px; padding-right:24px; } .prelight-studio .pl-topbar { gap:18px; } .prelight-studio .pl-inspector { padding-left:24px; padding-right:24px; } }
 
-@media (max-width:600px) { .prelight-landing .pl-landing-nav { padding:24px; } .prelight-landing .pl-nav-note { display:none; } .prelight-landing .pl-landing-content { padding:36px 23px 55px; } .prelight-landing .pl-hero-mark { width:88px; height:88px; margin-bottom:27px; } .prelight-landing .pl-landing-copy { max-width:285px; margin:20px auto 37px; font-size:15px; line-height:1.7; } .prelight-landing .pl-input-wrap { flex-wrap:wrap; } .prelight-landing .pl-input-wrap input { width:calc(100% - 46px); } .prelight-landing .pl-input-wrap .pl-btn { width:100%; margin-top:7px; } .prelight-landing .pl-landing-footer { padding:24px; font-size:10px; } .prelight-landing .rm-auth-dialog { padding:24px; } }
+@media (max-width:600px) { .prelight-landing .pl-landing-nav { padding:24px; } .prelight-landing .pl-nav-note { display:none; } .prelight-landing .pl-landing-content { padding:36px 23px 55px; } .prelight-landing .pl-hero-mark { width:88px; height:88px; margin-bottom:27px; } .prelight-landing .pl-landing-copy { max-width:285px; margin:20px auto 37px; font-size:15px; line-height:1.7; } .prelight-landing .pl-input-wrap { flex-wrap:wrap; } .prelight-landing .pl-input-wrap input { width:calc(100% - 46px); } .prelight-landing .pl-input-wrap .pl-btn { width:100%; margin-top:7px; } .prelight-landing .pl-landing-footer { padding:24px; font-size:10px; } :is(.prelight-landing,.prelight-studio) .rm-auth-dialog { padding:24px; } }
 .prelight-studio .pl-selectable { position:relative; cursor:crosshair; user-select:none; touch-action:none; }
 .prelight-studio .pl-selection { position:absolute; top:0; bottom:41px; pointer-events:none; z-index:2; background:#d5745517; border-left:1px solid #d9876a; border-right:1px solid #d9876a; }
 .prelight-studio .pl-inspector-range small { display:block; margin-top:7px; color:#d99781; font:10px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
@@ -254,7 +254,7 @@ body.prelight-page #main { display:block; }
 
 /* Shared original controls across Studio, landing and account forms. */
 :is(.prelight-studio,.prelight-landing) .pl-btn,
-.prelight-landing .rm-auth-dialog .btn {
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .btn {
   border:1px solid rgba(248,244,237,.22);
   border-radius:5px;
   background:transparent;
@@ -265,15 +265,15 @@ body.prelight-page #main { display:block; }
   transition:transform .15s;
 }
 :is(.prelight-studio,.prelight-landing) .pl-btn:hover,
-.prelight-landing .rm-auth-dialog .btn:hover {
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .btn:hover {
   background:transparent;
   border-color:rgba(248,244,237,.22);
   transform:translateY(-1px);
 }
 :is(.prelight-studio,.prelight-landing) .pl-btn.pl-primary,
 :is(.prelight-studio,.prelight-landing) .pl-btn.pl-primary:hover,
-.prelight-landing .rm-auth-dialog .btn.primary,
-.prelight-landing .rm-auth-dialog .btn.primary:hover {
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .btn.primary,
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .btn.primary:hover {
   background:#d57455;
   border-color:#d57455;
   color:#fffaf4;
@@ -296,15 +296,15 @@ body.prelight-page #main { display:block; }
 }
 
 /* Auth labels wrap their fields, so spacing belongs inside each label. */
-.prelight-landing .rm-auth-dialog label { margin:18px 0 0; }
-.prelight-landing .rm-auth-dialog .input-wrap { margin-top:10px; }
-.prelight-landing .rm-auth-dialog input { display:block; margin-bottom:0; }
-.prelight-landing .rm-auth-dialog input:focus {
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog label { margin:18px 0 0; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .input-wrap { margin-top:10px; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog input { display:block; margin-bottom:0; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog input:focus {
   outline:none;
   border-color:#c8d5df;
   box-shadow:0 0 0 1px #c8d5df;
 }
-.prelight-landing .rm-auth-dialog .actions { margin-top:24px; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .actions { margin-top:24px; }
 
 /* One focus boundary and explicit columns keep the field clear of its CTA. */
 .prelight-landing .pl-input-wrap {
@@ -320,8 +320,8 @@ body.prelight-page #main { display:block; }
 .prelight-landing .pl-input-wrap:focus-within { border-color:#c8d5df; }
 :is(.prelight-landing,.prelight-studio) :focus-visible { outline-color:#c8d5df; }
 .prelight-landing .pl-input-wrap .pl-btn { margin:0; }
-.prelight-landing .rm-auth-dialog { max-height:calc(100dvh - 48px); overflow-y:auto; }
-.prelight-landing .rm-auth-dialog .actions { flex-wrap:wrap; gap:10px; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog { max-height:calc(100dvh - 48px); overflow-y:auto; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .actions { flex-wrap:wrap; gap:10px; }
 .prelight-studio .pl-dialog { max-height:calc(100dvh - 48px); overflow-y:auto; }
 .prelight-studio .pl-dialog .pl-actions { flex-wrap:wrap; }
 @media (max-width:600px) {
@@ -332,7 +332,7 @@ body.prelight-page #main { display:block; }
 /* The character carries the personality; workspace controls stay quiet. */
 :is(.prelight-landing,.prelight-studio) .pl-brand img { width:36px; height:36px; object-fit:contain; }
 .prelight-landing .pl-hero-mark { width:144px; height:144px; object-fit:contain; margin-bottom:28px; }
-.prelight-landing .rm-auth-dialog .pl-character { display:block; width:72px; height:72px; object-fit:contain; margin-bottom:16px; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .pl-character { display:block; width:72px; height:72px; object-fit:contain; margin-bottom:16px; }
 .prelight-studio .pl-empty .pl-character { width:88px; height:88px; object-fit:contain; margin-bottom:20px; }
 @media (max-width:600px) {
   .prelight-landing .pl-hero-mark { width:112px; height:112px; margin-bottom:24px; }
@@ -412,17 +412,17 @@ body.prelight-page #main { display:block; }
 }
 
 /* The same navy, cream and soft controls carry through every active screen. */
-.prelight-studio :is(h1,h2), .prelight-landing .rm-auth-dialog h2 {
+.prelight-studio :is(h1,h2), :is(.prelight-landing,.prelight-studio) .rm-auth-dialog h2 {
   font-family:"IBM Plex Sans",sans-serif;
   font-weight:500;
   letter-spacing:-.025em;
 }
 :is(.prelight-studio,.prelight-landing) .pl-btn,
-.prelight-landing .rm-auth-dialog .btn { border-radius:12px; min-height:42px; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .btn { border-radius:12px; min-height:42px; }
 :is(.prelight-studio,.prelight-landing) .pl-btn.pl-primary,
 :is(.prelight-studio,.prelight-landing) .pl-btn.pl-primary:hover,
-.prelight-landing .rm-auth-dialog .btn.primary,
-.prelight-landing .rm-auth-dialog .btn.primary:hover { background:#f8f4ed; border-color:#f8f4ed; color:#20263f; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .btn.primary,
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .btn.primary:hover { background:#f8f4ed; border-color:#f8f4ed; color:#20263f; }
 .prelight-studio .pl-simple .pl-new { border-color:#ffffff26; border-radius:12px; color:#c0c7d7; }
 .prelight-studio .pl-simple .pl-new:hover { background:#ffffff0b; color:#f8f4ed; }
 .prelight-studio .pl-simple .pl-take { border-radius:10px; }
@@ -430,21 +430,21 @@ body.prelight-page #main { display:block; }
 .prelight-studio .pl-timeline { border-radius:14px; }
 .prelight-studio .pl-compare-picker { color:#b8bfd0; font-size:12px; }
 .prelight-studio .pl-compare-picker select { border-radius:10px; min-height:40px; color:#f8f4ed; }
-.prelight-studio .pl-dialog, .prelight-landing .rm-auth-dialog {
+.prelight-studio .pl-dialog, :is(.prelight-landing,.prelight-studio) .rm-auth-dialog {
   background:linear-gradient(150deg,#343d58,#272e49);
   border:1px solid #ffffff25;
   border-radius:24px;
   box-shadow:0 24px 70px #080b1955;
 }
 .prelight-studio .pl-dialog .pl-character,
-.prelight-landing .rm-auth-dialog .pl-character { display:block; width:72px; height:72px; object-fit:contain; margin:0 auto 20px; }
-.prelight-studio .pl-dialog h2, .prelight-landing .rm-auth-dialog h2 { text-align:center; font-size:26px; }
-.prelight-studio .pl-dialog > p, .prelight-landing .rm-auth-dialog .sub { text-align:center; font-size:14px; line-height:1.65; color:#c0c7d7; }
-.prelight-studio .pl-dialog label, .prelight-landing .rm-auth-dialog label { font-size:13px; }
-.prelight-studio .pl-dialog .pl-actions, .prelight-landing .rm-auth-dialog .actions { justify-content:center; }
-.prelight-studio input, .prelight-landing .rm-auth-dialog input { border-radius:12px; font-size:16px; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .pl-character { display:block; width:72px; height:72px; object-fit:contain; margin:0 auto 20px; }
+.prelight-studio .pl-dialog h2, :is(.prelight-landing,.prelight-studio) .rm-auth-dialog h2 { text-align:center; font-size:26px; }
+.prelight-studio .pl-dialog > p, :is(.prelight-landing,.prelight-studio) .rm-auth-dialog .sub { text-align:center; font-size:14px; line-height:1.65; color:#c0c7d7; }
+.prelight-studio .pl-dialog label, :is(.prelight-landing,.prelight-studio) .rm-auth-dialog label { font-size:13px; }
+.prelight-studio .pl-dialog .pl-actions, :is(.prelight-landing,.prelight-studio) .rm-auth-dialog .actions { justify-content:center; }
+.prelight-studio input, :is(.prelight-landing,.prelight-studio) .rm-auth-dialog input { border-radius:12px; font-size:16px; }
 .prelight-studio input:focus { outline:none; border-color:#c8d5df; box-shadow:0 0 0 1px #c8d5df; }
-.prelight-landing .rm-auth-dialog .rm-auth-close { top:14px; right:14px; width:34px; height:34px; border-radius:10px; background:#ffffff0b; color:#b8bfd0; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .rm-auth-close { top:14px; right:14px; width:34px; height:34px; border-radius:10px; background:#ffffff0b; color:#b8bfd0; }
 .prelight-studio.pl-onboarding form { text-align:center; }
 .prelight-studio.pl-onboarding .pl-character { display:block; margin:0 auto 24px; object-fit:contain; }
 .prelight-studio.pl-onboarding h1 { font-size:30px; }
@@ -459,3 +459,10 @@ body.prelight-page #main { display:block; }
 .prelight-studio .pl-next-step { color:#f8f4ed; font-size:14px; line-height:1.65; margin:0 0 22px; }
 .prelight-studio .pl-comparison-summary { color:#f8f4ed; font-size:20px; line-height:1.5; max-width:760px; margin:0 0 26px; overflow-wrap:anywhere; }
 .prelight-studio .pl-first-use .pl-empty p { color:#c0c7d7; line-height:1.65; }
+
+.prelight-studio .pl-feedback { margin-top:32px; padding:24px 0; border-top:1px solid #ffffff18; max-width:720px; }
+.prelight-studio .pl-feedback h3 { margin:0 0 12px; font-size:18px; }
+.prelight-studio .pl-feedback p { color:#c0c7d7; font-size:14px; line-height:1.65; }
+.prelight-studio .pl-feedback .pl-feedback-observation { color:#f8f4ed; }
+.prelight-studio .pl-feedback small { display:block; color:#b8bfd0; line-height:1.6; margin:16px 0 8px; }
+.prelight-studio .pl-feedback [disabled] { opacity:.6; cursor:wait; }

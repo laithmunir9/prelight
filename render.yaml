@@ -6,6 +6,10 @@ services:
     buildCommand: npm install
     startCommand: npm start
     envVars:
+      - key: LEGACY_PRACTICE_ENABLED
+        value: "false"
+      - key: STUDIO_FEEDBACK_ENABLED
+        sync: false
       - key: OPENAI_API_KEY
         sync: false
       - key: PRELIGHT_INVITE_CODE
