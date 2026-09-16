@@ -8,13 +8,10 @@
   state.migrate(localStorage);
   const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
   const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  // Unfinished lessons start fresh. Completed onboarding stays completed on this browser.
+  // A deliberate tutorial entry always starts a fresh lesson, preserving saved takes.
   const tutorialComplete = () => read(TUTORIAL_COMPLETE_KEY, false) === true;
-  const freshTutorial = params.get('tour') === '1' && !demo && !tutorialComplete();
-  if (params.get('tour') === '1' && tutorialComplete()) {
-    params.delete('tour');
-    history.replaceState(null, '', location.pathname + (params.size ? `?${params}` : ''));
-  }
+  const signedIn = () => typeof S !== 'undefined' && Boolean(S.token && S.student);
+  const freshTutorial = params.get('tour') === '1' && !demo;
   let workspaceName = freshTutorial ? '' : state.cleanName(params.get('workspace')?.trim().slice(0, 100) || read(WORKSPACE_KEY, '') || '');
   const stored = read(KEY, []);
   let allTakes = Array.isArray(stored) ? stored.filter(t => t && t.features && Array.isArray(t.features.energy) && t.features.energy.length && Array.isArray(t.features.pitch)) : [];
@@ -50,27 +47,29 @@
     allTakes = [...allTakes.filter(t => state.isDemo(t) || (t.workspace || 'Product Pitch') !== workspaceName), ...takes];
     try { localStorage.setItem(KEY, JSON.stringify(allTakes)); } catch {}
   }
-  function renderLanding() {
-    const completed = tutorialComplete();
-    if (completed) introStep = null;
+  function renderLanding(requireLogin = false) {
+    const completed = tutorialComplete() && params.get('tutorial') !== '1';
+    const accountScreen = completed || requireLogin;
+    if (accountScreen) introStep = null;
     document.body.classList.add('prelight-page');
-    document.title = 'Prelight · Practice before the room is real';
-    document.getElementById('main').innerHTML = `<div class="prelight-landing pl-guided-landing">
-      <nav class="pl-landing-nav" ${introStep?'inert':''}>${brand}</nav>
+    document.title = completed ? 'Tutorial complete · Prelight' : 'Prelight · Practice before the room is real';
+    document.getElementById('main').innerHTML = `<div class="prelight-landing pl-guided-landing ${accountScreen?'pl-completion-landing':''}">
+      <nav class="pl-landing-nav" ${introStep?'inert':''}>${brand}${accountScreen?'<a class="pl-return-tutorial" href="/?tutorial=1">Return to the tutorial screen</a>':''}</nav>
       <section class="pl-landing-content" ${introStep?'inert':''}>
-        <div class="pl-mascot-greeting"><span>Hi, I’m Prelight.</span><img class="pl-hero-mark" src="/prelight-mascot.png" width="144" height="144" alt="Prelight mascot"/></div>
-        <h1>A little practice.<br/>A <em>clearer voice.</em></h1>
-        <p class="pl-landing-copy">Rehearse your 60-second pitch before the meeting.<br/>Try two deliveries. See what changed.</p>
-        <button class="pl-btn pl-primary pl-start-tutorial" id="${completed?'continuePractice':'startTutorial'}">${completed?'Continue practicing':'Show me how'}</button>
-        <p class="pl-signin-line">Already have an account? <button id="studioSignIn">Sign in</button></p>
+        <div class="pl-mascot-greeting"><span>${completed?'You’ve got the basics.':'Hi, I’m Prelight.'}</span><img class="pl-hero-mark" src="/prelight-mascot.png" width="144" height="144" alt="Prelight mascot"/></div>
+        ${completed?'<h1>Your tutorial is<br/><em>complete.</em><br/>Make your next<br/>take count.</h1>':requireLogin?'<h1>Your next take<br/><em>starts here.</em></h1>':'<h1>A little practice.<br/>A <em>clearer voice.</em></h1>'}
+        ${accountScreen?'':'<p class="pl-landing-copy">Rehearse your 60-second pitch before the meeting.<br/>Try two deliveries. See what changed.</p>'}
+        <button class="pl-btn pl-primary pl-start-tutorial" id="${accountScreen?'completionLogin':'startTutorial'}">${accountScreen?(signedIn()?'Open Studio':'Log in'):'Show me how'}</button>
+        ${accountScreen?(signedIn()?'':`<p class="pl-signin-line">New to Prelight? <button id="studioCreateAccount">Create an account</button></p>`):'<p class="pl-signin-line">Already have an account? <button id="studioSignIn">Sign in</button></p>'}
       </section>
       ${introHtml()}<div id="authRoot"></div></div>`;
-    if (completed) {
-      document.getElementById('continuePractice').onclick = () => location.assign('/studio');
+    if (accountScreen) {
+      document.getElementById('completionLogin').onclick = () => { if(signedIn()) location.assign('/studio'); else openAuth('login'); };
+      document.getElementById('studioCreateAccount')?.addEventListener('click',()=>openAuth('register'));
     } else {
       document.getElementById('startTutorial').onclick = () => {introStep='welcome';renderLanding();document.getElementById('introContinue').focus();};
+      document.getElementById('studioSignIn').onclick = () => { if (typeof openAuth === 'function') openAuth('login'); };
     }
-    document.getElementById('studioSignIn').onclick = () => { if (typeof openAuth === 'function') openAuth('login'); };
     bindIntro();
     if (typeof S !== 'undefined' && S.authOpen) renderAuthDialog();
   }
@@ -207,6 +206,7 @@
     if (!/^\/studio\/?$/.test(location.pathname)) { renderLanding(); return; }
     document.body.classList.add('prelight-page');
     document.body.classList.remove('landing-page');
+    if (!guided && !demo && !signedIn()) { renderLanding(true); return; }
     document.title = `${workspaceName || 'What are you practicing?'} · Prelight Studio`;
     if (!workspaceName && guided) {renderTutorialStart(); return;}
     if (!workspaceName) {

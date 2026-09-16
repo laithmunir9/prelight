@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 // Exercise the real frontend controller with an in-memory DOM and media guard.
 // No device or browser permissions are used by these tests.
-function boot(path='/', search='', initial={}) {
+function boot(path='/', search='', initial={}, auth={token:'test-session',student:{id:'test-account'}}) {
   const entries = new Map(Object.entries(initial));
   const nodes = new Map();
   let micCalls = 0;
@@ -14,7 +14,8 @@ function boot(path='/', search='', initial={}) {
     return nodes.get(id);
   };
   const context = {
-    URLSearchParams, console, Date,
+    URLSearchParams, console, Date, S:auth,
+    openAuth(mode){this.authRequested=mode;},
     history:{replaceState(_state,_unused,url){context.location.replaced=url;}},
     location:{pathname:path,search,assign(url){this.assigned=url;}},
     localStorage:{get length(){return entries.size;},key:i=>[...entries.keys()][i],getItem:k=>entries.get(k)??null,setItem:(k,v)=>entries.set(k,v)},
@@ -177,4 +178,32 @@ test('comparison summary describes direction, ties and unavailable measurements 
     assert.ok(app.html.includes(`&lt;Latest&gt; compared with Earlier: ${expected}`));
     assert.doesNotMatch(app.html,/<Latest>|NaN/);
   }
+});
+
+
+test('completed tutorial leads to login and explicit tutorial return, with no guest practice shortcut',()=>{
+ const saved={prelightStudioTutorialComplete:'true',prelightStudioWorkspace:JSON.stringify('Speech'),prelightStudioTakes:JSON.stringify([{id:'real',workspace:'Speech',label:'Saved take',features}])};
+ const guest={token:'',student:null};
+ const home=boot('/','',saved,guest);
+ assert.match(home.html,/Your tutorial is/);
+ assert.match(home.html,/id="completionLogin">Log in/);
+ assert.match(home.html,/href="\/\?tutorial=1">Return to the tutorial screen/);
+ assert.doesNotMatch(home.html,/Continue practicing|id="startTutorial"/);
+ const direct=boot('/studio','?workspace=Speech',saved,guest);
+ assert.match(direct.html,/id="completionLogin">Log in/);
+ assert.doesNotMatch(direct.html,/Performance trace|id="topNew"/);
+ assert.equal(direct.entries.get('prelightStudioTakes'),saved.prelightStudioTakes);
+ const intro=boot('/','?tutorial=1',saved,guest);
+ assert.match(intro.html,/id="startTutorial">Show me how/);
+ assert.doesNotMatch(intro.html,/Your tutorial is/);
+ const repeated=boot('/studio','?tour=1',saved,guest);
+ assert.match(repeated.html,/What are you pitching/);
+ assert.doesNotMatch(repeated.html,/Saved take|Step 3/);
+ const member=boot('/studio','?workspace=Speech',saved);
+ assert.match(member.html,/Performance trace/);
+});
+test('an unverified stored token does not unlock regular Studio',()=>{
+ const app=boot('/studio','?workspace=Speech',{}, {token:'expired-token',student:null});
+ assert.match(app.html,/id="completionLogin">Log in/);
+ assert.doesNotMatch(app.html,/id="firstTake"/);
 });

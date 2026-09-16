@@ -4,7 +4,7 @@ A navy speaking-practice workspace: **record → inspect → record again → co
 
 ## Current product
 
-- A short guided tutorial starts with a fresh pitch workspace until completed. Finishing returns home and replaces the tutorial button with Continue practicing. Completion is remembered on this browser.
+- A short guided tutorial starts with a fresh pitch workspace until completed. Finishing returns to a tutorial-complete homepage with a Log in button and an account-creation link. Regular Studio requires sign-in; the tutorial and demo remain available without an account. A small Return to the tutorial screen link opens the introduction for a fresh lesson. Completion is remembered on this browser.
 - Microphone audio is analyzed in the browser. Studio saves delivery measurements and take history in LocalStorage; it does not upload or retain the audio.
 - Compare duration, silence, long pauses, pitch variation, and overlaid traces.
 - Optional **Get feedback** sends only four numeric measurements from each take to OpenAI. It returns one measured observation and one delivery exercise, not a score or assessment of what the speaker said.
