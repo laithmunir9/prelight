@@ -1,14 +1,20 @@
 (function () {
   const KEY = 'prelightStudioTakes';
   const WORKSPACE_KEY = 'prelightStudioWorkspace';
+  const TUTORIAL_COMPLETE_KEY = 'prelightStudioTutorialComplete';
   const params = new URLSearchParams(location.search);
   const demo = params.get('demo') === '1';
   const state = window.StudioState;
   state.migrate(localStorage);
   const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
   const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  // Every explicit tutorial entry starts a new lesson, even from an old bookmarked URL.
-  const freshTutorial = params.get('tour') === '1' && !demo;
+  // Unfinished lessons start fresh. Completed onboarding stays completed on this browser.
+  const tutorialComplete = () => read(TUTORIAL_COMPLETE_KEY, false) === true;
+  const freshTutorial = params.get('tour') === '1' && !demo && !tutorialComplete();
+  if (params.get('tour') === '1' && tutorialComplete()) {
+    params.delete('tour');
+    history.replaceState(null, '', location.pathname + (params.size ? `?${params}` : ''));
+  }
   let workspaceName = freshTutorial ? '' : state.cleanName(params.get('workspace')?.trim().slice(0, 100) || read(WORKSPACE_KEY, '') || '');
   const stored = read(KEY, []);
   let allTakes = Array.isArray(stored) ? stored.filter(t => t && t.features && Array.isArray(t.features.energy) && t.features.energy.length && Array.isArray(t.features.pitch)) : [];
@@ -33,7 +39,7 @@
   let mode = 'trace';
   let modal = false;
   let introStep = null;
-  let guided = params.get('tour') === '1' && !demo;
+  let guided = freshTutorial;
   let recorder = null;
   let recordingState = 'idle';
   let returnFocus = 'topNew';
@@ -45,6 +51,8 @@
     try { localStorage.setItem(KEY, JSON.stringify(allTakes)); } catch {}
   }
   function renderLanding() {
+    const completed = tutorialComplete();
+    if (completed) introStep = null;
     document.body.classList.add('prelight-page');
     document.title = 'Prelight · Practice before the room is real';
     document.getElementById('main').innerHTML = `<div class="prelight-landing pl-guided-landing">
@@ -53,11 +61,15 @@
         <div class="pl-mascot-greeting"><span>Hi, I’m Prelight.</span><img class="pl-hero-mark" src="/prelight-mascot.png" width="144" height="144" alt="Prelight mascot"/></div>
         <h1>A little practice.<br/>A <em>clearer voice.</em></h1>
         <p class="pl-landing-copy">Rehearse your 60-second pitch before the meeting.<br/>Try two deliveries. See what changed.</p>
-        <button class="pl-btn pl-primary pl-start-tutorial" id="startTutorial">Show me how</button>
+        <button class="pl-btn pl-primary pl-start-tutorial" id="${completed?'continuePractice':'startTutorial'}">${completed?'Continue practicing':'Show me how'}</button>
         <p class="pl-signin-line">Already have an account? <button id="studioSignIn">Sign in</button></p>
       </section>
       ${introHtml()}<div id="authRoot"></div></div>`;
-    document.getElementById('startTutorial').onclick = () => {introStep='welcome';renderLanding();document.getElementById('introContinue').focus();};
+    if (completed) {
+      document.getElementById('continuePractice').onclick = () => location.assign('/studio');
+    } else {
+      document.getElementById('startTutorial').onclick = () => {introStep='welcome';renderLanding();document.getElementById('introContinue').focus();};
+    }
     document.getElementById('studioSignIn').onclick = () => { if (typeof openAuth === 'function') openAuth('login'); };
     bindIntro();
     if (typeof S !== 'undefined' && S.authOpen) renderAuthDialog();
@@ -275,7 +287,11 @@
   function closeModal() { if(recordingState!=='idle') return; modal=false;render();document.getElementById(guided&&takes.length<2?'guideAction':returnFocus)?.focus(); }
   function bind() {
     document.getElementById('guideAction')?.addEventListener('click',()=>{
-      if(takes.length>=2&&mode==='compare'){guided=false;render();document.getElementById('topNew')?.focus();}
+      if(takes.length>=2&&mode==='compare'){
+        try { localStorage.setItem(TUTORIAL_COMPLETE_KEY, JSON.stringify(true)); } catch {}
+        guided=false;
+        location.replace('/');
+      }
       else document.getElementById(takes.length>=2?'compareBtn':takes.length?'topNew':'firstTake')?.click();
     });
     document.querySelectorAll('[data-take]').forEach(b=>b.onclick=()=>{selected=b.dataset.take; const index=takes.findIndex(t=>t.id===selected); compare=takes[index-1]?.id || takes.find(t=>t.id!==selected)?.id; mode='trace'; render();});
@@ -312,5 +328,7 @@
     document.getElementById('compareTake')?.addEventListener('change',e=>{compare=e.target.value;render();document.getElementById('compareTake')?.focus();});
   }
   window.renderStudio = render;
+  // Refresh the homepage CTA when returning from the browser's page cache.
+  window.addEventListener?.('pageshow', event => { if(event.persisted) render(); });
   // The legacy bootstrap owns the initial render, after its auth state is available.
 })();

@@ -4,7 +4,7 @@ A navy speaking-practice workspace: **record → inspect → record again → co
 
 ## Current product
 
-- A short guided tutorial starts with a fresh pitch workspace on every explicit entry.
+- A short guided tutorial starts with a fresh pitch workspace until completed. Finishing returns home and replaces the tutorial button with Continue practicing. Completion is remembered on this browser.
 - Microphone audio is analyzed in the browser. Studio saves delivery measurements and take history in LocalStorage; it does not upload or retain the audio.
 - Compare duration, silence, long pauses, pitch variation, and overlaid traces.
 - Optional **Get feedback** sends only four numeric measurements from each take to OpenAI. It returns one measured observation and one delivery exercise, not a score or assessment of what the speaker said.
