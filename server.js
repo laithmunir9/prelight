@@ -15,6 +15,7 @@ import { normalizeTurnAnalysis } from "./turnAnalysis.js";
 import { aggregateSpeakingProfile } from "./speakingProfile.js";
 import { buildPracticeMemory, practiceMemoryPrompt } from "./practiceMemory.js";
 import { normalizePracticeContext, contextPrompt } from "./practiceContext.js";
+import { validateCoverage, validateNodeEdit, validateSpeechGraph } from "./speechMapCore.js";
 import {
   MAX_SESSION_EVENTS,
   normalizePracticeSession,
@@ -71,6 +72,8 @@ const CHALLENGE_MODIFIER_PROMPTS = {
 };
 const AUDIO_MAX_BYTES = Number(process.env.AUDIO_MAX_BYTES || 6 * 1024 * 1024);
 const AUDIO_MAX_SECONDS = Number(process.env.AUDIO_MAX_SECONDS || 45);
+const SPEECH_MAP_AUDIO_MAX_BYTES = Number(process.env.SPEECH_MAP_AUDIO_MAX_BYTES || 25 * 1024 * 1024);
+const SPEECH_MAP_AUDIO_MAX_SECONDS = Number(process.env.SPEECH_MAP_AUDIO_MAX_SECONDS || 10 * 60);
 const DAILY_LIMITS = {
   scenarioInference: Number(process.env.DAILY_SCENARIO_INFERENCE_LIMIT || 20),
   messages: Number(process.env.DAILY_MESSAGE_LIMIT || 60),
@@ -78,6 +81,9 @@ const DAILY_LIMITS = {
   transcriptions: Number(process.env.DAILY_TRANSCRIPTION_LIMIT || 12),
   sessionReviews: Number(process.env.DAILY_SESSION_REVIEW_LIMIT || 12),
   tts: Number(process.env.DAILY_TTS_LIMIT || 40),
+  outlineGenerations: Number(process.env.DAILY_OUTLINE_GENERATION_LIMIT || 12),
+  coverageReviews: Number(process.env.DAILY_COVERAGE_REVIEW_LIMIT || 24),
+  nodeEdits: Number(process.env.DAILY_NODE_EDIT_LIMIT || 40),
 };
 const IP_LIMITS = [
   { path: "/api/studio/feedback", windowMs: 60 * 60 * 1000, max: 120 },
@@ -87,6 +93,7 @@ const IP_LIMITS = [
   { path: "/api/practice/end", windowMs: 60 * 60 * 1000, max: Number(process.env.IP_REVIEW_HOURLY_LIMIT || 40) },
   { path: "/api/practice/infer-scenario", windowMs: 60 * 60 * 1000, max: Number(process.env.IP_INFERENCE_HOURLY_LIMIT || 60) },
   { path: "/api/auth/", windowMs: 15 * 60 * 1000, max: Number(process.env.IP_AUTH_15M_LIMIT || 25) },
+  { path: "/api/speech-map/", windowMs: 60 * 60 * 1000, max: Number(process.env.IP_SPEECH_MAP_HOURLY_LIMIT || 80) },
 ];
 const ipBuckets = new Map();
 
@@ -351,7 +358,7 @@ app.use('/api/practice', (req,res,next) => {
 });
 app.use("/api/studio", createStudioFeedbackRouter({ getStudentByToken }));
 app.use(express.static(join(__dirname, "public")));
-app.get("/studio", (_req, res) => res.sendFile(join(__dirname, "public", "index.html")));
+app.get(["/studio", "/studio/"], (_req, res) => res.sendFile(join(__dirname, "public", "speech-map.html")));
 app.get("/sessionHistory.js", (_req, res) => res.sendFile(join(__dirname, "sessionHistory.js")));
 app.get("/sessionReplay.js", (_req, res) => res.sendFile(join(__dirname, "sessionReplay.js")));
 
@@ -917,6 +924,119 @@ app.post("/api/practice/speak", async (req, res) => {
     res.status(errorStatus(e, 503)).json({ error: errorStatus(e) === 429 ? String(e.message || e) : "Couldn't generate audio right now." });
   }
 });
+
+async function requireSpeechMapStudent(req, res) {
+  const student = await getStudentByToken(bearerToken(req));
+  if (!student) res.status(401).json({ error: "Sign in to use this feature" });
+  return student;
+}
+
+app.post("/api/speech-map/generate", async (req, res) => {
+  try {
+    const student = await requireSpeechMapStudent(req, res);
+    if (!student) return;
+    const purpose = cleanStudentText(req.body?.purpose || "").slice(0, 400);
+    if (!purpose) return res.status(400).json({ error: "Tell us what you are preparing for" });
+    consumeDailyUsage(student, "outlineGenerations");
+    await persistStudent(student);
+    const parsed = await aiOpenAIJson({
+      system: "Create a concise speaking outline as a nonlinear graph. Ideas, not paragraphs. Use 4-8 nodes. Allowed node types: point, example, evidence, transition, question, closing. Return JSON only: {nodes:[{id,title,content,type,position:{x,y}}],edges:[{id,source,target}]}. Use short stable ids. Positions should form a readable left-to-right or lightly branched layout with about 280px horizontal and 180px vertical spacing.",
+      user: purpose,
+      max_tokens: 900,
+      temperature: 0.25,
+    });
+    res.json(validateSpeechGraph(parsed));
+  } catch (e) {
+    console.error("[speech-map] outline generation failed:", e.message || e);
+    res.status(errorStatus(e, 503)).json({ error: "The outline response was invalid. Please try again." });
+  }
+});
+
+app.post("/api/speech-map/coverage", async (req, res) => {
+  try {
+    const student = await requireSpeechMapStudent(req, res);
+    if (!student) return;
+    const transcript = cleanStudentText(req.body?.transcript || "").slice(0, 16000);
+    let graph;
+    try { graph = validateSpeechGraph({ nodes: req.body?.nodes || [], edges: [] }); }
+    catch { return res.status(400).json({ error: "A valid planned graph is required" }); }
+    if (!transcript) return res.status(400).json({ error: "Transcript required" });
+    consumeDailyUsage(student, "coverageReviews");
+    await persistStudent(student);
+    const compactNodes = graph.nodes.map(({ id, title, content }) => ({ id, title, content }));
+    const parsed = await aiOpenAIJson({
+      system: "Compare a speech transcript with planned idea nodes. Judge semantic coverage only. Return JSON only: {nodes:[{id,status,evidence}]}. Include every supplied id exactly once. status must be covered, partial, or missed. evidence must be one short exact transcript excerpt, or null when missed. No coaching or extra keys.",
+      user: JSON.stringify({ transcript, nodes: compactNodes }),
+      max_tokens: Math.min(1400, 220 + compactNodes.length * 110),
+      temperature: 0,
+    });
+    res.json(validateCoverage(parsed, compactNodes));
+  } catch (e) {
+    console.error("[speech-map] coverage failed:", e.message || e);
+    res.status(errorStatus(e, 503)).json({ error: "The coverage response was invalid. Your transcript is still saved." });
+  }
+});
+
+app.post("/api/speech-map/edit-node", async (req, res) => {
+  try {
+    const student = await requireSpeechMapStudent(req, res);
+    if (!student) return;
+    const action = String(req.body?.action || "");
+    const instructions = {
+      clearer: "Make this idea clearer without making it longer.",
+      shorten: "Shorten this idea while preserving its meaning.",
+      example: "Turn or extend this idea into one concise concrete example.",
+      alternative: "Offer a distinct concise alternative phrasing with the same meaning.",
+    };
+    if (!instructions[action]) return res.status(400).json({ error: "Unsupported edit action" });
+    const node = {
+      title: cleanStudentText(req.body?.node?.title || "").slice(0, 80),
+      content: cleanStudentText(req.body?.node?.content || "").slice(0, 320),
+      type: cleanStudentText(req.body?.node?.type || "point").slice(0, 24),
+    };
+    if (!node.title || !node.content) return res.status(400).json({ error: "Node content required" });
+    consumeDailyUsage(student, "nodeEdits");
+    await persistStudent(student);
+    const parsed = await aiOpenAIJson({
+      system: `${instructions[action]} Return JSON only: {"title":"...","content":"..."}. Keep the title under 8 words and content under 45 words. Do not add commentary.`,
+      user: JSON.stringify(node),
+      max_tokens: 180,
+      temperature: 0.25,
+    });
+    res.json(validateNodeEdit(parsed));
+  } catch (e) {
+    console.error("[speech-map] node edit failed:", e.message || e);
+    res.status(errorStatus(e, 503)).json({ error: "That edit could not be applied. Your node was not changed." });
+  }
+});
+
+app.post(
+  "/api/speech-map/transcribe",
+  express.raw({ type: ["audio/webm", "audio/mp4", "audio/wav", "application/octet-stream"], limit: SPEECH_MAP_AUDIO_MAX_BYTES }),
+  async (req, res) => {
+    try {
+      const student = await requireSpeechMapStudent(req, res);
+      if (!student) return;
+      if (!Buffer.isBuffer(req.body) || req.body.length < 1000) return res.status(400).json({ error: "Audio required" });
+      const durationSec = Number(req.query?.durationSec || req.get("x-prelight-duration-sec"));
+      if (Number.isFinite(durationSec) && durationSec > SPEECH_MAP_AUDIO_MAX_SECONDS + 2) {
+        return res.status(413).json({ error: "That rehearsal is too long. Keep it under 10 minutes." });
+      }
+      consumeDailyUsage(student, "transcriptions");
+      await persistStudent(student);
+      const text = applyLikelyAsrCorrections(cleanStudentText(await transcribeAudioBuffer(req.body, {
+        mimeType: req.get("content-type") || "audio/webm",
+        prompt: "Prelight speech rehearsal. Produce a verbatim transcript. Preserve the speaker's actual wording, filler words, restarts, names, and technical terms. Do not polish or summarize.",
+      }))).slice(0, 16000);
+      if (!text) return res.status(422).json({ error: "No speech detected" });
+      res.json({ text });
+    } catch (e) {
+      console.error("[speech-map] transcription failed:", e.message || e);
+      const status = errorStatus(e, /Missing OPENAI_API_KEY/.test(String(e.message || e)) ? 503 : 500);
+      res.status(status).json({ error: "Couldn't transcribe that rehearsal right now." });
+    }
+  }
+);
 
 app.use((err, _req, res, next) => {
   if (!err) return next();

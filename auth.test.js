@@ -86,6 +86,14 @@ test("responses include the browser hardening headers", async () => {
   assert.match(response.headers.get("permissions-policy") || "", /camera=\(self\)/);
 });
 
+test("Studio tutorial and workspace routes both serve the speech map product", async () => {
+  for (const path of ["/studio", "/studio?tour=1"]) {
+    const html = await fetch(`${baseUrl}${path}`).then((response) => response.text());
+    assert.match(html, /src="\/map-dist\/assets\/main\.js"/);
+    assert.doesNotMatch(html, /studio\.js/);
+  }
+});
+
 test("registration stores only a password hash and returns an opaque token", async () => {
   const email = `auth-${Date.now()}-${Math.random().toString(16).slice(2)}@example.com`;
   const { response, body } = await request("/api/auth/register", {
@@ -102,6 +110,30 @@ test("registration stores only a password hash and returns an opaque token", asy
   const student = students.students[body.student.id];
   assert.match(student.passwordHash, /^scrypt:/);
   assert.equal("password" in student, false);
+});
+
+test("speech map routes preserve auth and reject malformed work before paid calls", async () => {
+  const registered = (await request("/api/auth/register", {
+    method: "POST",
+    body: JSON.stringify({
+      name: "Map Tester",
+      email: `map-${Date.now()}-${Math.random().toString(16).slice(2)}@example.com`,
+      password: "route-password",
+    }),
+  })).body;
+  const authorization = { authorization: `Bearer ${registered.token}` };
+
+  assert.equal((await request("/api/speech-map/generate", { method: "POST", body: JSON.stringify({ purpose: "Pitch" }) })).response.status, 401);
+  assert.equal((await request("/api/speech-map/generate", { method: "POST", headers: authorization, body: JSON.stringify({ purpose: "" }) })).response.status, 400);
+  assert.equal((await request("/api/speech-map/edit-node", { method: "POST", headers: authorization, body: JSON.stringify({ action: "rewrite-everything" }) })).response.status, 400);
+  assert.equal((await request("/api/speech-map/coverage", { method: "POST", headers: authorization, body: JSON.stringify({ transcript: "hello", nodes: [] }) })).response.status, 400);
+
+  const tinyAudio = await fetch(`${baseUrl}/api/speech-map/transcribe?durationSec=1`, {
+    method: "POST",
+    headers: { ...authorization, "content-type": "application/octet-stream" },
+    body: Buffer.from("too small"),
+  });
+  assert.equal(tinyAudio.status, 400);
 });
 
 test("protected routes reject UUIDs, accept session tokens, and isolate students", async () => {

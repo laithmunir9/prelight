@@ -2,13 +2,14 @@
   const KEY = 'prelightStudioTakes';
   const WORKSPACE_KEY = 'prelightStudioWorkspace';
   const TUTORIAL_COMPLETE_KEY = 'prelightStudioTutorialComplete';
+  const SPEECH_TUTORIAL_PROGRESS_KEY = 'prelightSpeechMapTutorial:v1';
   const params = new URLSearchParams(location.search);
   const demo = params.get('demo') === '1';
   const state = window.StudioState;
   state.migrate(localStorage);
   const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
   const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  // A deliberate tutorial entry always starts a fresh lesson, preserving saved takes.
+  // Tutorial progress is stored separately from a member's normal workspace.
   const tutorialComplete = () => read(TUTORIAL_COMPLETE_KEY, false) === true;
   const signedIn = () => typeof S !== 'undefined' && Boolean(S.token && S.student);
   const freshTutorial = params.get('tour') === '1' && !demo;
@@ -67,7 +68,10 @@
       document.getElementById('completionLogin').onclick = () => { if(signedIn()) location.assign('/studio'); else openAuth('login'); };
       document.getElementById('studioCreateAccount')?.addEventListener('click',()=>openAuth('register'));
     } else {
-      document.getElementById('startTutorial').onclick = () => {introStep='welcome';renderLanding();document.getElementById('introContinue').focus();};
+      document.getElementById('startTutorial').onclick = () => {
+        if (read(SPEECH_TUTORIAL_PROGRESS_KEY, null)) return location.assign('/studio?tour=1');
+        introStep='welcome';renderLanding();document.getElementById('introContinue').focus();
+      };
       document.getElementById('studioSignIn').onclick = () => { if (typeof openAuth === 'function') openAuth('login'); };
     }
     bindIntro();
@@ -78,7 +82,8 @@
     return `<div class="pl-intro-backdrop"><section class="pl-intro-dialog" id="introDialog" role="dialog" aria-modal="true" aria-labelledby="introTitle">
       <button class="pl-intro-close" id="introClose" aria-label="Close introduction">×</button>
       <img src="/prelight-mascot.png" width="112" height="112" alt=""/>
-      <h2 id="introTitle">Your next take starts here.</h2><p>Explain your idea in about 60 seconds. Record it once, try a deliberate pause in your next take, then compare the difference.</p><button class="pl-btn pl-primary" id="introContinue">Open my workspace</button>
+      <div class="pl-intro-kicker">Meet your speaking guide</div>
+      <h2 id="introTitle">Let’s map what you want to say.</h2><p>Shape the ideas you want to land, rehearse them in your own words, then see what made it into the take.</p><button class="pl-btn pl-primary" id="introContinue">Continue</button>
     </section></div>`;
   }
   function closeIntro() {introStep=null;renderLanding();document.getElementById('startTutorial').focus();}

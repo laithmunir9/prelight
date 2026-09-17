@@ -6,12 +6,20 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
+    "build": "vite build",
     "test": "node --test *.test.js"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "@xyflow/react": "^12.11.6",
+    "express": "^5.1.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.0"
   }
 }

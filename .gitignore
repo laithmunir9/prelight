@@ -6,3 +6,15 @@ data/students.json
 .playwright-mcp/
 *.inspect.ndjson
 npm-debug.log*
+
+# Local model/runtime caches and generated experiment output
+experiments/speech-ci/data/hf-cache-fallback/
+experiments/speech-ci/data/hf-cache/
+experiments/speech-ci/data/transformers-cache/
+experiments/speech-ci/data/nli-cache*.json
+experiments/speech-ci/evaluation/*-results.json
+**/__pycache__/
+*.pyc
+
+# Local Supabase CLI state
+supabase/.temp/

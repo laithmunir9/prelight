@@ -39,6 +39,13 @@ test('root remains the landing page even with stored takes',()=>{
   app.node('introContinue').listeners.click();
   assert.equal(app.context.location.assigned,'/studio?tour=1');
 });
+test('the homepage tutorial button resumes saved speech-map progress',()=>{
+  const progress={version:1,step:3,title:'Startup pitch',purpose:'Startup pitch',nodes:[],edges:[],takes:[]};
+  const app=boot('/','?tutorial=1',{'prelightSpeechMapTutorial:v1':JSON.stringify(progress)});
+  app.node('startTutorial').onclick();
+  assert.equal(app.context.location.assigned,'/studio?tour=1');
+  assert.doesNotMatch(app.html,/id="introDialog"/);
+});
 test('fresh Studio asks for a workspace, and named workspace starts without demo takes',()=>{
   assert.match(boot('/studio').html,/Start recording/);
   const app=boot('/studio/','?workspace=Product%20Pitch');
@@ -119,7 +126,7 @@ test('introduction opens a clean workspace without requesting the mic',()=>{
  const app=boot('/');
  assert.doesNotMatch(app.html,/Go straight to Studio|pl-skip-intro/);
  app.node('startTutorial').onclick();
- assert.match(app.html,/Your next take starts here/);
+ assert.match(app.html,/Let’s map what you want to say/);
  app.node('introContinue').listeners.click();
  assert.equal(app.context.location.assigned,'/studio?tour=1');
  app.node('introClose').listeners.click();
