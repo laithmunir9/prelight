@@ -46,6 +46,37 @@ test('the homepage tutorial button resumes saved speech-map progress',()=>{
   assert.equal(app.context.location.assigned,'/studio?tour=1');
   assert.doesNotMatch(app.html,/id="introDialog"/);
 });
+test('completed tutorial map becomes the first member workspace without carrying fake coverage',()=>{
+  const progress={
+    version:1,step:4,title:'Prelight pitch',purpose:'Startup pitch',takes:[{id:'tutorial-take'}],
+    nodes:[{id:'hook',title:'My hook',content:'A sharper opening',type:'point',position:{x:10,y:20},status:'covered',evidence:'Demo evidence'}],
+    edges:[]
+  };
+  const app=boot('/','',{
+    prelightStudioTutorialComplete:'true',
+    'prelightSpeechMapTutorial:v1':JSON.stringify(progress)
+  });
+  app.node('completionLogin').onclick();
+  assert.equal(app.context.location.assigned,'/studio?from=tutorial');
+  const workspace=JSON.parse(app.entries.get('prelightSpeechMap:v1'));
+  assert.equal(workspace.title,'Prelight pitch');
+  assert.equal(workspace.nodes[0].title,'My hook');
+  assert.equal(workspace.nodes[0].status,null);
+  assert.equal(workspace.nodes[0].evidence,null);
+  assert.deepEqual(workspace.takes,[]);
+});
+test('tutorial continuation never overwrites an existing speech-map workspace',()=>{
+  const existing={version:1,title:'Existing map',purpose:'',nodes:[],edges:[],takes:[]};
+  const tutorial={version:1,title:'Tutorial map',purpose:'',nodes:[],edges:[],takes:[]};
+  const app=boot('/','',{
+    prelightStudioTutorialComplete:'true',
+    'prelightSpeechMap:v1':JSON.stringify(existing),
+    'prelightSpeechMapTutorial:v1':JSON.stringify(tutorial)
+  });
+  app.node('completionLogin').onclick();
+  assert.equal(app.context.location.assigned,'/studio');
+  assert.equal(JSON.parse(app.entries.get('prelightSpeechMap:v1')).title,'Existing map');
+});
 test('fresh Studio asks for a workspace, and named workspace starts without demo takes',()=>{
   assert.match(boot('/studio').html,/Start recording/);
   const app=boot('/studio/','?workspace=Product%20Pitch');

@@ -3,6 +3,7 @@
   const WORKSPACE_KEY = 'prelightStudioWorkspace';
   const TUTORIAL_COMPLETE_KEY = 'prelightStudioTutorialComplete';
   const SPEECH_TUTORIAL_PROGRESS_KEY = 'prelightSpeechMapTutorial:v1';
+  const SPEECH_WORKSPACE_KEY = 'prelightSpeechMap:v1';
   const params = new URLSearchParams(location.search);
   const demo = params.get('demo') === '1';
   const state = window.StudioState;
@@ -11,6 +12,22 @@
   const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   // Tutorial progress is stored separately from a member's normal workspace.
   const tutorialComplete = () => read(TUTORIAL_COMPLETE_KEY, false) === true;
+  function continueTutorialWorkspace() {
+    if (read(SPEECH_WORKSPACE_KEY, null)) return false;
+    const tutorial = read(SPEECH_TUTORIAL_PROGRESS_KEY, null);
+    if (!tutorial || !Array.isArray(tutorial.nodes) || !Array.isArray(tutorial.edges)) return false;
+    const workspace = {
+      version: 1,
+      title: String(tutorial.title || 'Untitled speech').slice(0, 100),
+      purpose: String(tutorial.purpose || '').slice(0, 400),
+      nodes: tutorial.nodes.map(node => ({...node, status:null, evidence:null})),
+      edges: tutorial.edges,
+      takes: []
+    };
+    try { localStorage.setItem(SPEECH_WORKSPACE_KEY, JSON.stringify(workspace)); return true; }
+    catch { return false; }
+  }
+  window.prelightContinueTutorialWorkspace = continueTutorialWorkspace;
   const signedIn = () => typeof S !== 'undefined' && Boolean(S.token && S.student);
   const freshTutorial = params.get('tour') === '1' && !demo;
   let workspaceName = freshTutorial ? '' : state.cleanName(params.get('workspace')?.trim().slice(0, 100) || read(WORKSPACE_KEY, '') || '');
@@ -65,7 +82,12 @@
       </section>
       ${introHtml()}<div id="authRoot"></div></div>`;
     if (accountScreen) {
-      document.getElementById('completionLogin').onclick = () => { if(signedIn()) location.assign('/studio'); else openAuth('login'); };
+      document.getElementById('completionLogin').onclick = () => {
+        if (signedIn()) {
+          const continued = continueTutorialWorkspace();
+          location.assign(continued ? '/studio?from=tutorial' : '/studio');
+        } else openAuth('login');
+      };
       document.getElementById('studioCreateAccount')?.addEventListener('click',()=>openAuth('register'));
     } else {
       document.getElementById('startTutorial').onclick = () => {

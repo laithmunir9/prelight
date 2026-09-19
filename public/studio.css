@@ -519,3 +519,96 @@ body.prelight-page #main { display:block; }
   border:0;
   background:rgba(248,244,237,.07);
 }
+
+/* Account access is the last tutorial beat, so it uses the same cream guide
+   surface instead of dropping users into the older dark Studio dialog. */
+:is(.prelight-landing,.prelight-studio) .rm-auth-backdrop {
+  background:rgba(7,10,24,.62);
+  backdrop-filter:none;
+}
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog {
+  width:min(520px,100%);
+  padding:58px 42px 34px;
+  overflow:visible;
+  border:1px solid rgba(32,38,63,.08);
+  border-radius:22px;
+  background:#f8f4ed;
+  box-shadow:0 28px 80px rgba(4,7,18,.34);
+  color:#20263f;
+}
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .pl-character {
+  width:104px;
+  height:104px;
+  margin:-112px auto 8px;
+  filter:drop-shadow(0 9px 18px rgba(5,8,20,.18));
+}
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog h2 {
+  margin:8px 0 6px;
+  color:#20263f;
+  font:600 30px/1.2 "Fraunces",Georgia,serif;
+  letter-spacing:-.025em;
+}
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .sub {
+  max-width:360px;
+  margin:0 auto 24px;
+  color:#596074;
+  font-size:14px;
+  line-height:1.55;
+}
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog label {
+  margin-top:15px;
+  color:#666d7f;
+  font-size:12px;
+  font-weight:600;
+}
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .input-wrap { margin-top:7px; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog input {
+  min-height:50px;
+  border:1px solid #d9d6d0;
+  border-radius:12px;
+  background:#fffdfa;
+  color:#20263f;
+  caret-color:#20263f;
+  box-shadow:none;
+}
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog input::placeholder { color:#9a9da7; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog input:focus {
+  outline:none;
+  border-color:#9398a6;
+  box-shadow:none;
+}
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .actions { margin-top:24px; }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .btn {
+  min-height:44px;
+  padding:0 18px;
+  background:transparent;
+  color:#62697a;
+  font-size:12px;
+  font-weight:600;
+}
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .btn:hover { background:rgba(32,38,63,.06); }
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .btn.primary,
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .btn.primary:hover {
+  background:#20263f;
+  color:#f8f4ed;
+}
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .rm-auth-close {
+  background:rgba(32,38,63,.06);
+  color:#7b8191;
+}
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .rm-auth-close:hover {
+  background:rgba(32,38,63,.1);
+  color:#20263f;
+}
+:is(.prelight-landing,.prelight-studio) .rm-auth-dialog .err { color:#a84e3b; }
+@media (max-width:600px) {
+  :is(.prelight-landing,.prelight-studio) .rm-auth-dialog {
+    padding:52px 22px 24px;
+    border-radius:18px;
+  }
+  :is(.prelight-landing,.prelight-studio) .rm-auth-dialog .pl-character {
+    width:88px;
+    height:88px;
+    margin-top:-96px;
+  }
+}

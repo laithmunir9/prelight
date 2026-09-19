@@ -1002,19 +1002,24 @@ function closeAuth() {
 function renderAuthDialog() {
   const root = $("#authRoot");
   if (!root) return;
+  const hasTutorialMap = Boolean(localStorage.getItem("prelightSpeechMapTutorial:v1"));
+  const heading = S.authMode === "register" ? "Make it yours." : "Welcome back.";
+  const authCopy = S.authMode === "register"
+    ? (hasTutorialMap ? "Create your account to keep this speaking map and rehearse it." : "Create your account to save speaking maps and rehearsals.")
+    : (hasTutorialMap ? "Sign in to open the speaking map you just shaped." : "Sign in to continue your speaking map.");
   root.innerHTML = `
     <div class="rm-auth-backdrop" id="authBackdrop" role="presentation">
       <section class="rm-auth-dialog" role="dialog" aria-modal="true" aria-labelledby="authTitle">
         <button class="rm-auth-close" id="authClose" type="button" aria-label="Close account dialog">×</button>
         <img class="pl-character" src="/prelight-mascot.png" width="72" height="72" alt=""/>
-        <h2 id="authTitle">${S.authMode === "register" ? "Your room is ready." : "Welcome back."}</h2>
-        <p class="sub">${S.authMode === "register" ? "Create your private Prelight account to start your first practice." : "Sign in to return to your practice path."}</p>
+        <h2 id="authTitle">${heading}</h2>
+        <p class="sub">${authCopy}</p>
         ${S.authMode === "register" ? `<label>Name <div class="input-wrap"><input id="name" placeholder="Your name" autocomplete="name" /></div></label>` : ""}
         <label>Email <div class="input-wrap"><input id="email" type="email" placeholder="you@example.com" autocomplete="email" /></div></label>
         <label>Password <div class="input-wrap"><input id="pass" type="password" placeholder="At least 8 characters" autocomplete="current-password" /></div></label>
         ${S.authMode === "register" && window.prelightFeedbackConfig?.inviteRequired !== false ? `<label>Invite code <div class="input-wrap"><input id="inviteCode" type="password" placeholder="Your invite code" autocomplete="off" /></div></label>` : ""}
         <div class="actions">
-          <button class="btn primary" id="go">${S.authMode === "register" ? "Enter Prelight" : "Sign in"}</button>
+          <button class="btn primary" id="go">${S.authMode === "register" ? "Create account" : "Sign in"}</button>
           <button class="btn ghost" id="sw">${S.authMode === "register" ? "I have an account" : "Create an account"}</button>
         </div>
         <p class="muted" id="status" style="margin-top:12px"></p>
@@ -1045,7 +1050,9 @@ function renderAuthDialog() {
       S.student = j.student;
       S.screen = "studio";
       S.authOpen = false;
-      if (/^\/studio\/?$/.test(location.pathname)) render(); else location.assign("/studio");
+      const continued = window.prelightContinueTutorialWorkspace?.() === true;
+      if (/^\/studio\/?$/.test(location.pathname) && !continued) render();
+      else location.assign(continued ? "/studio?from=tutorial" : "/studio");
     } catch (e) { err(e); }
   };
 }

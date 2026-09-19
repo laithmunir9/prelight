@@ -188,7 +188,9 @@ function DeliveryPanel({ take, onClose }) {
 }
 
 function Workspace() {
-  const guidedEntry = useMemo(() => new URLSearchParams(window.location.search).get("tour") === "1", []);
+  const entryParams = useMemo(() => new URLSearchParams(window.location.search), []);
+  const guidedEntry = entryParams.get("tour") === "1";
+  const continuedFromTutorial = entryParams.get("from") === "tutorial";
   const stored = useMemo(() => guidedEntry ? loadTutorialProgress() : loadWorkspace(), [guidedEntry]);
   const [ready, setReady] = useState(Boolean(stored) || guidedEntry);
   const [title, setTitle] = useState(stored?.title || (guidedEntry ? "Your speaking moment" : "Untitled speech"));
@@ -200,7 +202,7 @@ function Workspace() {
   const [recording, setRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [processing, setProcessing] = useState("");
-  const [notice, setNotice] = useState("");
+  const [notice, setNotice] = useState(continuedFromTutorial ? "Your map is right where you left it. Rehearse when you’re ready." : "");
   const [editingAction, setEditingAction] = useState("");
   const [tutorialStep, setTutorialStep] = useState(guidedEntry ? (stored?.step || 1) : 0);
   const [tutorialNodeEdited, setTutorialNodeEdited] = useState(guidedEntry ? Boolean(stored?.nodeEdited) : false);

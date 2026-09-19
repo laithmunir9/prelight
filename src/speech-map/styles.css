@@ -289,6 +289,7 @@ button:focus-visible { filter: brightness(1.08); }
   .canvas { grid-column: 1; grid-row: 3; }
   .inspector { grid-column: 1; grid-row: 4; border: 0; border-top: 1px solid var(--line); min-height: 320px; }
   .recording-bar, .processing, .notice { left: 50%; }
+  .notice { top: 256px; }
   .tutorial-guide { left: 14px; right: 14px; bottom: 14px; width: auto; transform: none; gap: 8px; }
   .tutorial-guide > img { width: 48px; height: 48px; flex-basis: 48px; }
   .tutorial-guide-body { padding: 15px; }
