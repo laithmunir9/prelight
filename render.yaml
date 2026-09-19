@@ -3,7 +3,8 @@ services:
     name: prelight
     runtime: node
     plan: free
-    buildCommand: npm install && npm run build
+    # Render runs the API only. Vercel builds and serves the browser app.
+    buildCommand: npm ci --omit=dev
     startCommand: npm start
     envVars:
       - key: LEGACY_PRACTICE_ENABLED

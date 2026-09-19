@@ -25,12 +25,14 @@ Open `http://localhost:3848`. Recording and comparison work without an API key. 
 ## Production configuration
 
 1. Apply the SQL migrations in `supabase/migrations`, including `20260915203249_studio_feedback_quota.sql`.
-2. Configure the existing Render service with OpenAI and Supabase secrets. Supabase must refer to the same database as the deployed accounts.
+2. Configure the existing Render service with OpenAI and Supabase secrets. Supabase must refer to the same database as the deployed accounts. Render runs the Express API at `green-room-16xf.onrender.com`; it does not build the browser app.
 3. Set `LEGACY_PRACTICE_ENABLED=false` to disable the retired paid role-play, transcription, and speech endpoints. The active Studio flow does not use them.
 4. `STUDIO_FEEDBACK_ENABLED=false` disables feedback without affecting local recording or comparison. Otherwise feedback is available when both providers are configured.
 5. Leave `PRELIGHT_INVITE_CODE` and `GREEN_ROOM_INVITE_CODE` unset for open signup. Existing accounts must be preserved when changing storage configuration; do not switch a live local-data service to an empty database without migration.
 
-Git pushes to the deployed branch trigger Render's existing auto-deploy. `render.yaml` describes the service, but `sync: false` fields do not populate secrets on existing services.
+The frontend is built and hosted by Vercel from `public/`. `vercel.json` keeps `/studio` on the speech-map entry point and proxies `/api/*` to Render, so browser code can continue using same-origin API paths. The two legacy session helper scripts are also proxied from Render until they are retired or moved into the frontend bundle.
+
+Git pushes to the deployed branch trigger the existing deployments. `render.yaml` describes the backend service, but `sync: false` fields do not populate secrets on existing services. Vercel should use the repository root, `npm run build`, and the `public` output directory; those settings are committed in `vercel.json`.
 
 ## Quota and access control
 
